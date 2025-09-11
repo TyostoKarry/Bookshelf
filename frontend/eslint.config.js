@@ -1,5 +1,4 @@
 import js from "@eslint/js";
-import { defineConfig } from "eslint";
 import eslintImport from "eslint-plugin-import";
 import prettier from "eslint-plugin-prettier";
 import react from "eslint-plugin-react";
@@ -8,7 +7,7 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 
-export default defineConfig([
+export default [
   { ignores: ["dist"] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
@@ -72,4 +71,4 @@ export default defineConfig([
       "@typescript-eslint/switch-exhaustiveness-check": "error",
     },
   },
-]);
+];
