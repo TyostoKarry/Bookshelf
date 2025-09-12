@@ -10,7 +10,7 @@
 
 - [ ] **Routing**
 
-  - [ ] Install + set up React Router
+  - [x] Install + set up React Router
   - [ ] Create routes: `/bookshelf`, `/add`, `/detail/:id`, `/achievements`
 
 - [ ] **Bookshelf Page**
@@ -37,12 +37,12 @@
 
 ---
 
-## Backend Basics (Spring Boot + SQLite)
+## Backend Basics (Spring Boot + Kotlin + SQLite)
 
 - [ ] **Project setup**
 
-  - [ ] Initialize Spring Boot project
-  - [ ] Add SQLite integration
+  - [x] Initialize Spring Boot project
+  - [x] Add SQLite integration
   - [ ] Configure JPA entities
 
 - [ ] **Book entity / API**
