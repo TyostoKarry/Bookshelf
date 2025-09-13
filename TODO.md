@@ -39,19 +39,19 @@
 
 ## Backend Basics (Spring Boot + Kotlin + SQLite)
 
-- [ ] **Project setup**
+- [x] **Project setup**
 
   - [x] Initialize Spring Boot project
   - [x] Add SQLite integration
-  - [ ] Configure JPA entities
+  - [x] Configure JPA entities
 
-- [ ] **Book entity / API**
+- [x] **Book entity / API**
 
-  - [ ] Create `Book` entity (id, title, author, pages, coverUrl, status, startedAt, finishedAt, rating, notes)
-  - [ ] `GET /books` → list all books
-  - [ ] `POST /books` → add new book
-  - [ ] `PUT /books/{id}` → update book
-  - [ ] `DELETE /books/{id}` → remove book
+  - [x] Create `Book` entity (id, title, author, pages, coverUrl, status, startedAt, finishedAt, rating, notes)
+  - [x] `GET /books` → list all books
+  - [x] `POST /books` → add new book
+  - [x] `PUT /books/{id}` → update book
+  - [x] `DELETE /books/{id}` → remove book
 
 - [ ] **Achievement system**
 
