@@ -19,6 +19,9 @@ class BookshelfService(
     fun getBookshelfById(id: Long): Either<BookshelfError, Bookshelf> =
         bookshelfRepository.findByIdOrNull(id)?.right() ?: BookshelfError.NotFound(id).left()
 
+    fun getBookshelfByToken(editToken: String): Either<BookshelfError, Bookshelf> =
+        bookshelfRepository.findByEditToken(editToken)?.right() ?: BookshelfError.NotFoundByToken(editToken).left()
+
     fun saveBookshelf(bookshelf: Bookshelf): Bookshelf = bookshelfRepository.save(bookshelf)
 
     fun deleteBookshelf(id: Long): Either<BookshelfError, Long> =

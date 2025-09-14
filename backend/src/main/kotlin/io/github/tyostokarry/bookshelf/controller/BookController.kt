@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -32,11 +31,6 @@ class BookController(
             is Either.Left ->
                 ResponseEntity.status(404).body(ApiResponse(error = ErrorResponse("Book with id $id not found", ErrorCodes.BOOK_NOT_FOUND)))
         }
-
-    @PostMapping
-    fun createBook(
-        @RequestBody book: Book,
-    ): ResponseEntity<ApiResponse<Book>> = ResponseEntity.ok(ApiResponse(data = bookService.saveBook(book)))
 
     @PutMapping("/{id}")
     fun updateBook(

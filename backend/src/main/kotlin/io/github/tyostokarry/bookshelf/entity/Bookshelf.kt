@@ -42,6 +42,12 @@ data class Bookshelf(
      */
     @Column(nullable = false)
     var updatedAt: LocalDateTime = LocalDateTime.now(),
+    // Secret owner token (do NOT expose in normal responses)
+    @Column(nullable = false)
+    var editToken: String =
+        java.util.UUID
+            .randomUUID()
+            .toString(),
 ) {
     @PreUpdate
     fun onUpdate() {

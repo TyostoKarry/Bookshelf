@@ -28,8 +28,7 @@ data class Book(
     /**
      * The ID of the bookshelf who owns this book.
      */
-    @Column(nullable = false)
-    val bookshelfId: Long,
+    var bookshelfId: Long,
     /**
      * Title of the book (required).
      */

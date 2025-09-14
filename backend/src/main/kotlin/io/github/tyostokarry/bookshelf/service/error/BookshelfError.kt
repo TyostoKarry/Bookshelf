@@ -4,4 +4,8 @@ sealed class BookshelfError {
     data class NotFound(
         val id: Long,
     ) : BookshelfError()
+
+    data class NotFoundByToken(
+        val token: String,
+    ) : BookshelfError()
 }

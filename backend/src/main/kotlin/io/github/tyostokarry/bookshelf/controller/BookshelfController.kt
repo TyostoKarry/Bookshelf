@@ -1,6 +1,10 @@
 package io.github.tyostokarry.bookshelf.controller
 
 import arrow.core.Either
+import io.github.tyostokarry.bookshelf.controller.dto.BookshelfDto
+import io.github.tyostokarry.bookshelf.controller.dto.BookshelfWithTokenDto
+import io.github.tyostokarry.bookshelf.controller.dto.toBookshelfDto
+import io.github.tyostokarry.bookshelf.controller.dto.toBookshelfWithTokenDto
 import io.github.tyostokarry.bookshelf.entity.Book
 import io.github.tyostokarry.bookshelf.entity.Bookshelf
 import io.github.tyostokarry.bookshelf.service.BookService
@@ -11,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -21,14 +26,14 @@ class BookshelfController(
     private val bookshelfService: BookshelfService,
 ) {
     @GetMapping
-    fun getAllBookshelves(): List<Bookshelf> = bookshelfService.getAllBookshelves()
+    fun getAllBookshelves(): List<BookshelfDto> = bookshelfService.getAllBookshelves().map { it.toBookshelfDto() }
 
     @GetMapping("/{id}")
     fun getBookshelf(
         @PathVariable id: Long,
-    ): ResponseEntity<ApiResponse<Bookshelf>> =
+    ): ResponseEntity<ApiResponse<BookshelfDto>> =
         when (val result = bookshelfService.getBookshelfById(id)) {
-            is Either.Right -> ResponseEntity.ok(ApiResponse(data = result.value))
+            is Either.Right -> ResponseEntity.ok(ApiResponse(data = result.value.toBookshelfDto()))
             is Either.Left ->
                 ResponseEntity
                     .status(
@@ -52,7 +57,37 @@ class BookshelfController(
     @PostMapping
     fun createBookshelf(
         @RequestBody bookshelf: Bookshelf,
-    ): ResponseEntity<ApiResponse<Bookshelf>> = ResponseEntity.ok(ApiResponse(data = bookshelfService.saveBookshelf(bookshelf)))
+    ): ResponseEntity<ApiResponse<BookshelfWithTokenDto>> {
+        val saved = bookshelfService.saveBookshelf(bookshelf)
+        return ResponseEntity.ok(ApiResponse(data = saved.toBookshelfWithTokenDto()))
+    }
+
+    @PostMapping("/{id}/books")
+    fun createBook(
+        @PathVariable id: Long,
+        @RequestBody book: Book,
+        @RequestHeader("X-BOOKSHELF-TOKEN") token: String,
+    ): ResponseEntity<ApiResponse<Book>> {
+        return when (val bookshelf = bookshelfService.getBookshelfById(id)) {
+            is Either.Right -> {
+                if (bookshelf.value.editToken != token) {
+                    return ResponseEntity
+                        .status(
+                            403,
+                        ).body(ApiResponse(error = ErrorResponse("Not allowed to edit this shelf", ErrorCodes.FORBIDDEN)))
+                }
+
+                book.bookshelfId = bookshelf.value.id
+                val saved = bookService.saveBook(book)
+                ResponseEntity.ok(ApiResponse(data = saved))
+            }
+            is Either.Left ->
+                ResponseEntity
+                    .status(
+                        404,
+                    ).body(ApiResponse(error = ErrorResponse("Bookshelf not found", ErrorCodes.BOOKSHELF_NOT_FOUND)))
+        }
+    }
 
     @DeleteMapping("/{id}")
     fun deleteBookshelf(
