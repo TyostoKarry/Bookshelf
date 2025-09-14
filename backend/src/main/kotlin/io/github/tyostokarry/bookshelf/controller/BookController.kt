@@ -33,19 +33,6 @@ class BookController(
                 ResponseEntity.status(404).body(ApiResponse(error = ErrorResponse("Book with id $id not found", ErrorCodes.BOOK_NOT_FOUND)))
         }
 
-    @GetMapping("/bookshelf/{id}")
-    fun getBooksByBookshelf(
-        @PathVariable id: Long,
-    ): ResponseEntity<ApiResponse<List<Book>>> =
-        when (val bookshelfExists = bookshelfService.getBookshelfById(id)) {
-            is Either.Right -> ResponseEntity.ok(ApiResponse(data = bookService.getBooksByBookshelf(bookshelfExists.value.id)))
-            is Either.Left ->
-                ResponseEntity
-                    .status(
-                        404,
-                    ).body(ApiResponse(error = ErrorResponse("Bookshelf with id $id not found", ErrorCodes.BOOKSHELF_NOT_FOUND)))
-        }
-
     @PostMapping
     fun createBook(
         @RequestBody book: Book,

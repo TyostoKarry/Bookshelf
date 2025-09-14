@@ -53,6 +53,13 @@
   - [x] `PUT /books/{id}` → update book
   - [x] `DELETE /books/{id}` → remove book
 
+- [x] **API Key Authentication**
+
+  - [x] Add `ApiKeyAuthFilter` (validates `X-API-KEY` header)
+  - [x] Configure `SecurityFilterChain` to require key for all requests
+  - [x] Return consistent JSON error (`ApiResponse`) when missing or invalid
+  - [x] Load key from `.env` (`API_KEY`) via `AppProperties`
+
 - [ ] **Achievement system**
 
   - [ ] Create `Achievement` entity (id, name, tier, progress)

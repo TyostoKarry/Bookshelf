@@ -8,3 +8,8 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.community.dialect.SQLiteDialect
+  config:
+    import: optional:file:.env[.properties]
+
+app:
+  api-key: ${API_KEY}
