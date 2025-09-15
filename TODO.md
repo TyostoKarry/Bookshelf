@@ -60,6 +60,14 @@
   - [x] Return consistent JSON error (`ApiResponse`) when missing or invalid
   - [x] Load key from `.env` (`API_KEY`) via `AppProperties`
 
+- [x] **Bookshelf ownership (Edit Token)**
+
+  - [x] Add `editToken` field to `Bookshelf` (UUID generated on create)
+  - [x] Return `editToken` **only once** on creation via `BookshelfWithTokenDto`
+  - [x] Always return public-safe `BookshelfDto` in GET endpoints (never leaking token)
+  - [x] Require `X-BOOKSHELF-TOKEN` for modifying/deleting shelves
+  - [x] Require `X-BOOKSHELF-TOKEN` when creating/updating/deleting books in a shelf
+
 - [ ] **Achievement system**
 
   - [ ] Create `Achievement` entity (id, name, tier, progress)

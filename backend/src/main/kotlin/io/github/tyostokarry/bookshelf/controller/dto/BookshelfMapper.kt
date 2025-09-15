@@ -20,3 +20,16 @@ fun Bookshelf.toBookshelfWithTokenDto() =
         updatedAt = this.updatedAt,
         editToken = this.editToken,
     )
+
+fun CreateBookshelfDto.toEntity() =
+    Bookshelf(
+        name = name,
+        description = description,
+    )
+
+fun UpdateBookshelfDto.applyTo(bookshelf: Bookshelf): Bookshelf {
+    name?.let { bookshelf.name = it }
+    description?.let { bookshelf.description = it }
+
+    return bookshelf
+}
