@@ -1,6 +1,9 @@
 package io.github.tyostokarry.bookshelf.controller
 
 import arrow.core.Either
+import io.github.tyostokarry.bookshelf.controller.advice.ApiResponse
+import io.github.tyostokarry.bookshelf.controller.advice.ErrorCodes
+import io.github.tyostokarry.bookshelf.controller.advice.ErrorResponse
 import io.github.tyostokarry.bookshelf.controller.dto.BookDto
 import io.github.tyostokarry.bookshelf.controller.dto.toDto
 import io.github.tyostokarry.bookshelf.service.BookService
@@ -16,7 +19,8 @@ class BookController(
     private val bookService: BookService,
 ) {
     @GetMapping
-    fun getAllBooks(): List<BookDto> = bookService.getAllBooks().map { it.toDto() }
+    fun getAllBooks(): ResponseEntity<ApiResponse<List<BookDto>>> =
+        ResponseEntity.ok(ApiResponse(data = bookService.getAllBooks().map { it.toDto() }))
 
     @GetMapping("/{id}")
     fun getBook(
@@ -25,6 +29,14 @@ class BookController(
         when (val result = bookService.getBookById(id)) {
             is Either.Right -> ResponseEntity.ok(ApiResponse(data = result.value.toDto()))
             is Either.Left ->
-                ResponseEntity.status(404).body(ApiResponse(error = ErrorResponse("Book with id $id not found", ErrorCodes.BOOK_NOT_FOUND)))
+                ResponseEntity.status(404).body(
+                    ApiResponse(
+                        error =
+                            ErrorResponse(
+                                "Book with id $id not found",
+                                ErrorCodes.BOOK_NOT_FOUND,
+                            ),
+                    ),
+                )
         }
 }

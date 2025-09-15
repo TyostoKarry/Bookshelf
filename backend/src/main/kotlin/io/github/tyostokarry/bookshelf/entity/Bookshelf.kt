@@ -42,7 +42,9 @@ data class Bookshelf(
      */
     @Column(nullable = false)
     var updatedAt: LocalDateTime = LocalDateTime.now(),
-    // Secret owner token (do NOT expose in normal responses)
+    /**
+     * Secret owner token (do NOT expose in normal responses)
+     */
     @Column(nullable = false)
     var editToken: String =
         java.util.UUID

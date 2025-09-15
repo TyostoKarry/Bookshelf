@@ -2,9 +2,9 @@ package io.github.tyostokarry.bookshelf.security
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.github.tyostokarry.bookshelf.config.AppProperties
-import io.github.tyostokarry.bookshelf.controller.ApiResponse
-import io.github.tyostokarry.bookshelf.controller.ErrorCodes
-import io.github.tyostokarry.bookshelf.controller.ErrorResponse
+import io.github.tyostokarry.bookshelf.controller.advice.ApiResponse
+import io.github.tyostokarry.bookshelf.controller.advice.ErrorCodes
+import io.github.tyostokarry.bookshelf.controller.advice.ErrorResponse
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse

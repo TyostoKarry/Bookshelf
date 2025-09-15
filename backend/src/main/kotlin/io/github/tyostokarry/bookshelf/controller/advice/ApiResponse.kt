@@ -1,4 +1,4 @@
-package io.github.tyostokarry.bookshelf.controller
+package io.github.tyostokarry.bookshelf.controller.advice
 
 data class ApiResponse<T>(
     val data: T? = null,
@@ -8,4 +8,5 @@ data class ApiResponse<T>(
 data class ErrorResponse(
     val message: String,
     val code: ErrorCodes,
+    val fieldErrors: Map<String, String>? = null,
 )
