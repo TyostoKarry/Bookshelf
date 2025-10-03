@@ -5,17 +5,19 @@ import {
   Navigate,
   RouterProvider,
 } from "react-router-dom";
-import { LanguageProvider } from "./contexts/LanguageProvider";
+import { Toaster } from "sonner";
+import { AppProviders } from "./contexts/AppProviders";
 import { Layout } from "./Layout";
 import "./index.css";
+import { Home } from "./pages/Home";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Layout />,
     children: [
-      { path: "/", element: <div>Home Page</div> },
-      { path: "/shelf", element: <div>Shelf Page</div> },
+      { path: "/", element: <Home /> },
+      { path: "/bookshelves/:id", element: <div>Shelf Page</div> },
       { path: "*", element: <Navigate to="/" replace /> },
     ],
   },
@@ -23,8 +25,9 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <LanguageProvider>
+    <AppProviders>
       <RouterProvider router={router} />
-    </LanguageProvider>
+      <Toaster />
+    </AppProviders>
   </StrictMode>,
 );

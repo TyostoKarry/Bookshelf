@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController
 const val X_BOOKSHELF_TOKEN = "X-BOOKSHELF-TOKEN"
 
 @RestController
-@RequestMapping("/bookshelves")
+@RequestMapping("/api/v1/bookshelves")
 class BookshelfController(
     private val bookService: BookService,
     private val bookshelfService: BookshelfService,

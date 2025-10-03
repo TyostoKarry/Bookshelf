@@ -1,0 +1,6 @@
+export type ApiErrorCode =
+  | "BOOK_NOT_FOUND"
+  | "BOOKSHELF_NOT_FOUND"
+  | "INVALID_API_KEY"
+  | "FORBIDDEN"
+  | "VALIDATION_ERROR";
