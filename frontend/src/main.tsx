@@ -8,8 +8,9 @@ import {
 import { Toaster } from "sonner";
 import { AppProviders } from "./contexts/AppProviders";
 import { Layout } from "./Layout";
-import "./index.css";
 import { Home } from "./pages/Home";
+import { MyBookshelf } from "./pages/MyBookshelf";
+import "./index.css";
 
 const router = createBrowserRouter([
   {
@@ -17,7 +18,8 @@ const router = createBrowserRouter([
     element: <Layout />,
     children: [
       { path: "/", element: <Home /> },
-      { path: "/bookshelves/:id", element: <div>Shelf Page</div> },
+      { path: "/bookshelves/:id", element: <p>Public Bookshelf</p> },
+      { path: "/my/bookshelf", element: <MyBookshelf /> },
       { path: "*", element: <Navigate to="/" replace /> },
     ],
   },

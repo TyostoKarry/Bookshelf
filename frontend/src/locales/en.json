@@ -22,11 +22,16 @@
     "nameOfBookshelf": "Name of your Bookshelf",
     "namePlaceholder": "e.g. My Favorite Reads",
     "newBookshelfCreated": "Your Bookshelf Has Been Created",
-    "saveThisToken": "This edit token is required to update or delete this bookshelf. It will not be shown again! Please store it securely."
+    "rememberToken": "Remember this token on this device",
+    "saveTokenTitle": "Keep this token safe.",
+    "saveTokenPurpose": "You’ll need it to access, edit, or delete your bookshelf.",
+    "saveTokenInstruction": "It’s only shown once — save it somewhere secure."
   },
   "toast": {
     "anErrorOccurred": "An error occurred",
+    "failedToRefreshBookshelf": "Failed to refresh bookshelf",
     "tokenCopied": "Token copied to clipboard",
-    "tokenCopyFailed": "Failed to copy token to clipboard"
+    "tokenCopyFailed": "Failed to copy token to clipboard",
+    "tokenStored": "Your token has been stored on this device."
   }
 }

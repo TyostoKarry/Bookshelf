@@ -5,10 +5,12 @@ import { Button } from "./Button";
 import { createBookshelf } from "../api/bookshelves";
 import { useLanguage } from "../hooks/useLanguage";
 import { useModal } from "../hooks/useModal";
+import { useMyBookshelf } from "../hooks/useMyBookshelf";
 
 export const CreateBookshelfModal: FC = () => {
   const { t } = useLanguage();
   const { closeModal, openModal } = useModal();
+  const { setEditToken } = useMyBookshelf();
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -19,8 +21,9 @@ export const CreateBookshelfModal: FC = () => {
     try {
       const newBookshelf = await createBookshelf({ name, description });
       if (newBookshelf) {
-        navigate(`/bookshelves/${newBookshelf.id}`);
+        setEditToken(newBookshelf.editToken);
         closeModal();
+        navigate("/my/bookshelf");
         openModal("TOKEN", { token: newBookshelf.editToken });
       }
     } catch (error) {

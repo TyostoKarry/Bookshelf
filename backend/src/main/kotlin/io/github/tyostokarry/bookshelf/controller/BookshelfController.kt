@@ -52,15 +52,20 @@ class BookshelfController(
             is Either.Left ->
                 ResponseEntity
                     .status(404)
-                    .body(
-                        ApiResponse(
-                            error =
-                                ErrorResponse(
-                                    "Bookshelf with id $id not found",
-                                    ErrorCodes.BOOKSHELF_NOT_FOUND,
-                                ),
-                        ),
-                    )
+                    .body(ApiResponse(error = ErrorResponse("Bookshelf with id $id not found", ErrorCodes.BOOKSHELF_NOT_FOUND)))
+        }
+
+    @GetMapping("/token/{token}")
+    fun getBookshelfByToken(
+        @PathVariable token: String,
+    ): ResponseEntity<ApiResponse<BookshelfDto>> =
+        when (val result = bookshelfService.getBookshelfByToken(token)) {
+            is Either.Right -> ResponseEntity.ok(ApiResponse(data = result.value.toBookshelfDto()))
+            is Either.Left ->
+                ResponseEntity
+                    .status(
+                        404,
+                    ).body(ApiResponse(error = ErrorResponse("Bookshelf with token $token not found", ErrorCodes.BOOKSHELF_NOT_FOUND)))
         }
 
     @GetMapping("/{id}/books")
@@ -80,6 +85,29 @@ class BookshelfController(
                             error =
                                 ErrorResponse(
                                     "Bookshelf with id $id not found",
+                                    ErrorCodes.BOOKSHELF_NOT_FOUND,
+                                ),
+                        ),
+                    )
+        }
+
+    @GetMapping("/token/{token}/books")
+    fun getBooksInBookshelfByToken(
+        @PathVariable token: String,
+    ): ResponseEntity<ApiResponse<List<BookDto>>> =
+        when (val bookshelfExists = bookshelfService.getBookshelfByToken(token)) {
+            is Either.Right -> {
+                val books = bookService.getBooksByBookshelf(bookshelfExists.value.id)
+                ResponseEntity.ok(ApiResponse(data = books.map { it.toDto() }))
+            }
+            is Either.Left ->
+                ResponseEntity
+                    .status(404)
+                    .body(
+                        ApiResponse(
+                            error =
+                                ErrorResponse(
+                                    "Bookshelf with token $token not found",
                                     ErrorCodes.BOOKSHELF_NOT_FOUND,
                                 ),
                         ),
