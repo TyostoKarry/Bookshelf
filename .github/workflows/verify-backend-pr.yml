@@ -32,8 +32,8 @@ jobs:
         working-directory: backend
         run: ./gradlew ktlintCheck
 
-  build:
-    name: Build Spring Boot Project
+  assemble:
+    name: Assemble Project
     needs: lint
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -53,6 +53,6 @@ jobs:
         working-directory: backend
         run: chmod +x gradlew
 
-      - name: Build project
+      - name: Assemble project
         working-directory: backend
-        run: ./gradlew clean build
+        run: ./gradlew clean assemble
