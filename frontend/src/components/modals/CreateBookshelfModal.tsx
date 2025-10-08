@@ -1,11 +1,11 @@
 import { type FC, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { Button } from "./Button";
-import { createBookshelf } from "../api/bookshelves";
-import { useLanguage } from "../hooks/useLanguage";
-import { useModal } from "../hooks/useModal";
-import { useMyBookshelf } from "../hooks/useMyBookshelf";
+import { createBookshelf } from "../../api/bookshelves";
+import { useLanguage } from "../../hooks/useLanguage";
+import { useModal } from "../../hooks/useModal";
+import { useMyBookshelf } from "../../hooks/useMyBookshelf";
+import { Button } from "../commons/Button";
 
 export const CreateBookshelfModal: FC = () => {
   const { t } = useLanguage();
@@ -49,7 +49,7 @@ export const CreateBookshelfModal: FC = () => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-      <div className="bg-white p-6 rounded-xl shadow-xl w-full max-w-md">
+      <div className="bg-white p-6 rounded-xl shadow-xl w-full max-w-md text-center">
         <h2 className="text-center text-lg text-text text-shadow-md mb-4">
           {t("modal.createBookshelf")}
         </h2>

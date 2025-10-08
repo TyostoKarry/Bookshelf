@@ -1,8 +1,8 @@
 import { type FC, useState } from "react";
 import { toast } from "sonner";
-import { Button } from "./Button";
-import CopyIcon from "../assets/icons/copy.svg?react";
-import { useLanguage } from "../hooks/useLanguage";
+import CopyIcon from "../../assets/icons/copy.svg?react";
+import { useLanguage } from "../../hooks/useLanguage";
+import { Button } from "../commons/Button";
 
 interface ShowTokenModalProps {
   token: string;

@@ -8,7 +8,8 @@
     "create": "Create",
     "createBookshelf": "Create your own Bookshelf",
     "gotIt": "Got it!",
-    "openBookshelf": "Open your Bookshelf"
+    "open": "Open",
+    "openMyBookshelf": "Open My Bookshelf"
   },
   "home": {
     "welcomeDescription": "Add books, build shelves, and never lose track of what you’re reading.",
@@ -19,9 +20,11 @@
     "createBookshelf": "Create new Bookshelf",
     "descriptionOfBookshelf": "Description of your Bookshelf (optional)",
     "descriptionPlaceholder": "What’s special about this bookshelf?",
+    "enterEditToken": "Enter your bookshelf token",
     "nameOfBookshelf": "Name of your Bookshelf",
     "namePlaceholder": "e.g. My Favorite Reads",
     "newBookshelfCreated": "Your Bookshelf Has Been Created",
+    "pasteTokenHere": "Paste your token here",
     "rememberToken": "Remember this token on this device",
     "saveTokenTitle": "Keep this token safe.",
     "saveTokenPurpose": "You’ll need it to access, edit, or delete your bookshelf.",
@@ -29,7 +32,9 @@
   },
   "toast": {
     "anErrorOccurred": "An error occurred",
+    "bookshelfLoadedSuccessfully": "Bookshelf loaded successfully",
     "failedToRefreshBookshelf": "Failed to refresh bookshelf",
+    "invalidTokenOrBookshelfNotFound": "Invalid token or bookshelf not found",
     "tokenCopied": "Token copied to clipboard",
     "tokenCopyFailed": "Failed to copy token to clipboard",
     "tokenStored": "Your token has been stored on this device."

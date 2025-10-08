@@ -1,7 +1,7 @@
 import type { FC } from "react";
 import { Outlet } from "react-router-dom";
-import { ModalRoot } from "./components/ModalRoot";
-import { Topbar } from "./components/Topbar";
+import { Topbar } from "./components/commons/Topbar";
+import { ModalRoot } from "./components/modals/ModalRoot";
 import { useModal } from "./hooks/useModal";
 
 export const Layout: FC = () => {

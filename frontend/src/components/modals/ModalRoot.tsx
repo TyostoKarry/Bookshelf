@@ -1,8 +1,9 @@
 import { type FC } from "react";
 import { CreateBookshelfModal } from "./CreateBookshelfModal";
+import { EnterTokenModal } from "./EnterTokenModal";
 import { ShowTokenModal } from "./ShowTokenModal";
-import { type ModalState } from "../contexts/ModalContext";
-import { useModal } from "../hooks/useModal";
+import { type ModalState } from "../../contexts/ModalContext";
+import { useModal } from "../../hooks/useModal";
 
 interface ModalRootProps {
   modalState: ModalState;
@@ -18,6 +19,8 @@ export const ModalRoot: FC<ModalRootProps> = ({ modalState }) => {
       return (
         <ShowTokenModal token={modalState.props.token} onClose={closeModal} />
       );
+    case "ENTER_TOKEN":
+      return <EnterTokenModal />;
     case null:
       return null;
     default:

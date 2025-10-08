@@ -1,5 +1,5 @@
 import { type FC } from "react";
-import { Button } from "../components/Button";
+import { Button } from "../components/commons/Button";
 import { useLanguage } from "../hooks/useLanguage";
 import { useModal } from "../hooks/useModal";
 
