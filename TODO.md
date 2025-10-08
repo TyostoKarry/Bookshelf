@@ -15,7 +15,7 @@
 
 - [ ] **Bookshelf Page**
 
-  - [ ] Fetch `/books`
+  - [x] Fetch `/books`
   - [ ] Display covers, author and title grouped by status (Wishlist | Reading | Completed)
   - [ ] Show Google Books coverUrl, else placeholder image
 
@@ -84,7 +84,7 @@
 
 ## Stretch / Nice-to-Haves
 
-- [ ] Authentication → per-user shelves
+- [x] Authentication → per-user shelves
 - [ ] Responsive design for mobile
 - [ ] Bundle frontend build with backend (Spring serving React)
 - [ ] Search / filter / sort bookshelf (by title, author, status, rating, finished date)

@@ -1,0 +1,58 @@
+name: Verify Backend Pull Request
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "backend/**"
+
+jobs:
+  lint:
+    name: Run Ktlint
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup JDK
+        uses: actions/setup-java@v5
+        with:
+          distribution: "temurin"
+          java-version: "21"
+          cache: gradle
+
+      - name: Grant execute permissions for Gradle
+        working-directory: backend
+        run: chmod +x gradlew
+
+      - name: Run Ktlint check
+        working-directory: backend
+        run: ./gradlew ktlintCheck
+
+  assemble:
+    name: Assemble Project
+    needs: lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup JDK
+        uses: actions/setup-java@v5
+        with:
+          distribution: "temurin"
+          java-version: "21"
+          cache: gradle
+
+      - name: Grant execute permissions for Gradle
+        working-directory: backend
+        run: chmod +x gradlew
+
+      - name: Assemble project
+        working-directory: backend
+        run: ./gradlew clean assemble
