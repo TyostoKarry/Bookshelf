@@ -9,4 +9,4 @@ RUN apk add --no-cache curl
 
 EXPOSE 8080
 
-CMD ["./gradlew", "bootRun"]
+CMD ["./gradlew", "bootRun", "--no-daemon"]
