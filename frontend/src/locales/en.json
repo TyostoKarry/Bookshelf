@@ -1,15 +1,25 @@
 {
   "common": {
-    "appName": "Bookshelf"
+    "appName": "Bookshelf",
+    "bookshelfNotFound": "Bookshelf not found",
+    "invalidBookshelfId": "Invalid Bookshelf ID",
+    "loading": "Loading..."
+  },
+  "bookshelfView": {
+    "books": "Books:",
+    "noBooks": "No books in this bookshelf. Start adding some!"
   },
   "button": {
+    "addBook": "Add Book",
     "cancel": "Cancel",
     "copyTokenToClipboard": "Copy token to clipboard",
     "create": "Create",
     "createBookshelf": "Create your own Bookshelf",
+    "deleteBookshelf": "Delete Bookshelf",
     "gotIt": "Got it!",
     "open": "Open",
-    "openMyBookshelf": "Open My Bookshelf"
+    "openMyBookshelf": "Open My Bookshelf",
+    "visitBookshelf": "Visit Bookshelf"
   },
   "home": {
     "welcomeDescription": "Add books, build shelves, and never lose track of what you’re reading.",
@@ -21,9 +31,11 @@
     "descriptionOfBookshelf": "Description of your Bookshelf (optional)",
     "descriptionPlaceholder": "What’s special about this bookshelf?",
     "enterEditToken": "Enter your bookshelf token",
+    "enterIdToVisit": "Enter the ID to visit a Bookshelf",
     "nameOfBookshelf": "Name of your Bookshelf",
     "namePlaceholder": "e.g. My Favorite Reads",
     "newBookshelfCreated": "Your Bookshelf Has Been Created",
+    "pasteIdHere": "Paste the ID here",
     "pasteTokenHere": "Paste your token here",
     "rememberToken": "Remember this token on this device",
     "saveTokenTitle": "Keep this token safe.",
@@ -34,7 +46,9 @@
     "anErrorOccurred": "An error occurred",
     "bookshelfLoadedSuccessfully": "Bookshelf loaded successfully",
     "failedToRefreshBookshelf": "Failed to refresh bookshelf",
+    "invalidBookshelfId": "Invalid bookshelf ID",
     "invalidTokenOrBookshelfNotFound": "Invalid token or bookshelf not found",
+    "noTokenFound": "No token found.",
     "tokenCopied": "Token copied to clipboard",
     "tokenCopyFailed": "Failed to copy token to clipboard",
     "tokenStored": "Your token has been stored on this device."
