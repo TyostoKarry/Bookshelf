@@ -4,12 +4,30 @@ on:
   pull_request:
     branches:
       - main
-    paths:
-      - "frontend/**"
 
 jobs:
+  detect-changes:
+    name: Check Paths For Changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      frontend_changed: ${{ steps.changes.outputs.frontend }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Detect file changes
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            frontend:
+              - 'frontend/**'
+
   license-check:
     name: License Compliance Check
+    needs: detect-changes
+    if: needs.detect-changes.outputs.frontend_changed == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -43,7 +61,8 @@ jobs:
 
   lint:
     name: Run ESLint
-    needs: license-check
+    needs: [detect-changes, license-check]
+    if: needs.detect-changes.outputs.frontend_changed == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
@@ -68,7 +87,8 @@ jobs:
 
   build:
     name: Build Project
-    needs: lint
+    needs: [detect-changes, lint]
+    if: needs.detect-changes.outputs.frontend_changed == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
