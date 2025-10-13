@@ -5,6 +5,7 @@ interface ButtonProps {
   onClick: () => void;
   disabled?: boolean;
   color?: "success" | "danger";
+  className?: string;
 }
 
 export const Button: FC<ButtonProps> = ({
@@ -12,6 +13,7 @@ export const Button: FC<ButtonProps> = ({
   onClick,
   disabled = false,
   color = "success",
+  className = "",
 }) => {
   const colorStyles = {
     success:
@@ -24,7 +26,7 @@ export const Button: FC<ButtonProps> = ({
       disabled={disabled}
       type="button"
       className={`${colorStyles[color]} px-4 py-2 text-shadow-lg rounded shadow-lg
-        ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+        ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"} ${className}`}
     >
       {label}
     </button>

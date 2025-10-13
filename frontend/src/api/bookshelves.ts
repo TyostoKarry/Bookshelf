@@ -37,6 +37,26 @@ export async function createBookshelf(
   return json.data;
 }
 
+export async function getBookshelfById(id: string): Promise<Bookshelf | null> {
+  const response = await fetch(`${API_URL}/bookshelves/${id}`, {
+    headers: {
+      "X-API-KEY": API_KEY,
+    },
+  });
+
+  const json: ApiResponse<Bookshelf> = await response.json();
+
+  if (json.error) {
+    throw new Error(json.error.message);
+  }
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch bookshelf");
+  }
+
+  return json.data;
+}
+
 export async function getBookshelfByToken(
   token: string,
 ): Promise<Bookshelf | null> {
@@ -54,6 +74,28 @@ export async function getBookshelfByToken(
 
   if (!response.ok) {
     throw new Error("Failed to fetch bookshelf");
+  }
+
+  return json.data;
+}
+
+export async function getBooksInBookshelfById(
+  id: string,
+): Promise<Book[] | null> {
+  const response = await fetch(`${API_URL}/bookshelves/${id}/books`, {
+    headers: {
+      "X-API-KEY": API_KEY,
+    },
+  });
+
+  const json: ApiResponse<Book[]> = await response.json();
+
+  if (json.error) {
+    throw new Error(json.error.message);
+  }
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch books in bookshelf");
   }
 
   return json.data;

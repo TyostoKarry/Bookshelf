@@ -24,10 +24,17 @@ export const Topbar: FC = () => {
       <Link to="/" className="text-text text-2xl text-shadow-sm font-bold">
         {t("common.appName")}
       </Link>
-      <Button
-        label={t("button.openMyBookshelf")}
-        onClick={handleOpenBookshelf}
-      />
+      <div>
+        <Button
+          label={t("button.visitBookshelf")}
+          onClick={() => openModal("ENTER_ID", {})}
+          className="mr-4"
+        />
+        <Button
+          label={t("button.openMyBookshelf")}
+          onClick={handleOpenBookshelf}
+        />
+      </div>
     </nav>
   );
 };

@@ -10,6 +10,7 @@ import { AppProviders } from "./contexts/AppProviders";
 import { Layout } from "./Layout";
 import { Home } from "./pages/Home";
 import { MyBookshelf } from "./pages/MyBookshelf";
+import { PublicBookshelf } from "./pages/PublicBookshelf";
 import "./index.css";
 
 const router = createBrowserRouter([
@@ -18,7 +19,7 @@ const router = createBrowserRouter([
     element: <Layout />,
     children: [
       { path: "/", element: <Home /> },
-      { path: "/bookshelves/:id", element: <p>Public Bookshelf</p> },
+      { path: "/bookshelves/:id", element: <PublicBookshelf /> },
       { path: "/my/bookshelf", element: <MyBookshelf /> },
       { path: "*", element: <Navigate to="/" replace /> },
     ],
