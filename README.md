@@ -1,4 +1,27 @@
-# Bookshelf
+<h1 align="center"> Bookshelf </h1>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/frontend-React%20%2B%20TypeScript-blue" />
+  <img src="https://img.shields.io/badge/backend-Kotlin%20%2B%20Spring--Boot-purple" />
+  <img src="https://img.shields.io/badge/db-SQLite-lightgrey" />
+  <img src="https://img.shields.io/badge/CI-GitHub%20Actions-success" />
+</p>
+
+<p align="center">
+<strong>Work in progress!</strong>
+</br>
+A full‑stack web application for creating and sharing bookshelves.
+</br>
+Each bookshelf can store a collection of books with title, author, and additional details.
+</br>
+Visitors can browse public bookshelves, while owners can create, edit, and manage their own collections.
+</p>
+
+## Tech Stack
+
+**Frontend:** React + TypeScript + TailwindCSS + Vite  
+**Backend:** Kotlin (Sprint Boot) + SQLite + Gradle  
+**Infrastructure:** Docker + GitHub Actions
 
 ## Development Environment
 
