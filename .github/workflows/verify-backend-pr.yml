@@ -4,12 +4,30 @@ on:
   pull_request:
     branches:
       - main
-    paths:
-      - "backend/**"
 
 jobs:
+  detect-changes:
+    name: Check Paths For Changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      backend_changed: ${{ steps.changes.outputs.backend }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Detect file changes
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            backend:
+              - 'backend/**'
+
   lint:
     name: Run Ktlint
+    needs: detect-changes
+    if: needs.detect-changes.outputs.backend_changed == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
@@ -34,7 +52,8 @@ jobs:
 
   assemble:
     name: Assemble Project
-    needs: lint
+    needs: [detect-changes, lint]
+    if: needs.detect-changes.outputs.backend_changed == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
