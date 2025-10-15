@@ -20,7 +20,7 @@ Visitors can browse public bookshelves, while owners can create, edit, and manag
 ## Tech Stack
 
 **Frontend:** React + TypeScript + TailwindCSS + Vite  
-**Backend:** Kotlin (Sprint Boot) + SQLite + Gradle  
+**Backend:** Kotlin + Spring Boot + SQLite + Gradle  
 **Infrastructure:** Docker + GitHub Actions
 
 ## Development Environment
@@ -31,7 +31,7 @@ The following tools and versions are used during local development of the Booksh
 
 - **Java 21 (LTS)** – developed with Eclipse Temurin 21.0.8
 - **Gradle** – use included Gradle Wrapper (`./gradlew`), no need to install globally
-- **SQLite** – database used by backend, file-based (`bookshelf.db` auto-created)
+- **SQLite** – database used by backend, file-based (`bookshelf.db`)
 
 ### Frontend
 
@@ -63,9 +63,24 @@ These settings ensure:
 > <br/>
 > This means backend hot reload can still work in VS Code as long as IntelliJ’s background compiler is active.
 
+### Local SQLite Database
+
+The backend stores data in a local SQLite database file named `bookshelf.db`.
+
+Before running the application (especially inside Docker for the first time),
+make sure that the file exists in the `backend` directory:
+
+```bash
+cd backend
+touch bookshelf.db
+```
+
+This prevents Docker from accidentally creating a folder with the same name during volume mounts.
+The file is local and ignored by Git, so your development data remains on your machine.
+
 ### Run the Development Environment
 
-Use the development‑specific Compose file:
+Use the development‑specific Compose file located in the project’s root directory:
 
 ```bash
 docker compose -f docker-compose.dev.yml up --build
