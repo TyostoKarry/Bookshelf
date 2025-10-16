@@ -6,6 +6,7 @@ services:
     container_name: bookshelf-backend
     ports:
       - "8080:8080"
+      - "35729:35729"
     volumes:
       - ./backend:/workspace/backend
       - ./backend/bookshelf.db:/workspace/backend/bookshelf.db
@@ -15,8 +16,11 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: dev
       SPRING_DEVTOOLS_RESTART_ENABLED: "true"
+      SPRING_DEVTOOLS_LIVERELOAD_ENABLED: "true"
+      SPRING_DEVTOOLS_RESTART_ADDITIONAL_PATHS: /workspace/backend/build/classes,/workspace/backend/src/main/kotlin
     tty: true
     stdin_open: true
+    restart: unless-stopped
     healthcheck:
       test:
         - CMD-SHELL
