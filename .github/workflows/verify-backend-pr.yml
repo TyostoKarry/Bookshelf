@@ -24,16 +24,19 @@ jobs:
             backend:
               - 'backend/**'
 
-  lint:
-    name: Run Ktlint
+  verify-backend:
+    name: Verify Backend Changes
     needs: detect-changes
     if: needs.detect-changes.outputs.backend_changed == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 15
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
+
+      - name: Validate Gradle wrapper
+        uses: gradle/actions/wrapper-validation@v5
 
       - name: Setup JDK
         uses: actions/setup-java@v5
@@ -48,30 +51,12 @@ jobs:
 
       - name: Run Ktlint check
         working-directory: backend
-        run: ./gradlew ktlintCheck
+        run: ./gradlew ktlintCheck --no-daemon
 
-  assemble:
-    name: Assemble Project
-    needs: [detect-changes, lint]
-    if: needs.detect-changes.outputs.backend_changed == 'true'
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-
-      - name: Setup JDK
-        uses: actions/setup-java@v5
-        with:
-          distribution: "temurin"
-          java-version: "21"
-          cache: gradle
-
-      - name: Grant execute permissions for Gradle
+      - name: Run tests
         working-directory: backend
-        run: chmod +x gradlew
+        run: ./gradlew test --no-daemon
 
       - name: Assemble project
         working-directory: backend
-        run: ./gradlew clean assemble
+        run: ./gradlew clean assemble --no-daemon

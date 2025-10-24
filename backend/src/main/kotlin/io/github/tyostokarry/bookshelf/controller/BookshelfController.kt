@@ -137,7 +137,7 @@ class BookshelfController(
                             ApiResponse(
                                 error =
                                     ErrorResponse(
-                                        "Not allowed to edit this shelf",
+                                        "Not allowed to edit this bookshelf",
                                         ErrorCodes.FORBIDDEN,
                                     ),
                             ),
@@ -177,7 +177,7 @@ class BookshelfController(
                             ApiResponse(
                                 error =
                                     ErrorResponse(
-                                        "Not allowed to edit this shelf",
+                                        "Not allowed to edit this bookshelf",
                                         ErrorCodes.FORBIDDEN,
                                     ),
                             ),
@@ -219,7 +219,7 @@ class BookshelfController(
                             ApiResponse(
                                 error =
                                     ErrorResponse(
-                                        "Not allowed to edit this shelf",
+                                        "Not allowed to edit this bookshelf",
                                         ErrorCodes.FORBIDDEN,
                                     ),
                             ),
@@ -228,8 +228,22 @@ class BookshelfController(
 
                 val existingBook = bookService.getBookById(bookId)
                 if (existingBook is Either.Right && existingBook.value.bookshelfId == bookshelf.value.id) {
-                    val updatedBook = bookService.saveBook(dto.applyTo(existingBook.value))
-                    ResponseEntity.ok(ApiResponse(data = updatedBook.toDto()))
+                    val updatedEntity = dto.applyTo(existingBook.value)
+                    when (val result = bookService.updateBook(bookId, updatedEntity)) {
+                        is Either.Right ->
+                            ResponseEntity.ok(ApiResponse(data = result.value.toDto()))
+
+                        is Either.Left ->
+                            ResponseEntity.status(404).body(
+                                ApiResponse(
+                                    error =
+                                        ErrorResponse(
+                                            "Book with id $bookId not found in bookshelf $id",
+                                            ErrorCodes.BOOK_NOT_FOUND,
+                                        ),
+                                ),
+                            )
+                    }
                 } else {
                     ResponseEntity
                         .status(404)
@@ -273,7 +287,7 @@ class BookshelfController(
                             ApiResponse(
                                 error =
                                     ErrorResponse(
-                                        "Not allowed to edit this shelf",
+                                        "Not allowed to edit this bookshelf",
                                         ErrorCodes.FORBIDDEN,
                                     ),
                             ),
@@ -319,7 +333,7 @@ class BookshelfController(
                             ApiResponse(
                                 error =
                                     ErrorResponse(
-                                        "Not allowed to edit this shelf",
+                                        "Not allowed to edit this bookshelf",
                                         ErrorCodes.FORBIDDEN,
                                     ),
                             ),
