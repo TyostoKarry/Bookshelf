@@ -835,7 +835,7 @@ class BookshelfControllerTest(
                     Book(bookshelfId = 10, id = 10, title = "Test title 1", author = "Test author 1"),
                     Book(bookshelfId = 10, id = 11, title = "Test title 2", author = "Test author 2"),
                 )
-            val deleted = DeleteBookshelfResult(bookshelf.id, books.size.toLong())
+            val deleted = DeleteBookshelfResult(bookshelf.publicId, books.size.toLong())
             given(bookshelfService.getBookshelfByPublicId(bookshelf.publicId)).willReturn(Either.Right(bookshelf))
             given(bookshelfService.deleteBookshelf(bookshelf.publicId)).willReturn(Either.Right(deleted.deletedBooksCount))
 
