@@ -52,6 +52,6 @@ data class UpdateBookshelfDto(
  * Returned when deleting an entire bookshelf (for informational purposes).
  */
 data class DeleteBookshelfResult(
-    val deletedBookshelfId: Long,
+    val deletedBookshelfPublicId: String,
     val deletedBooksCount: Long,
 )

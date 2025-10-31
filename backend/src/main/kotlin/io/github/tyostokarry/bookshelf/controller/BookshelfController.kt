@@ -297,7 +297,7 @@ class BookshelfController(
                 val deletedBookCount = bookshelfService.deleteBookshelf(bookshelf.value.publicId).getOrNull()!!
                 val payload =
                     DeleteBookshelfResult(
-                        deletedBookshelfId = bookshelf.value.id,
+                        deletedBookshelfPublicId = bookshelf.value.publicId,
                         deletedBooksCount = deletedBookCount,
                     )
                 ResponseEntity.ok(ApiResponse(data = payload))
