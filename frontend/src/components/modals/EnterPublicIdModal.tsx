@@ -5,22 +5,23 @@ import { useLanguage } from "../../hooks/useLanguage";
 import { useModal } from "../../hooks/useModal";
 import { Button } from "../commons/Button";
 
-const isValidNumericId = (value: string) => /^[1-9]\d*$/.test(value.trim());
+const isValidPublicId = (value: string) =>
+  /^[A-Za-z0-9_-]{10,30}$/.test(value.trim());
 
-export const EnterIdModal: FC = () => {
+export const EnterPublicIdModal: FC = () => {
   const { t } = useLanguage();
   const { closeModal } = useModal();
-  const [id, setId] = useState("");
+  const [publicId, setPublicId] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async () => {
-    const trimmedId = id.trim();
-    if (!isValidNumericId(trimmedId)) {
-      toast.error(t("toast.invalidBookshelfId"));
+    const trimmedPublicId = publicId.trim();
+    if (!isValidPublicId(trimmedPublicId)) {
+      toast.error(t("toast.invalidBookshelfPublicId"));
       return;
     }
-    if (trimmedId) {
-      navigate(`/bookshelves/${trimmedId}`);
+    if (trimmedPublicId) {
+      navigate(`/bookshelves/${trimmedPublicId}`);
       closeModal();
     }
   };
@@ -29,15 +30,13 @@ export const EnterIdModal: FC = () => {
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
       <div className="bg-white p-6 rounded-xl shadow-xl w-full max-w-md text-center">
         <h2 className="text-xl font-semibold text-text text-shadow-sm mb-4">
-          {t("modal.enterIdToVisit")}
+          {t("modal.enterPublicIdToVisit")}
         </h2>
         <input
-          type="number"
-          min={1}
-          placeholder={t("modal.pasteIdHere")}
+          placeholder={t("modal.pastePublicIdHere")}
           className="w-full p-2 border border-gray-300 rounded mb-4"
-          value={id}
-          onChange={(e) => setId(e.target.value)}
+          value={publicId}
+          onChange={(e) => setPublicId(e.target.value)}
         />
         <div className="flex justify-end space-x-2">
           <Button
@@ -48,7 +47,7 @@ export const EnterIdModal: FC = () => {
           <Button
             label={t("button.open")}
             onClick={() => handleSubmit()}
-            disabled={!id.trim()}
+            disabled={!publicId.trim()}
           />
         </div>
       </div>

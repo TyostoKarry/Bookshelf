@@ -4,8 +4,8 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import io.github.tyostokarry.bookshelf.entity.Book
+import io.github.tyostokarry.bookshelf.error.BookError
 import io.github.tyostokarry.bookshelf.repository.BookRepository
-import io.github.tyostokarry.bookshelf.service.error.BookError
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -53,10 +53,10 @@ class BookService(
     }
 
     @Transactional
-    fun deleteBook(id: Long): Either<BookError, Unit> =
+    fun deleteBook(id: Long): Either<BookError, Long> =
         if (bookRepository.existsById(id)) {
             bookRepository.deleteById(id)
-            Unit.right()
+            id.right()
         } else {
             BookError.NotFound(id).left()
         }

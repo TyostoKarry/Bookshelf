@@ -25,7 +25,7 @@ export const BookshelfView: FC<BookshelfViewProps> = ({
               {bookshelf.name}
             </h1>
             <p className="text-sm text-gray-700 mt-1">
-              ID: <span className="font-mono">{bookshelf.id}</span>
+              Public ID: <span className="font-mono">{bookshelf.publicId}</span>
             </p>
             <p className="text-gray-700 mt-1">{bookshelf.description}</p>
           </div>

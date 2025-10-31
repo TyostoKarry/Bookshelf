@@ -19,10 +19,10 @@ import io.github.tyostokarry.bookshelf.controller.dto.toBookshelfWithTokenDto
 import io.github.tyostokarry.bookshelf.controller.dto.toDto
 import io.github.tyostokarry.bookshelf.entity.Book
 import io.github.tyostokarry.bookshelf.entity.Bookshelf
+import io.github.tyostokarry.bookshelf.error.BookError
+import io.github.tyostokarry.bookshelf.error.BookshelfError
 import io.github.tyostokarry.bookshelf.service.BookService
 import io.github.tyostokarry.bookshelf.service.BookshelfService
-import io.github.tyostokarry.bookshelf.service.error.BookError
-import io.github.tyostokarry.bookshelf.service.error.BookshelfError
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
@@ -32,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.http.MediaType
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.delete
@@ -42,6 +43,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
+@ActiveProfiles("test")
 @WebMvcTest(controllers = [BookshelfController::class])
 @AutoConfigureMockMvc(addFilters = false)
 class BookshelfControllerTest(
@@ -92,12 +94,12 @@ class BookshelfControllerTest(
     inner class GetBookshelfById {
         @Test
         fun `Get bookshelf by id returns BookshelfDto when successful`() {
-            val bookshelf = Bookshelf(id = 10, name = "Test Bookshelf", description = "desc")
-            given(bookshelfService.getBookshelfById(bookshelf.id)).willReturn(Either.Right(bookshelf))
+            val bookshelf = Bookshelf(id = 10, publicId = "publicId", name = "Test Bookshelf", description = "desc")
+            given(bookshelfService.getBookshelfByPublicId(bookshelf.publicId)).willReturn(Either.Right(bookshelf))
 
             val responseBody =
                 mockMvc
-                    .get("/api/v1/bookshelves/10")
+                    .get("/api/v1/bookshelves/publicId")
                     .andExpect { status { isOk() } }
                     .andReturn()
                     .response
@@ -118,11 +120,13 @@ class BookshelfControllerTest(
 
         @Test
         fun `Get bookshelf by id returns 404 when bookshelf not found`() {
-            given(bookshelfService.getBookshelfById(999L)).willReturn(Either.Left(BookshelfError.NotFound(999)))
+            given(
+                bookshelfService.getBookshelfByPublicId("invalidId"),
+            ).willReturn(Either.Left(BookshelfError.NotFoundByPublicId("invalidId")))
 
             val responseBody =
                 mockMvc
-                    .get("/api/v1/bookshelves/999")
+                    .get("/api/v1/bookshelves/invalidId")
                     .andExpect { status { isNotFound() } }
                     .andReturn()
                     .response
@@ -134,7 +138,7 @@ class BookshelfControllerTest(
             assertNotNull(response.error, "Response error should not be null")
             val responseError = response.error!!
             assertEquals(
-                "Bookshelf with id 999 not found",
+                "Bookshelf with id invalidId not found",
                 responseError.message,
                 "Response error message should indicate unfound bookshelf",
             )
@@ -204,19 +208,19 @@ class BookshelfControllerTest(
     inner class GetBooksInBookshelf {
         @Test
         fun `Get books in bookshelf returns List of BookDtos when successful`() {
-            val bookshelf = Bookshelf(id = 10, name = "Test Bookshelf", description = "desc")
+            val bookshelf = Bookshelf(id = 10, publicId = "publicId", name = "Test Bookshelf", description = "desc")
             val books =
                 listOf(
                     Book(bookshelfId = 10, title = "Test book 1", author = "Test author 1"),
                     Book(bookshelfId = 10, title = "Test book 2", author = "Test author 2"),
                 )
 
-            given(bookshelfService.getBookshelfById(bookshelf.id)).willReturn(Either.Right(bookshelf))
+            given(bookshelfService.getBookshelfByPublicId(bookshelf.publicId)).willReturn(Either.Right(bookshelf))
             given(bookService.getBooksByBookshelf(bookshelf.id)).willReturn(books)
 
             val responseBody =
                 mockMvc
-                    .get("/api/v1/bookshelves/10/books")
+                    .get("/api/v1/bookshelves/publicId/books")
                     .andExpect { status { isOk() } }
                     .andReturn()
                     .response
@@ -238,11 +242,13 @@ class BookshelfControllerTest(
 
         @Test
         fun `Get books in bookshelf returns 404 when bookshelf not found`() {
-            given(bookshelfService.getBookshelfById(999L)).willReturn(Either.Left(BookshelfError.NotFound(999)))
+            given(
+                bookshelfService.getBookshelfByPublicId("invalidId"),
+            ).willReturn(Either.Left(BookshelfError.NotFoundByPublicId("invalidId")))
 
             val responseBody =
                 mockMvc
-                    .get("/api/v1/bookshelves/999/books")
+                    .get("/api/v1/bookshelves/invalidId/books")
                     .andExpect { status { isNotFound() } }
                     .andReturn()
                     .response
@@ -254,7 +260,7 @@ class BookshelfControllerTest(
             assertNotNull(response.error, "Response error should not be null")
             val responseError = response.error!!
             assertEquals(
-                "Bookshelf with id 999 not found",
+                "Bookshelf with id invalidId not found",
                 responseError.message,
                 "Response error message should indicate unfound bookshelf",
             )
@@ -394,16 +400,16 @@ class BookshelfControllerTest(
     inner class CreateBook {
         @Test
         fun `Post book returns BookDto when successful`() {
-            val bookshelf = Bookshelf(id = 10, name = "Test bookshelf", editToken = "testEditToken123")
+            val bookshelf = Bookshelf(id = 10, publicId = "publicId", name = "Test bookshelf", editToken = "testEditToken123")
             val dto = CreateBookDto(title = "New book", author = "Test author")
             val savedBook = Book(id = 10, bookshelfId = bookshelf.id, title = dto.title, author = dto.author)
 
-            given(bookshelfService.getBookshelfById(bookshelf.id)).willReturn(Either.Right(bookshelf))
+            given(bookshelfService.getBookshelfByPublicId(bookshelf.publicId)).willReturn(Either.Right(bookshelf))
             given(bookService.saveBook(any())).willReturn(savedBook)
 
             val responseBody =
                 mockMvc
-                    .post("/api/v1/bookshelves/10/books") {
+                    .post("/api/v1/bookshelves/publicId/books") {
                         contentType = MediaType.APPLICATION_JSON
                         header(X_BOOKSHELF_TOKEN, "testEditToken123")
                         content = objectMapper.writeValueAsString(dto)
@@ -424,11 +430,13 @@ class BookshelfControllerTest(
         @Test
         fun `Post book returns 404 when bookshelf not found`() {
             val dto = CreateBookDto(title = "New book", author = "Test author")
-            given(bookshelfService.getBookshelfById(999L)).willReturn(Either.Left(BookshelfError.NotFound(999)))
+            given(
+                bookshelfService.getBookshelfByPublicId("invalidId"),
+            ).willReturn(Either.Left(BookshelfError.NotFoundByPublicId("invalidId")))
 
             val responseBody =
                 mockMvc
-                    .post("/api/v1/bookshelves/999/books") {
+                    .post("/api/v1/bookshelves/invalidId/books") {
                         contentType = MediaType.APPLICATION_JSON
                         header(X_BOOKSHELF_TOKEN, "testEditToken123")
                         content = objectMapper.writeValueAsString(dto)
@@ -443,7 +451,7 @@ class BookshelfControllerTest(
             assertNotNull(response.error, "Response error should not be null")
             val responseError = response.error!!
             assertEquals(
-                "Bookshelf with id 999 not found",
+                "Bookshelf with id invalidId not found",
                 responseError.message,
                 "Response error message should indicate unfound bookshelf",
             )
@@ -487,13 +495,13 @@ class BookshelfControllerTest(
 
         @Test
         fun `Post book returns FORBIDDEN when bookshelf edit token does not match`() {
-            val bookshelf = Bookshelf(id = 10, name = "Test bookshelf", editToken = "testEditToken123")
+            val bookshelf = Bookshelf(id = 10, publicId = "publicId", name = "Test bookshelf", editToken = "testEditToken123")
             val dto = CreateBookDto(title = "New book", author = "Test author")
-            given(bookshelfService.getBookshelfById(bookshelf.id)).willReturn(Either.Right(bookshelf))
+            given(bookshelfService.getBookshelfByPublicId(bookshelf.publicId)).willReturn(Either.Right(bookshelf))
 
             val responseBody =
                 mockMvc
-                    .post("/api/v1/bookshelves/10/books") {
+                    .post("/api/v1/bookshelves/publicId/books") {
                         contentType = MediaType.APPLICATION_JSON
                         header(X_BOOKSHELF_TOKEN, "notValidToken")
                         content = objectMapper.writeValueAsString(dto)
@@ -521,16 +529,16 @@ class BookshelfControllerTest(
     inner class UpdateBookshelf {
         @Test
         fun `Put bookshelf returns BookshelfDto when successful`() {
-            val bookshelf = Bookshelf(id = 10, name = "Old bookshelf", editToken = "testEditToken123")
+            val bookshelf = Bookshelf(id = 10, publicId = "publicId", name = "Old bookshelf", editToken = "testEditToken123")
             val dto = UpdateBookshelfDto(name = "Updated bookshelf", description = "Updated bookshelf")
             val updated = Bookshelf(id = bookshelf.id, name = dto.name!!, description = dto.description, editToken = bookshelf.editToken)
 
-            given(bookshelfService.getBookshelfById(bookshelf.id)).willReturn(Either.Right(bookshelf))
+            given(bookshelfService.getBookshelfByPublicId(bookshelf.publicId)).willReturn(Either.Right(bookshelf))
             given(bookshelfService.saveBookshelf(any())).willReturn(updated)
 
             val responseBody =
                 mockMvc
-                    .put("/api/v1/bookshelves/10") {
+                    .put("/api/v1/bookshelves/publicId") {
                         contentType = MediaType.APPLICATION_JSON
                         header(X_BOOKSHELF_TOKEN, "testEditToken123")
                         content = objectMapper.writeValueAsString(dto)
@@ -551,11 +559,13 @@ class BookshelfControllerTest(
         @Test
         fun `Put bookshelf returns 404 when bookshelf not found`() {
             val dto = UpdateBookshelfDto(name = "Updated bookshelf", description = "Updated bookshelf")
-            given(bookshelfService.getBookshelfById(999L)).willReturn(Either.Left(BookshelfError.NotFound(999)))
+            given(
+                bookshelfService.getBookshelfByPublicId("invalidId"),
+            ).willReturn(Either.Left(BookshelfError.NotFoundByPublicId("invalidId")))
 
             val responseBody =
                 mockMvc
-                    .put("/api/v1/bookshelves/999") {
+                    .put("/api/v1/bookshelves/invalidId") {
                         contentType = MediaType.APPLICATION_JSON
                         header(X_BOOKSHELF_TOKEN, "testEditToken123")
                         content = objectMapper.writeValueAsString(dto)
@@ -570,7 +580,7 @@ class BookshelfControllerTest(
             assertNotNull(response.error, "Response error should not be null")
             val responseError = response.error!!
             assertEquals(
-                "Bookshelf with id 999 not found",
+                "Bookshelf with id invalidId not found",
                 responseError.message,
                 "Response error message should indicate unfound bookshelf",
             )
@@ -580,14 +590,14 @@ class BookshelfControllerTest(
 
         @Test
         fun `Put bookshelf returns 400 Bad Request when name is too long`() {
-            val bookshelf = Bookshelf(id = 1, name = "Test bookshelf", editToken = "testEditToken123")
+            val bookshelf = Bookshelf(id = 1, publicId = "publicId", name = "Test bookshelf", editToken = "testEditToken123")
             val invalidDto = UpdateBookshelfDto(name = "x".repeat(300), description = null)
 
-            given(bookshelfService.getBookshelfById(bookshelf.id)).willReturn(Either.Right(bookshelf))
+            given(bookshelfService.getBookshelfByPublicId(bookshelf.publicId)).willReturn(Either.Right(bookshelf))
 
             val responseBody =
                 mockMvc
-                    .put("/api/v1/bookshelves/1") {
+                    .put("/api/v1/bookshelves/publicId") {
                         header(X_BOOKSHELF_TOKEN, "testEditToken123")
                         contentType = MediaType.APPLICATION_JSON
                         content = objectMapper.writeValueAsString(invalidDto)
@@ -617,13 +627,13 @@ class BookshelfControllerTest(
 
         @Test
         fun `Put bookshelf returns FORBIDDEN when bookshelf edit token does not match`() {
-            val bookshelf = Bookshelf(id = 10, name = "Test bookshelf", editToken = "testEditToken123")
+            val bookshelf = Bookshelf(id = 10, publicId = "publicId", name = "Test bookshelf", editToken = "testEditToken123")
             val dto = UpdateBookshelfDto(name = "Updated bookshelf", description = "Updated desc")
-            given(bookshelfService.getBookshelfById(bookshelf.id)).willReturn(Either.Right(bookshelf))
+            given(bookshelfService.getBookshelfByPublicId(bookshelf.publicId)).willReturn(Either.Right(bookshelf))
 
             val responseBody =
                 mockMvc
-                    .put("/api/v1/bookshelves/10") {
+                    .put("/api/v1/bookshelves/publicId") {
                         contentType = MediaType.APPLICATION_JSON
                         header(X_BOOKSHELF_TOKEN, "notValidToken")
                         content = objectMapper.writeValueAsString(dto)
@@ -651,18 +661,18 @@ class BookshelfControllerTest(
     inner class UpdateBook {
         @Test
         fun `Put book returns BookDto when successful`() {
-            val bookshelf = Bookshelf(id = 10, name = "Bookshelf", editToken = "testEditToken123")
+            val bookshelf = Bookshelf(id = 10, publicId = "publicId", name = "Bookshelf", editToken = "testEditToken123")
             val book = Book(bookshelfId = 10, id = 10, title = "Old title", author = "Old author")
             val dto = UpdateBookDto(title = "Updated title", author = "Updated author")
             val updated = Book(bookshelfId = book.id, title = dto.title!!, author = dto.author!!)
 
-            given(bookshelfService.getBookshelfById(bookshelf.id)).willReturn(Either.Right(bookshelf))
+            given(bookshelfService.getBookshelfByPublicId(bookshelf.publicId)).willReturn(Either.Right(bookshelf))
             given(bookService.getBookById(book.id)).willReturn(Either.Right(book))
             given(bookService.updateBook(eq(book.id), any())).willReturn(Either.Right(updated))
 
             val responseBody =
                 mockMvc
-                    .put("/api/v1/bookshelves/10/books/10") {
+                    .put("/api/v1/bookshelves/publicId/books/10") {
                         contentType = MediaType.APPLICATION_JSON
                         header(X_BOOKSHELF_TOKEN, "testEditToken123")
                         content = objectMapper.writeValueAsString(dto)
@@ -684,11 +694,13 @@ class BookshelfControllerTest(
         fun `Put book returns 404 when bookshelf not found`() {
             val dto = UpdateBookDto(title = "Updated title", author = "Updated author")
 
-            given(bookshelfService.getBookshelfById(999L)).willReturn(Either.Left(BookshelfError.NotFound(999)))
+            given(
+                bookshelfService.getBookshelfByPublicId("invalidId"),
+            ).willReturn(Either.Left(BookshelfError.NotFoundByPublicId("invalidId")))
 
             val responseBody =
                 mockMvc
-                    .put("/api/v1/bookshelves/999/books/999") {
+                    .put("/api/v1/bookshelves/invalidId/books/999") {
                         contentType = MediaType.APPLICATION_JSON
                         header(X_BOOKSHELF_TOKEN, "testEditToken123")
                         content = objectMapper.writeValueAsString(dto)
@@ -703,7 +715,7 @@ class BookshelfControllerTest(
             assertNotNull(response.error, "Response error should not be null")
             val responseError = response.error!!
             assertEquals(
-                "Bookshelf with id 999 not found",
+                "Bookshelf with id invalidId not found",
                 responseError.message,
                 "Response error message should indicate unfound bookshelf",
             )
@@ -713,15 +725,15 @@ class BookshelfControllerTest(
 
         @Test
         fun `Put book returns 404 when book in bookshelf not found`() {
-            val bookshelf = Bookshelf(id = 10, name = "Bookshelf", editToken = "testEditToken123")
+            val bookshelf = Bookshelf(id = 10, publicId = "publicId", name = "Bookshelf", editToken = "testEditToken123")
             val dto = UpdateBookDto(title = "Updated title", author = "Updated author")
 
-            given(bookshelfService.getBookshelfById(bookshelf.id)).willReturn(Either.Right(bookshelf))
+            given(bookshelfService.getBookshelfByPublicId(bookshelf.publicId)).willReturn(Either.Right(bookshelf))
             given(bookService.getBookById(999L)).willReturn(Either.Left(BookError.NotFound(999)))
 
             val responseBody =
                 mockMvc
-                    .put("/api/v1/bookshelves/10/books/999") {
+                    .put("/api/v1/bookshelves/publicId/books/999") {
                         contentType = MediaType.APPLICATION_JSON
                         header(X_BOOKSHELF_TOKEN, "testEditToken123")
                         content = objectMapper.writeValueAsString(dto)
@@ -736,7 +748,7 @@ class BookshelfControllerTest(
             assertNotNull(response.error, "Response error should not be null")
             val responseError = response.error!!
             assertEquals(
-                "Book with id 999 not found in bookshelf 10",
+                "Book with id 999 not found in bookshelf publicId",
                 responseError.message,
                 "Response error message should indicate unfound book",
             )
@@ -746,14 +758,14 @@ class BookshelfControllerTest(
 
         @Test
         fun `Put book returns 400 Bad Request when author name too long`() {
-            val bookshelf = Bookshelf(id = 10, name = "Test bookshelf", editToken = "testEditToken123")
+            val bookshelf = Bookshelf(id = 10, publicId = "publicId", name = "Test bookshelf", editToken = "testEditToken123")
             val invalidDto = UpdateBookDto(title = "Test book", author = "a".repeat(300))
 
-            given(bookshelfService.getBookshelfById(10L)).willReturn(Either.Right(bookshelf))
+            given(bookshelfService.getBookshelfByPublicId(bookshelf.publicId)).willReturn(Either.Right(bookshelf))
 
             val responseBody =
                 mockMvc
-                    .put("/api/v1/bookshelves/10/books/5") {
+                    .put("/api/v1/bookshelves/publicId/books/5") {
                         header(X_BOOKSHELF_TOKEN, "tkn")
                         contentType = MediaType.APPLICATION_JSON
                         content = objectMapper.writeValueAsString(invalidDto)
@@ -783,13 +795,13 @@ class BookshelfControllerTest(
 
         @Test
         fun `Put book returns FORBIDDEN when bookshelf edit token does not match`() {
-            val bookshelf = Bookshelf(id = 10, name = "Test bookshelf", editToken = "testEditToken123")
+            val bookshelf = Bookshelf(id = 10, publicId = "publicId", name = "Test bookshelf", editToken = "testEditToken123")
             val dto = UpdateBookDto(title = "Updated title", author = "Updated author")
-            given(bookshelfService.getBookshelfById(bookshelf.id)).willReturn(Either.Right(bookshelf))
+            given(bookshelfService.getBookshelfByPublicId(bookshelf.publicId)).willReturn(Either.Right(bookshelf))
 
             val responseBody =
                 mockMvc
-                    .put("/api/v1/bookshelves/10/books/10") {
+                    .put("/api/v1/bookshelves/publicId/books/10") {
                         contentType = MediaType.APPLICATION_JSON
                         header(X_BOOKSHELF_TOKEN, "notValidToken")
                         content = objectMapper.writeValueAsString(dto)
@@ -817,19 +829,19 @@ class BookshelfControllerTest(
     inner class DeleteBookshelf {
         @Test
         fun `Delete bookshelf returns DeleteBookshelfResult when successful`() {
-            val bookshelf = Bookshelf(id = 10, name = "Test bookshelf", editToken = "testEditToken123")
+            val bookshelf = Bookshelf(id = 10, publicId = "publicId", name = "Test bookshelf", editToken = "testEditToken123")
             val books =
                 listOf(
                     Book(bookshelfId = 10, id = 10, title = "Test title 1", author = "Test author 1"),
                     Book(bookshelfId = 10, id = 11, title = "Test title 2", author = "Test author 2"),
                 )
             val deleted = DeleteBookshelfResult(bookshelf.id, books.size.toLong())
-            given(bookshelfService.getBookshelfById(bookshelf.id)).willReturn(Either.Right(bookshelf))
-            given(bookshelfService.deleteBookshelf(bookshelf.id)).willReturn(Either.Right(deleted.deletedBooks))
+            given(bookshelfService.getBookshelfByPublicId(bookshelf.publicId)).willReturn(Either.Right(bookshelf))
+            given(bookshelfService.deleteBookshelf(bookshelf.publicId)).willReturn(Either.Right(deleted.deletedBooksCount))
 
             val responseBody =
                 mockMvc
-                    .delete("/api/v1/bookshelves/10") {
+                    .delete("/api/v1/bookshelves/publicId") {
                         header(X_BOOKSHELF_TOKEN, "testEditToken123")
                     }.andExpect { status { isOk() } }
                     .andReturn()
@@ -847,11 +859,13 @@ class BookshelfControllerTest(
 
         @Test
         fun `Delete bookshelf returns 404 when bookshelf not found`() {
-            given(bookshelfService.getBookshelfById(999L)).willReturn(Either.Left(BookshelfError.NotFound(999)))
+            given(
+                bookshelfService.getBookshelfByPublicId("invalidId"),
+            ).willReturn(Either.Left(BookshelfError.NotFoundByPublicId("invalidId")))
 
             val responseBody =
                 mockMvc
-                    .delete("/api/v1/bookshelves/999") {
+                    .delete("/api/v1/bookshelves/invalidId") {
                         header(X_BOOKSHELF_TOKEN, "testEditToken123")
                     }.andExpect { status { isNotFound() } }
                     .andReturn()
@@ -864,7 +878,7 @@ class BookshelfControllerTest(
             assertNotNull(response.error, "Response error should not be null")
             val responseError = response.error!!
             assertEquals(
-                "Bookshelf with id 999 not found",
+                "Bookshelf with id invalidId not found",
                 responseError.message,
                 "Response error message should indicate unfound bookshelf",
             )
@@ -874,12 +888,12 @@ class BookshelfControllerTest(
 
         @Test
         fun `Delete bookshelf returns FORBIDDEN when bookshelf edit token does not match`() {
-            val bookshelf = Bookshelf(id = 10, name = "Test bookshelf", editToken = "testEditToken123")
-            given(bookshelfService.getBookshelfById(bookshelf.id)).willReturn(Either.Right(bookshelf))
+            val bookshelf = Bookshelf(id = 10, publicId = "publicId", name = "Test bookshelf", editToken = "testEditToken123")
+            given(bookshelfService.getBookshelfByPublicId(bookshelf.publicId)).willReturn(Either.Right(bookshelf))
 
             val responseBody =
                 mockMvc
-                    .delete("/api/v1/bookshelves/10") {
+                    .delete("/api/v1/bookshelves/publicId") {
                         header(X_BOOKSHELF_TOKEN, "notValidToken")
                     }.andExpect { status { isForbidden() } }
                     .andReturn()
@@ -904,24 +918,24 @@ class BookshelfControllerTest(
     @Nested
     inner class DeleteBook {
         @Test
-        fun `Delete book returns book delete count when successful`() {
-            val bookshelf = Bookshelf(id = 10, name = "Test bookshelf", editToken = "testEditToken123")
+        fun `Delete book returns id of the deleted book when successful`() {
+            val bookshelf = Bookshelf(id = 10, publicId = "publicId", name = "Test bookshelf", editToken = "testEditToken123")
             val book = Book(bookshelfId = 10, id = 10, title = "Test title", author = "Test author")
-            given(bookshelfService.getBookshelfById(bookshelf.id)).willReturn(Either.Right(bookshelf))
+            given(bookshelfService.getBookshelfByPublicId(bookshelf.publicId)).willReturn(Either.Right(bookshelf))
             given(bookService.getBookById(book.id)).willReturn(Either.Right(book))
-            given(bookService.deleteBook(book.id)).willReturn(Either.Right(Unit))
+            given(bookService.deleteBook(book.id)).willReturn(Either.Right(book.id))
 
             val responseBody =
                 mockMvc
-                    .delete("/api/v1/bookshelves/10/books/10") {
+                    .delete("/api/v1/bookshelves/publicId/books/10") {
                         header(X_BOOKSHELF_TOKEN, "testEditToken123")
                     }.andExpect { status { isOk() } }
                     .andReturn()
                     .response
                     .contentAsString
 
-            val typeRef = object : TypeReference<ApiResponse<DeleteBookshelfResult>>() {}
-            val response: ApiResponse<DeleteBookshelfResult> = objectMapper.readValue(responseBody, typeRef)
+            val typeRef = object : TypeReference<ApiResponse<Long>>() {}
+            val response: ApiResponse<Long> = objectMapper.readValue(responseBody, typeRef)
 
             assertNotNull(response.data, "Response data should not be null")
             assertNull(response.error, "Response error should be null for successful response")
@@ -929,11 +943,13 @@ class BookshelfControllerTest(
 
         @Test
         fun `Delete book returns 404 when bookshelf not found`() {
-            given(bookshelfService.getBookshelfById(999L)).willReturn(Either.Left(BookshelfError.NotFound(999)))
+            given(
+                bookshelfService.getBookshelfByPublicId("invalidId"),
+            ).willReturn(Either.Left(BookshelfError.NotFoundByPublicId("invalidId")))
 
             val responseBody =
                 mockMvc
-                    .delete("/api/v1/bookshelves/999/books/10") {
+                    .delete("/api/v1/bookshelves/invalidId/books/10") {
                         header(X_BOOKSHELF_TOKEN, "testEditToken123")
                     }.andExpect { status { isNotFound() } }
                     .andReturn()
@@ -946,7 +962,7 @@ class BookshelfControllerTest(
             assertNotNull(response.error, "Response error should not be null")
             val responseError = response.error!!
             assertEquals(
-                "Bookshelf with id 999 not found",
+                "Bookshelf with id invalidId not found",
                 responseError.message,
                 "Response error message should indicate unfound bookshelf",
             )
@@ -956,13 +972,13 @@ class BookshelfControllerTest(
 
         @Test
         fun `Delete book returns 404 when book in bookshelf not found`() {
-            val bookshelf = Bookshelf(id = 10, name = "Test bookshelf", editToken = "testEditToken123")
-            given(bookshelfService.getBookshelfById(bookshelf.id)).willReturn(Either.Right(bookshelf))
-            given(bookService.getBookById(999L)).willReturn(Either.Left(BookError.NotFound(999)))
+            val bookshelf = Bookshelf(id = 10, publicId = "publicId", name = "Test bookshelf", editToken = "testEditToken123")
+            given(bookshelfService.getBookshelfByPublicId(bookshelf.publicId)).willReturn(Either.Right(bookshelf))
+            given(bookService.deleteBook(999L)).willReturn(Either.Left(BookError.NotFound(999)))
 
             val responseBody =
                 mockMvc
-                    .delete("/api/v1/bookshelves/10/books/999") {
+                    .delete("/api/v1/bookshelves/publicId/books/999") {
                         header(X_BOOKSHELF_TOKEN, "testEditToken123")
                     }.andExpect { status { isNotFound() } }
                     .andReturn()
@@ -975,7 +991,7 @@ class BookshelfControllerTest(
             assertNotNull(response.error, "Response error should not be null")
             val responseError = response.error!!
             assertEquals(
-                "Book with id 999 not found in bookshelf 10",
+                "Book with id 999 not found in bookshelf publicId",
                 responseError.message,
                 "Response error message should indicate unfound book",
             )
@@ -985,12 +1001,12 @@ class BookshelfControllerTest(
 
         @Test
         fun `Delete book returns FORBIDDEN when bookshelf edit token does not match`() {
-            val bookshelf = Bookshelf(id = 10, name = "Test bookshelf", editToken = "testEditToken123")
-            given(bookshelfService.getBookshelfById(bookshelf.id)).willReturn(Either.Right(bookshelf))
+            val bookshelf = Bookshelf(id = 10, publicId = "publicId", name = "Test bookshelf", editToken = "testEditToken123")
+            given(bookshelfService.getBookshelfByPublicId(bookshelf.publicId)).willReturn(Either.Right(bookshelf))
 
             val responseBody =
                 mockMvc
-                    .delete("/api/v1/bookshelves/10/books/10") {
+                    .delete("/api/v1/bookshelves/publicId/books/10") {
                         header(X_BOOKSHELF_TOKEN, "notValidToken")
                     }.andExpect { status { isForbidden() } }
                     .andReturn()

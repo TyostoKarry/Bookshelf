@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
-import { getBookshelfById, getBooksInBookshelfById } from "../api/bookshelves";
+import {
+  getBookshelfByPublicId,
+  getBooksInBookshelfByPublicId,
+} from "../api/bookshelves";
 import { type Book } from "../types/book";
 import { type Bookshelf } from "../types/bookshelf";
 
-export const usePublicBookshelf = (id: string) => {
+export const usePublicBookshelf = (publicId: string) => {
   const [bookshelf, setBookshelf] = useState<Bookshelf | null>(null);
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
@@ -14,12 +17,12 @@ export const usePublicBookshelf = (id: string) => {
       setLoading(true);
       setError(null);
       try {
-        const fetchedBookshelf = await getBookshelfById(id);
+        const fetchedBookshelf = await getBookshelfByPublicId(publicId);
         if (!fetchedBookshelf) {
           throw new Error("Bookshelf not found");
         }
         setBookshelf(fetchedBookshelf);
-        const fetchedBooks = await getBooksInBookshelfById(id);
+        const fetchedBooks = await getBooksInBookshelfByPublicId(publicId);
         setBooks(fetchedBooks || []);
       } catch (err) {
         setError((err as Error).message);
@@ -28,7 +31,7 @@ export const usePublicBookshelf = (id: string) => {
     };
 
     fetchBookshelf();
-  }, [id]);
+  }, [publicId]);
 
   return { bookshelf, books, loading, error };
 };

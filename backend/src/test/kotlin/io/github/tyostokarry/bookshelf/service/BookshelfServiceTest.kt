@@ -1,14 +1,13 @@
 package io.github.tyostokarry.bookshelf.service
 
 import io.github.tyostokarry.bookshelf.entity.Bookshelf
+import io.github.tyostokarry.bookshelf.error.BookshelfError
 import io.github.tyostokarry.bookshelf.repository.BookshelfRepository
-import io.github.tyostokarry.bookshelf.service.error.BookshelfError
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.given
 import org.mockito.kotlin.mock
-import java.util.Optional
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -40,9 +39,9 @@ class BookshelfServiceTest {
         @Test
         fun `getBookshelfById returns Right when found`() {
             val bookshelf = Bookshelf(id = 1L, name = "Test bookshelf")
-            given(bookshelfRepository.findById(bookshelf.id)).willReturn(Optional.of(bookshelf))
+            given(bookshelfRepository.findByPublicId(bookshelf.publicId)).willReturn(bookshelf)
 
-            val result = bookshelfService.getBookshelfById(bookshelf.id)
+            val result = bookshelfService.getBookshelfByPublicId(bookshelf.publicId)
 
             assertTrue(result.isRight(), "Expected Right result when found")
             assertEquals(bookshelf, result.getOrNull(), "Returned bookshelf should match")
@@ -50,12 +49,12 @@ class BookshelfServiceTest {
 
         @Test
         fun `getBookshelfById returns Left when not found`() {
-            given(bookshelfRepository.findById(999L)).willReturn(Optional.empty())
+            given(bookshelfRepository.findByPublicId("invalidId")).willReturn(null)
 
-            val result = bookshelfService.getBookshelfById(999L)
+            val result = bookshelfService.getBookshelfByPublicId("invalidId")
 
             assertTrue(result.isLeft(), "Expected Left result when not found")
-            assertEquals(BookshelfError.NotFound(999L), result.leftOrNull(), "Expected bookshelf NotFound error variant")
+            assertEquals(BookshelfError.NotFoundByPublicId("invalidId"), result.leftOrNull(), "Expected bookshelf NotFound error variant")
         }
     }
 
@@ -105,11 +104,11 @@ class BookshelfServiceTest {
     inner class DeleteBookshelf {
         @Test
         fun `deleteBookshelf deletes shelf and its books when found`() {
-            val bookshelfId = 10L
-            given(bookshelfRepository.existsById(bookshelfId)).willReturn(true)
-            given(bookService.deleteBooksInBookshelf(bookshelfId)).willReturn(5L)
+            val bookshelf = Bookshelf(id = 10L, publicId = "publicId", name = "My Shelf")
+            given(bookshelfRepository.findByPublicId(bookshelf.publicId)).willReturn(bookshelf)
+            given(bookService.deleteBooksInBookshelf(bookshelf.id)).willReturn(5L)
 
-            val result = bookshelfService.deleteBookshelf(bookshelfId)
+            val result = bookshelfService.deleteBookshelf(bookshelf.publicId)
 
             assertTrue(result.isRight(), "Expected Right result when successful")
             assertEquals(5L, result.getOrNull(), "Expected result to reflect deleted book count")
@@ -117,13 +116,17 @@ class BookshelfServiceTest {
 
         @Test
         fun `deleteBookshelf returns Left when shelf not found`() {
-            val nonExistentId = 999L
-            given(bookshelfRepository.existsById(nonExistentId)).willReturn(false)
+            val nonExistentPublicId = "invalidPublicId"
+            given(bookshelfRepository.findByPublicId(nonExistentPublicId)).willReturn(null)
 
-            val result = bookshelfService.deleteBookshelf(nonExistentId)
+            val result = bookshelfService.deleteBookshelf(nonExistentPublicId)
 
             assertTrue(result.isLeft(), "Expected Left when bookshelf does not exist")
-            assertEquals(BookshelfError.NotFound(nonExistentId), result.leftOrNull(), "Expected bookshelf NotFound error variant")
+            assertEquals(
+                BookshelfError.NotFoundByPublicId(nonExistentPublicId),
+                result.leftOrNull(),
+                "Expected bookshelf NotFoundByPublicId error variant",
+            )
         }
     }
 }

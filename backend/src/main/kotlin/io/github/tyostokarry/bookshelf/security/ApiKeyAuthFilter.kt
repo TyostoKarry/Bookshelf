@@ -24,6 +24,14 @@ class ApiKeyAuthFilter(
         response: HttpServletResponse,
         filterChain: FilterChain,
     ) {
+        val path = request.requestURI
+
+        // Skip endpoints that don't need auth
+        if (path.startsWith("/api/v1/health")) {
+            filterChain.doFilter(request, response)
+            return
+        }
+
         val requestKey = request.getHeader("X-API-KEY")
         val validKey = appProperties.apiKey
 

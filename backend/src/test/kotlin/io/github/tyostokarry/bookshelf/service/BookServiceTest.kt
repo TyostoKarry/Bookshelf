@@ -1,8 +1,8 @@
 package io.github.tyostokarry.bookshelf.service
 
 import io.github.tyostokarry.bookshelf.entity.Book
+import io.github.tyostokarry.bookshelf.error.BookError
 import io.github.tyostokarry.bookshelf.repository.BookRepository
-import io.github.tyostokarry.bookshelf.service.error.BookError
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any

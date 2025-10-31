@@ -22,6 +22,8 @@ class SecurityConfig(
             .cors { }
             .authorizeHttpRequests { auth ->
                 auth
+                    .requestMatchers("/api/v1/health", "/api/v1/health/**")
+                    .permitAll()
                     .requestMatchers("/api/v1/**")
                     .authenticated()
                     .anyRequest()

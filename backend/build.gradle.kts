@@ -31,6 +31,7 @@ dependencies {
     implementation("io.arrow-kt:arrow-core:2.1.2")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("com.aventrix.jnanoid:jnanoid:2.0.0")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
@@ -52,4 +53,9 @@ allOpen {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    finalizedBy("cleanTestDb")
+}
+
+tasks.register<Delete>("cleanTestDb") {
+    delete("bookshelf-test.db")
 }

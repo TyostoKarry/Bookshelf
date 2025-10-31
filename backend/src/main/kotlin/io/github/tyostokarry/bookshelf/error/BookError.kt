@@ -1,4 +1,4 @@
-package io.github.tyostokarry.bookshelf.service.error
+package io.github.tyostokarry.bookshelf.error
 
 sealed class BookError {
     data class NotFound(

@@ -43,16 +43,16 @@ class BookshelfController(
     fun getAllBookshelves(): ResponseEntity<ApiResponse<List<BookshelfDto>>> =
         ResponseEntity.ok(ApiResponse(data = bookshelfService.getAllBookshelves().map { it.toBookshelfDto() }))
 
-    @GetMapping("/{id}")
+    @GetMapping("/{publicId}")
     fun getBookshelf(
-        @PathVariable id: Long,
+        @PathVariable publicId: String,
     ): ResponseEntity<ApiResponse<BookshelfDto>> =
-        when (val result = bookshelfService.getBookshelfById(id)) {
+        when (val result = bookshelfService.getBookshelfByPublicId(publicId)) {
             is Either.Right -> ResponseEntity.ok(ApiResponse(data = result.value.toBookshelfDto()))
             is Either.Left ->
                 ResponseEntity
                     .status(404)
-                    .body(ApiResponse(error = ErrorResponse("Bookshelf with id $id not found", ErrorCodes.BOOKSHELF_NOT_FOUND)))
+                    .body(ApiResponse(error = ErrorResponse("Bookshelf with id $publicId not found", ErrorCodes.BOOKSHELF_NOT_FOUND)))
         }
 
     @GetMapping("/token/{token}")
@@ -68,11 +68,11 @@ class BookshelfController(
                     ).body(ApiResponse(error = ErrorResponse("Bookshelf with token $token not found", ErrorCodes.BOOKSHELF_NOT_FOUND)))
         }
 
-    @GetMapping("/{id}/books")
+    @GetMapping("/{publicId}/books")
     fun getBooksInBookshelf(
-        @PathVariable id: Long,
+        @PathVariable publicId: String,
     ): ResponseEntity<ApiResponse<List<BookDto>>> =
-        when (val bookshelfExists = bookshelfService.getBookshelfById(id)) {
+        when (val bookshelfExists = bookshelfService.getBookshelfByPublicId(publicId)) {
             is Either.Right -> {
                 val books = bookService.getBooksByBookshelf(bookshelfExists.value.id)
                 ResponseEntity.ok(ApiResponse(data = books.map { it.toDto() }))
@@ -84,7 +84,7 @@ class BookshelfController(
                         ApiResponse(
                             error =
                                 ErrorResponse(
-                                    "Bookshelf with id $id not found",
+                                    "Bookshelf with id $publicId not found",
                                     ErrorCodes.BOOKSHELF_NOT_FOUND,
                                 ),
                         ),
@@ -122,13 +122,13 @@ class BookshelfController(
         return ResponseEntity.ok(ApiResponse(data = newBookshelf.toBookshelfWithTokenDto()))
     }
 
-    @PostMapping("/{id}/books")
+    @PostMapping("/{publicId}/books")
     fun createBook(
-        @PathVariable id: Long,
+        @PathVariable publicId: String,
         @Valid @RequestBody dto: CreateBookDto,
         @RequestHeader(X_BOOKSHELF_TOKEN, required = false) token: String?,
     ): ResponseEntity<ApiResponse<BookDto>> {
-        return when (val bookshelf = bookshelfService.getBookshelfById(id)) {
+        return when (val bookshelf = bookshelfService.getBookshelfByPublicId(publicId)) {
             is Either.Right -> {
                 if (token == null || bookshelf.value.editToken != token) {
                     return ResponseEntity
@@ -154,7 +154,7 @@ class BookshelfController(
                         ApiResponse(
                             error =
                                 ErrorResponse(
-                                    "Bookshelf with id $id not found",
+                                    "Bookshelf with id $publicId not found",
                                     ErrorCodes.BOOKSHELF_NOT_FOUND,
                                 ),
                         ),
@@ -162,13 +162,13 @@ class BookshelfController(
         }
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{publicId}")
     fun updateBookshelf(
-        @PathVariable id: Long,
+        @PathVariable publicId: String,
         @Valid @RequestBody dto: UpdateBookshelfDto,
         @RequestHeader(X_BOOKSHELF_TOKEN, required = false) token: String?,
     ): ResponseEntity<ApiResponse<BookshelfDto>> {
-        return when (val existingBookshelf = bookshelfService.getBookshelfById(id)) {
+        return when (val existingBookshelf = bookshelfService.getBookshelfByPublicId(publicId)) {
             is Either.Right -> {
                 if (token == null || existingBookshelf.value.editToken != token) {
                     return ResponseEntity
@@ -195,7 +195,7 @@ class BookshelfController(
                         ApiResponse(
                             error =
                                 ErrorResponse(
-                                    "Bookshelf with id $id not found",
+                                    "Bookshelf with id $publicId not found",
                                     ErrorCodes.BOOKSHELF_NOT_FOUND,
                                 ),
                         ),
@@ -203,14 +203,14 @@ class BookshelfController(
         }
     }
 
-    @PutMapping("/{id}/books/{bookId}")
+    @PutMapping("/{publicId}/books/{bookId}")
     fun updateBook(
-        @PathVariable id: Long,
+        @PathVariable publicId: String,
         @PathVariable bookId: Long,
         @Valid @RequestBody dto: UpdateBookDto,
         @RequestHeader(X_BOOKSHELF_TOKEN, required = false) token: String?,
     ): ResponseEntity<ApiResponse<BookDto>> {
-        return when (val bookshelf = bookshelfService.getBookshelfById(id)) {
+        return when (val bookshelf = bookshelfService.getBookshelfByPublicId(publicId)) {
             is Either.Right -> {
                 if (token == null || bookshelf.value.editToken != token) {
                     return ResponseEntity
@@ -238,7 +238,7 @@ class BookshelfController(
                                 ApiResponse(
                                     error =
                                         ErrorResponse(
-                                            "Book with id $bookId not found in bookshelf $id",
+                                            "Book with id $bookId not found in bookshelf $publicId",
                                             ErrorCodes.BOOK_NOT_FOUND,
                                         ),
                                 ),
@@ -251,7 +251,7 @@ class BookshelfController(
                             ApiResponse(
                                 error =
                                     ErrorResponse(
-                                        "Book with id $bookId not found in bookshelf $id",
+                                        "Book with id $bookId not found in bookshelf $publicId",
                                         ErrorCodes.BOOK_NOT_FOUND,
                                     ),
                             ),
@@ -265,7 +265,7 @@ class BookshelfController(
                         ApiResponse(
                             error =
                                 ErrorResponse(
-                                    "Bookshelf with id $id not found",
+                                    "Bookshelf with id $publicId not found",
                                     ErrorCodes.BOOKSHELF_NOT_FOUND,
                                 ),
                         ),
@@ -273,12 +273,12 @@ class BookshelfController(
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{publicId}")
     fun deleteBookshelf(
-        @PathVariable id: Long,
+        @PathVariable publicId: String,
         @RequestHeader(X_BOOKSHELF_TOKEN, required = false) token: String?,
     ): ResponseEntity<ApiResponse<DeleteBookshelfResult>> {
-        return when (val bookshelf = bookshelfService.getBookshelfById(id)) {
+        return when (val bookshelf = bookshelfService.getBookshelfByPublicId(publicId)) {
             is Either.Right -> {
                 if (token == null || bookshelf.value.editToken != token) {
                     return ResponseEntity
@@ -294,11 +294,11 @@ class BookshelfController(
                         )
                 }
 
-                val deletedBookCount = bookshelfService.deleteBookshelf(bookshelf.value.id).getOrNull()!!
+                val deletedBookCount = bookshelfService.deleteBookshelf(bookshelf.value.publicId).getOrNull()!!
                 val payload =
                     DeleteBookshelfResult(
                         deletedBookshelfId = bookshelf.value.id,
-                        deletedBooks = deletedBookCount,
+                        deletedBooksCount = deletedBookCount,
                     )
                 ResponseEntity.ok(ApiResponse(data = payload))
             }
@@ -309,7 +309,7 @@ class BookshelfController(
                         ApiResponse(
                             error =
                                 ErrorResponse(
-                                    "Bookshelf with id $id not found",
+                                    "Bookshelf with id $publicId not found",
                                     ErrorCodes.BOOKSHELF_NOT_FOUND,
                                 ),
                         ),
@@ -317,13 +317,13 @@ class BookshelfController(
         }
     }
 
-    @DeleteMapping("/{id}/books/{bookId}")
+    @DeleteMapping("/{publicId}/books/{bookId}")
     fun deleteBook(
-        @PathVariable id: Long,
+        @PathVariable publicId: String,
         @PathVariable bookId: Long,
         @RequestHeader("X-BOOKSHELF-TOKEN", required = false) token: String?,
-    ): ResponseEntity<ApiResponse<Unit>> {
-        return when (val bookshelf = bookshelfService.getBookshelfById(id)) {
+    ): ResponseEntity<ApiResponse<Long>> {
+        return when (val bookshelf = bookshelfService.getBookshelfByPublicId(publicId)) {
             is Either.Right -> {
                 if (token == null || bookshelf.value.editToken != token) {
                     return ResponseEntity
@@ -340,22 +340,20 @@ class BookshelfController(
                         )
                 }
 
-                val existingBook = bookService.getBookById(bookId)
-                if (existingBook is Either.Right && existingBook.value.bookshelfId == bookshelf.value.id) {
-                    bookService.deleteBook(bookId)
-                    ResponseEntity.ok(ApiResponse(data = Unit))
-                } else {
-                    ResponseEntity
-                        .status(404)
-                        .body(
-                            ApiResponse(
-                                error =
-                                    ErrorResponse(
-                                        "Book with id $bookId not found in bookshelf $id",
-                                        ErrorCodes.BOOK_NOT_FOUND,
-                                    ),
-                            ),
-                        )
+                when (val response = bookService.deleteBook(bookId)) {
+                    is Either.Right -> ResponseEntity.ok(ApiResponse(data = response.value))
+                    is Either.Left ->
+                        ResponseEntity
+                            .status(404)
+                            .body(
+                                ApiResponse(
+                                    error =
+                                        ErrorResponse(
+                                            "Book with id $bookId not found in bookshelf $publicId",
+                                            ErrorCodes.BOOK_NOT_FOUND,
+                                        ),
+                                ),
+                            )
                 }
             }
             is Either.Left ->
@@ -365,7 +363,7 @@ class BookshelfController(
                         ApiResponse(
                             error =
                                 ErrorResponse(
-                                    "Bookshelf with id $id not found",
+                                    "Bookshelf with id $publicId not found",
                                     ErrorCodes.BOOKSHELF_NOT_FOUND,
                                 ),
                         ),

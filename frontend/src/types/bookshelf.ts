@@ -1,7 +1,9 @@
 export interface Bookshelf {
-  id: string;
+  publicId: string;
   name: string;
   description: string | null;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface CreateBookshelfDto {
@@ -10,7 +12,7 @@ export interface CreateBookshelfDto {
 }
 
 export interface NewBookshelf {
-  id: string;
+  publicId: string;
   name: string;
   description: string | null;
   editToken: string;

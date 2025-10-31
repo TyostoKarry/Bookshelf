@@ -6,8 +6,8 @@ import { useLanguage } from "../hooks/useLanguage";
 import { usePublicBookshelf } from "../hooks/usePublicBookshelf";
 
 export const PublicBookshelf: FC = () => {
-  const { id } = useParams<{ id: string }>();
-  const { bookshelf, books, loading, error } = usePublicBookshelf(id!);
+  const { publicId } = useParams<{ publicId: string }>();
+  const { bookshelf, books, loading, error } = usePublicBookshelf(publicId!);
   const { t } = useLanguage();
   const navigate = useNavigate();
 
@@ -18,7 +18,7 @@ export const PublicBookshelf: FC = () => {
     }
   }, [error, navigate]);
 
-  if (!id) return <div>{t("common.invalidBookshelfId")}</div>;
+  if (!publicId) return <div>{t("common.invalidBookshelfPublicId")}</div>;
   if (loading) return <div>{t("common.loading")}</div>;
   if (!bookshelf) return <div>{t("common.bookshelfNotFound")}</div>;
 

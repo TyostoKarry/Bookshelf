@@ -4,7 +4,7 @@ import io.github.tyostokarry.bookshelf.entity.Bookshelf
 
 fun Bookshelf.toBookshelfDto() =
     BookshelfDto(
-        id = this.id,
+        publicId = this.publicId,
         name = this.name,
         description = this.description,
         createdAt = this.createdAt,
@@ -13,7 +13,7 @@ fun Bookshelf.toBookshelfDto() =
 
 fun Bookshelf.toBookshelfWithTokenDto() =
     BookshelfWithTokenDto(
-        id = this.id,
+        publicId = this.publicId,
         name = this.name,
         description = this.description,
         createdAt = this.createdAt,

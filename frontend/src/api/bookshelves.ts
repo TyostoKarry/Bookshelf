@@ -37,8 +37,10 @@ export async function createBookshelf(
   return json.data;
 }
 
-export async function getBookshelfById(id: string): Promise<Bookshelf | null> {
-  const response = await fetch(`${API_URL}/bookshelves/${id}`, {
+export async function getBookshelfByPublicId(
+  publicId: string,
+): Promise<Bookshelf | null> {
+  const response = await fetch(`${API_URL}/bookshelves/${publicId}`, {
     headers: {
       "X-API-KEY": API_KEY,
     },
@@ -79,10 +81,10 @@ export async function getBookshelfByToken(
   return json.data;
 }
 
-export async function getBooksInBookshelfById(
-  id: string,
+export async function getBooksInBookshelfByPublicId(
+  publicId: string,
 ): Promise<Book[] | null> {
-  const response = await fetch(`${API_URL}/bookshelves/${id}/books`, {
+  const response = await fetch(`${API_URL}/bookshelves/${publicId}/books`, {
     headers: {
       "X-API-KEY": API_KEY,
     },

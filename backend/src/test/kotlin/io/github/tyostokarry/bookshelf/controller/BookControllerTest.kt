@@ -8,14 +8,15 @@ import io.github.tyostokarry.bookshelf.controller.advice.ErrorCodes
 import io.github.tyostokarry.bookshelf.controller.dto.BookDto
 import io.github.tyostokarry.bookshelf.controller.dto.toDto
 import io.github.tyostokarry.bookshelf.entity.Book
+import io.github.tyostokarry.bookshelf.error.BookError
 import io.github.tyostokarry.bookshelf.service.BookService
-import io.github.tyostokarry.bookshelf.service.error.BookError
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.given
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
@@ -23,6 +24,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
+@ActiveProfiles("test")
 @WebMvcTest(controllers = [BookController::class])
 @AutoConfigureMockMvc(addFilters = false)
 class BookControllerTest(
