@@ -1,6 +1,6 @@
 import { type FC } from "react";
 import { CreateBookshelfModal } from "./CreateBookshelfModal";
-import { EnterIdModal } from "./EnterIdModal";
+import { EnterPublicIdModal } from "./EnterPublicIdModal";
 import { EnterTokenModal } from "./EnterTokenModal";
 import { ShowTokenModal } from "./ShowTokenModal";
 import { type ModalState } from "../../contexts/ModalContext";
@@ -23,7 +23,7 @@ export const ModalRoot: FC<ModalRootProps> = ({ modalState }) => {
     case "ENTER_TOKEN":
       return <EnterTokenModal />;
     case "ENTER_ID":
-      return <EnterIdModal />;
+      return <EnterPublicIdModal />;
     case null:
       return null;
     default:

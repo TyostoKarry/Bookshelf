@@ -2,7 +2,7 @@
   "common": {
     "appName": "Bookshelf",
     "bookshelfNotFound": "Bookshelf not found",
-    "invalidBookshelfId": "Invalid Bookshelf ID",
+    "invalidBookshelfPublicId": "Invalid Bookshelf Public ID",
     "loading": "Loading..."
   },
   "bookshelfView": {
@@ -31,11 +31,11 @@
     "descriptionOfBookshelf": "Description of your Bookshelf (optional)",
     "descriptionPlaceholder": "What’s special about this bookshelf?",
     "enterEditToken": "Enter your bookshelf token",
-    "enterIdToVisit": "Enter the ID to visit a Bookshelf",
+    "enterPublicIdToVisit": "Enter the Public ID to visit a Bookshelf",
     "nameOfBookshelf": "Name of your Bookshelf",
     "namePlaceholder": "e.g. My Favorite Reads",
     "newBookshelfCreated": "Your Bookshelf Has Been Created",
-    "pasteIdHere": "Paste the ID here",
+    "pastePublicIdHere": "Paste the Public ID here",
     "pasteTokenHere": "Paste your token here",
     "rememberToken": "Remember this token on this device",
     "saveTokenTitle": "Keep this token safe.",
@@ -46,7 +46,7 @@
     "anErrorOccurred": "An error occurred",
     "bookshelfLoadedSuccessfully": "Bookshelf loaded successfully",
     "failedToRefreshBookshelf": "Failed to refresh bookshelf",
-    "invalidBookshelfId": "Invalid bookshelf ID",
+    "invalidBookshelfPublicId": "Invalid bookshelf Public ID",
     "invalidTokenOrBookshelfNotFound": "Invalid token or bookshelf not found",
     "noTokenFound": "No token found.",
     "tokenCopied": "Token copied to clipboard",

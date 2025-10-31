@@ -19,7 +19,7 @@ const router = createBrowserRouter([
     element: <Layout />,
     children: [
       { path: "/", element: <Home /> },
-      { path: "/bookshelves/:id", element: <PublicBookshelf /> },
+      { path: "/bookshelves/:publicId", element: <PublicBookshelf /> },
       { path: "/my/bookshelf", element: <MyBookshelf /> },
       { path: "*", element: <Navigate to="/" replace /> },
     ],
