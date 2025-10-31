@@ -7,6 +7,7 @@ import jakarta.persistence.Enumerated
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import jakarta.persistence.Index
 import jakarta.persistence.PreUpdate
 import jakarta.persistence.Table
 import java.time.LocalDate
@@ -17,7 +18,7 @@ import java.time.LocalDateTime
  * Mapped to the "books" table in database.
  */
 @Entity
-@Table(name = "books")
+@Table(name = "books", indexes = [Index(name = "idx_books_bookshelf_id", columnList = "bookshelfId")])
 data class Book(
     /**
      * Auto-generated primary key identifier.

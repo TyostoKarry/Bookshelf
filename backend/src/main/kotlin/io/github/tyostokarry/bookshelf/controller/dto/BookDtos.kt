@@ -10,6 +10,9 @@ import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 import java.time.LocalDate
 
+/**
+ * Basic book info for public or regular responses.
+ */
 data class BookDto(
     val id: Long,
     val bookshelfId: Long,
@@ -34,6 +37,9 @@ data class BookDto(
     val favorite: Boolean,
 )
 
+/**
+ * Payload for creating a new book.
+ */
 data class CreateBookDto(
     @field:NotBlank(message = "Title is required")
     @field:Size(max = 255, message = "Title cannot exceed 255 characters")
@@ -68,6 +74,9 @@ data class CreateBookDto(
     val favorite: Boolean = false,
 )
 
+/**
+ * Payload for updating an existing book.
+ */
 data class UpdateBookDto(
     @field:Size(max = 255, message = "Title cannot exceed 255 characters")
     val title: String? = null,

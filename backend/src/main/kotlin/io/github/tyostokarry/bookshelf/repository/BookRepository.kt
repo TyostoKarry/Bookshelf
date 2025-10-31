@@ -20,6 +20,11 @@ interface BookRepository : JpaRepository<Book, Long> {
     /**
      * Deletes all books that belong to the given bookshelf ID.
      *
+     * This operation performs a bulk delete directly in the database within a single transaction.
+     *
+     *  If the bookshelf contains no books, no exception is thrown — the method simply
+     *  returns `0` to indicate that no rows were affected.
+     *
      * @param bookshelfId ID of the bookshelf
      * @return Number of rows deleted
      */

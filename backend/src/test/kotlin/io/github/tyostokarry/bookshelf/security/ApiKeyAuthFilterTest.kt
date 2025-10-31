@@ -5,7 +5,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.github.tyostokarry.bookshelf.config.AppProperties
 import io.github.tyostokarry.bookshelf.controller.advice.ApiResponse
 import io.github.tyostokarry.bookshelf.controller.advice.ErrorCodes
-import io.github.tyostokarry.bookshelf.service.error.BookshelfError
+import io.github.tyostokarry.bookshelf.error.BookshelfError
 import jakarta.servlet.FilterChain
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

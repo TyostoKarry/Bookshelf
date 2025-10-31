@@ -1,8 +1,8 @@
-package io.github.tyostokarry.bookshelf.service.error
+package io.github.tyostokarry.bookshelf.error
 
 sealed class BookshelfError {
-    data class NotFound(
-        val id: Long,
+    data class NotFoundByPublicId(
+        val publicId: String,
     ) : BookshelfError()
 
     data class NotFoundByToken(

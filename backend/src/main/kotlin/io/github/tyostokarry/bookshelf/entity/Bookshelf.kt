@@ -1,5 +1,6 @@
 package io.github.tyostokarry.bookshelf.entity
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
@@ -21,6 +22,11 @@ data class Bookshelf(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
+    /**
+     * Auto-generated publicly facing identifier used for bookshelf visits
+     */
+    @Column(nullable = false, unique = true, updatable = false)
+    val publicId: String = NanoIdUtils.randomNanoId(),
     /**
      * Name of the bookshelf (e.g. "My Shelf", "Summer Reads").
      */
