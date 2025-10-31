@@ -53,4 +53,9 @@ allOpen {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    finalizedBy("cleanTestDb")
+}
+
+tasks.register<Delete>("cleanTestDb") {
+    delete("bookshelf-test.db")
 }
