@@ -8,7 +8,9 @@ export const Layout: FC = () => {
   const { modalState } = useModal();
   return (
     <div className="flex flex-col h-screen">
-      <Topbar />
+      <div>
+        <Topbar />
+      </div>
       <div className="flex-grow overflow-auto">
         <Outlet />
       </div>

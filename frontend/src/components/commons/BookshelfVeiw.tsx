@@ -1,5 +1,8 @@
 import { type FC } from "react";
+import { toast } from "sonner";
+import { BookCard } from "./BookCard";
 import { Button } from "./Button";
+import CopyIcon from "../../assets/icons/copy.svg?react";
 import { useLanguage } from "../../hooks/useLanguage";
 import type { Book } from "../../types/book";
 import type { Bookshelf } from "../../types/bookshelf";
@@ -16,6 +19,17 @@ export const BookshelfView: FC<BookshelfViewProps> = ({
   books,
 }) => {
   const { t } = useLanguage();
+
+  const handleCopyPublicId = async () => {
+    try {
+      await navigator.clipboard.writeText(bookshelf.publicId);
+      toast.success(t("toast.publicIdCopied"));
+    } catch (err) {
+      console.error("Failed to copy public ID to clipboard:", err);
+      toast.error(t("toast.publicIdCopyFailed"));
+    }
+  };
+
   return (
     <div className="w-full px-10">
       <div className="max-w-3xl mx-auto py-10 px-4">
@@ -24,9 +38,19 @@ export const BookshelfView: FC<BookshelfViewProps> = ({
             <h1 className="text-3xl font-bold text-gray-900">
               {bookshelf.name}
             </h1>
-            <p className="text-sm text-gray-700 mt-1">
-              Public ID: <span className="font-mono">{bookshelf.publicId}</span>
-            </p>
+            <div className="flex flex-row">
+              <p className="text-sm text-gray-700 mt-1">
+                Public ID:{" "}
+                <span className="font-mono">{bookshelf.publicId}</span>
+              </p>
+              <button
+                onClick={handleCopyPublicId}
+                className="ml-2 p-1 rounded hover:bg-gray-200 hover:cursor-pointer active:bg-gray-300"
+                title={t("button.copyPublicIdToClipboard")}
+              >
+                <CopyIcon className="w-5 h-5" />
+              </button>
+            </div>
             <p className="text-gray-700 mt-1">{bookshelf.description}</p>
           </div>
           {canEdit && (
@@ -56,14 +80,11 @@ export const BookshelfView: FC<BookshelfViewProps> = ({
         {books.length === 0 ? (
           <p>{t("bookshelfView.noBooks")}</p>
         ) : (
-          <ul className="space-y-2">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 xl:gap-8">
             {books.map((book) => (
-              <li key={book.id} className="border-b py-2">
-                <h3 className="font-semibold">{book.title}</h3>
-                <p className="text-sm text-gray-600">{book.author}</p>
-              </li>
+              <BookCard key={book.id} book={book} canEdit={canEdit} />
             ))}
-          </ul>
+          </div>
         )}
       </div>
     </div>

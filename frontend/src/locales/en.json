@@ -5,6 +5,11 @@
     "invalidBookshelfPublicId": "Invalid Bookshelf Public ID",
     "loading": "Loading..."
   },
+  "bookCard": {
+    "placeholderQuestionMark": "?",
+    "placeholderNoCover": "No Cover",
+    "placeholderAvailable": "Available"
+  },
   "bookshelfView": {
     "books": "Books:",
     "noBooks": "No books in this bookshelf. Start adding some!"
@@ -12,13 +17,16 @@
   "button": {
     "addBook": "Add Book",
     "cancel": "Cancel",
+    "copyPublicIdToClipboard": "Copy Public ID to clipboard",
     "copyTokenToClipboard": "Copy token to clipboard",
     "create": "Create",
     "createBookshelf": "Create your own Bookshelf",
     "deleteBookshelf": "Delete Bookshelf",
     "gotIt": "Got it!",
+    "markAsFavorite": "Mark as Favorite",
     "open": "Open",
     "openMyBookshelf": "Open My Bookshelf",
+    "unmarkAsFavorite": "Unmark as Favorite",
     "visitBookshelf": "Visit Bookshelf"
   },
   "home": {
@@ -48,7 +56,12 @@
     "failedToRefreshBookshelf": "Failed to refresh bookshelf",
     "invalidBookshelfPublicId": "Invalid bookshelf Public ID",
     "invalidTokenOrBookshelfNotFound": "Invalid token or bookshelf not found",
+    "markedAsFavorite": "Marked as favorite:",
     "noTokenFound": "No token found.",
+    "publicIdCopied": "Public ID copied to clipboard",
+    "publicIdCopyFailed": "Failed to copy Public ID to clipboard",
+    "removedFromFavorites": "Removed from favorites:",
+    "toggleFavoriteFailed": "Failed to toggle favorite status",
     "tokenCopied": "Token copied to clipboard",
     "tokenCopyFailed": "Failed to copy token to clipboard",
     "tokenStored": "Your token has been stored on this device."
