@@ -1,4 +1,4 @@
-import { type FC } from "react";
+import { useState, type FC } from "react";
 import { toast } from "sonner";
 import { updateBookInBookshelf } from "../../api/bookshelves";
 import FavoriteIcon from "../../assets/icons/favorite.svg?react";
@@ -16,6 +16,7 @@ export const BookCard: FC<BookCardProps> = ({ book, canEdit }) => {
   const { t } = useLanguage();
   const { title, author, coverUrl, favorite, status, id } = book;
   const { editToken, bookshelf, refreshBookshelf } = useMyBookshelf();
+  const [updating, setUpdating] = useState(false);
 
   const statusColors = {
     WISHLIST: "bg-blue-400",
@@ -24,8 +25,9 @@ export const BookCard: FC<BookCardProps> = ({ book, canEdit }) => {
   };
 
   const handleToggleFavorite = async () => {
-    if (!canEdit || !bookshelf || !editToken) return;
+    if (!canEdit || !bookshelf || !editToken || updating) return;
 
+    setUpdating(true);
     try {
       const updated = await updateBookInBookshelf(
         bookshelf.publicId,
@@ -46,6 +48,8 @@ export const BookCard: FC<BookCardProps> = ({ book, canEdit }) => {
     } catch (err) {
       console.error("Failed to toggle favorite status:", err);
       toast.error(t("toast.toggleFavoriteFailed"));
+    } finally {
+      setUpdating(false);
     }
   };
 
@@ -63,7 +67,7 @@ export const BookCard: FC<BookCardProps> = ({ book, canEdit }) => {
               e.stopPropagation();
               handleToggleFavorite();
             }}
-            className="cursor-pointer"
+            className={updating ? `cursor-progress` : `cursor-pointer`}
             title={
               favorite
                 ? t("button.unmarkAsFavorite")
