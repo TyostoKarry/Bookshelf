@@ -46,7 +46,7 @@ export const ShowTokenModal: FC<ShowTokenModalProps> = ({ token, onClose }) => {
           <span>{token}</span>
           <button
             onClick={handleCopyToken}
-            className="ml-2 p-1 rounded hover:bg-gray-200 active:bg-gray-300"
+            className="ml-2 p-1 rounded hover:bg-gray-200 hover:cursor-pointer active:bg-gray-300"
             title={t("button.copyTokenToClipboard")}
           >
             <CopyIcon className="w-5 h-5" />

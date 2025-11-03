@@ -1,4 +1,4 @@
-import { type FC, useState } from "react";
+import { type FC, useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useLanguage } from "../../hooks/useLanguage";
@@ -12,7 +12,12 @@ export const EnterPublicIdModal: FC = () => {
   const { t } = useLanguage();
   const { closeModal } = useModal();
   const [publicId, setPublicId] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
 
   const handleSubmit = async () => {
     const trimmedPublicId = publicId.trim();
@@ -33,6 +38,7 @@ export const EnterPublicIdModal: FC = () => {
           {t("modal.enterPublicIdToVisit")}
         </h2>
         <input
+          ref={inputRef}
           placeholder={t("modal.pastePublicIdHere")}
           className="w-full p-2 border border-gray-300 rounded mb-4"
           value={publicId}

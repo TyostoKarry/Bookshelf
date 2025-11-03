@@ -49,6 +49,8 @@
     "invalidBookshelfPublicId": "Invalid bookshelf Public ID",
     "invalidTokenOrBookshelfNotFound": "Invalid token or bookshelf not found",
     "noTokenFound": "No token found.",
+    "publicIdCopied": "Public ID copied to clipboard",
+    "publicIdCopyFailed": "Failed to copy Public ID to clipboard",
     "tokenCopied": "Token copied to clipboard",
     "tokenCopyFailed": "Failed to copy token to clipboard",
     "tokenStored": "Your token has been stored on this device."
