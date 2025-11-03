@@ -1,4 +1,5 @@
 import { useState, type FC } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { updateBookInBookshelf } from "../../api/bookshelves";
 import FavoriteIcon from "../../assets/icons/favorite.svg?react";
@@ -14,6 +15,7 @@ interface BookCardProps {
 
 export const BookCard: FC<BookCardProps> = ({ book, canEdit }) => {
   const { t } = useLanguage();
+  const navigate = useNavigate();
   const { title, author, coverUrl, favorite, status, id } = book;
   const { editToken, bookshelf, refreshBookshelf } = useMyBookshelf();
   const [updating, setUpdating] = useState(false);
@@ -22,6 +24,10 @@ export const BookCard: FC<BookCardProps> = ({ book, canEdit }) => {
     WISHLIST: "bg-blue-400",
     READING: "bg-yellow-500",
     COMPLETED: "bg-green-500",
+  };
+
+  const handleCardClick = () => {
+    navigate(`/books/${id}`);
   };
 
   const handleToggleFavorite = async () => {
@@ -54,7 +60,10 @@ export const BookCard: FC<BookCardProps> = ({ book, canEdit }) => {
   };
 
   return (
-    <div className="relative bg-white rounded-xl shadow-sm hover:shadow-lg hover:-translate-y-0.5 transform transition-all p-4">
+    <div
+      onClick={handleCardClick}
+      className="relative bg-white rounded-xl shadow-sm hover:shadow-lg hover:-translate-y-0.5 transform transition-all p-4 cursor-pointer"
+    >
       <div className="flex justify-between pb-2">
         <div
           className={`px-2 py-1 text-xs font-semibold text-white rounded ${statusColors[status]}`}
@@ -96,13 +105,13 @@ export const BookCard: FC<BookCardProps> = ({ book, canEdit }) => {
         ) : (
           <div className="flex flex-col items-center justify-center">
             <span className="text-gray-400 text-8xl pb-4">
-              {t("bookCard.placeholderQuestionMark")}
+              {t("common.placeholderQuestionMark")}
             </span>
             <span className="text-gray-400 text-2xl">
-              {t("bookCard.placeholderNoCover")}
+              {t("common.placeholderNoCover")}
             </span>
             <span className="text-gray-400 text-2xl">
-              {t("bookCard.placeholderAvailable")}
+              {t("common.placeholderAvailable")}
             </span>
           </div>
         )}

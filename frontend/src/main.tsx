@@ -8,6 +8,7 @@ import {
 import { Toaster } from "sonner";
 import { AppProviders } from "./contexts/AppProviders";
 import { Layout } from "./Layout";
+import { BookPage } from "./pages/BookPage";
 import { Home } from "./pages/Home";
 import { MyBookshelf } from "./pages/MyBookshelf";
 import { PublicBookshelf } from "./pages/PublicBookshelf";
@@ -21,6 +22,9 @@ const router = createBrowserRouter([
       { path: "/", element: <Home /> },
       { path: "/bookshelves/:publicId", element: <PublicBookshelf /> },
       { path: "/my/bookshelf", element: <MyBookshelf /> },
+      { path: "/books/:bookId", element: <BookPage mode="view" /> },
+      { path: "/books/:bookId/edit", element: <BookPage mode="edit" /> },
+      { path: "/books/new", element: <BookPage mode="create" /> },
       { path: "*", element: <Navigate to="/" replace /> },
     ],
   },

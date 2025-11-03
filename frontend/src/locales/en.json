@@ -3,12 +3,35 @@
     "appName": "Bookshelf",
     "bookshelfNotFound": "Bookshelf not found",
     "invalidBookshelfPublicId": "Invalid Bookshelf Public ID",
-    "loading": "Loading..."
-  },
-  "bookCard": {
+    "loading": "Loading...",
+    "no": "No",
     "placeholderQuestionMark": "?",
     "placeholderNoCover": "No Cover",
-    "placeholderAvailable": "Available"
+    "placeholderAvailable": "Available",
+    "unknown": "Unknown",
+    "yes": "Yes"
+  },
+  "bookPage": {
+    "description": "Description",
+    "favorite": "Favorite",
+    "finishedAt": "Finished At",
+    "genre": "Genre",
+    "isbn13": "ISBN-13",
+    "language": "Language",
+    "noDescription": "No description available.",
+    "noNotes": "No personal notes added.",
+    "pages": "Pages",
+    "pagesLowerCase": "pages",
+    "personalNotes": "Personal Notes",
+    "personalStats": "Personal Stats",
+    "progress": "Progress",
+    "published": "Published",
+    "publisher": "Publisher",
+    "rating": "Rating",
+    "readCount": "Read Count",
+    "readingDetails": "Reading Details",
+    "status": "Status",
+    "startedAt": "Started At"
   },
   "bookshelfView": {
     "books": "Books:",
@@ -53,6 +76,7 @@
   "toast": {
     "anErrorOccurred": "An error occurred",
     "bookshelfLoadedSuccessfully": "Bookshelf loaded successfully",
+    "failedToFetchBook": "Failed to fetch book",
     "failedToRefreshBookshelf": "Failed to refresh bookshelf",
     "invalidBookshelfPublicId": "Invalid bookshelf Public ID",
     "invalidTokenOrBookshelfNotFound": "Invalid token or bookshelf not found",
