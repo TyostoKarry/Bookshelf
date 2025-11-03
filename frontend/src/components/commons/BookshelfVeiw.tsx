@@ -20,12 +20,12 @@ export const BookshelfView: FC<BookshelfViewProps> = ({
 }) => {
   const { t } = useLanguage();
 
-  const handleCopyToken = async () => {
+  const handleCopyPublicId = async () => {
     try {
       await navigator.clipboard.writeText(bookshelf.publicId);
       toast.success(t("toast.publicIdCopied"));
     } catch (err) {
-      console.error("Failed to copy token to clipboard:", err);
+      console.error("Failed to copy public ID to clipboard:", err);
       toast.error(t("toast.publicIdCopyFailed"));
     }
   };
@@ -44,9 +44,9 @@ export const BookshelfView: FC<BookshelfViewProps> = ({
                 <span className="font-mono">{bookshelf.publicId}</span>
               </p>
               <button
-                onClick={handleCopyToken}
+                onClick={handleCopyPublicId}
                 className="ml-2 p-1 rounded hover:bg-gray-200 hover:cursor-pointer active:bg-gray-300"
-                title={t("button.copyTokenToClipboard")}
+                title={t("button.copyPublicIdToClipboard")}
               >
                 <CopyIcon className="w-5 h-5" />
               </button>
@@ -82,7 +82,7 @@ export const BookshelfView: FC<BookshelfViewProps> = ({
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 xl:gap-8">
             {books.map((book) => (
-              <BookCard key={book.id} book={book} />
+              <BookCard key={book.id} book={book} canEdit={canEdit} />
             ))}
           </div>
         )}

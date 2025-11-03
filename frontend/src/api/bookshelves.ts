@@ -124,3 +124,35 @@ export async function getBooksInBookshelfByToken(
 
   return json.data;
 }
+
+export async function updateBookInBookshelf(
+  bookshelfPublicId: string,
+  bookshelfEditToken: string,
+  bookId: string,
+  updatedFields: Partial<Book>,
+): Promise<Book | null> {
+  const response = await fetch(
+    `${API_URL}/bookshelves/${bookshelfPublicId}/books/${bookId}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "X-API-KEY": API_KEY,
+        "X-BOOKSHELF-TOKEN": bookshelfEditToken,
+      },
+      body: JSON.stringify(updatedFields),
+    },
+  );
+
+  const json: ApiResponse<Book> = await response.json();
+
+  if (json.error) {
+    throw new Error(json.error.message);
+  }
+
+  if (!response.ok) {
+    throw new Error("Failed to update book in bookshelf");
+  }
+
+  return json.data;
+}
