@@ -1,9 +1,10 @@
 import { useEffect, useState, type FC, type ReactNode } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { getBookById } from "../api/books";
 import FavoriteIcon from "../assets/icons/favorite.svg?react";
 import NotFavoriteIcon from "../assets/icons/notFavorite.svg?react";
+import { Button } from "../components/commons/Button";
 import { useLanguage } from "../hooks/useLanguage";
 import { useMyBookshelf } from "../hooks/useMyBookshelf";
 import type { Book } from "../types/book";
@@ -15,17 +16,21 @@ interface BookPageProps {
 
 export const BookPage: FC<BookPageProps> = ({ mode }) => {
   const { t } = useLanguage();
+  const location = useLocation();
+  const passedBook = (location.state as { book?: Book })?.book;
+  const passedCanEdit = (location.state as { canEdit?: boolean })?.canEdit;
   const {
     bookshelf: myBookshelf,
     books: myBooks,
     editToken,
+    isInitialized,
     refreshBookshelf,
   } = useMyBookshelf();
   const { bookId } = useParams<{ bookId: string }>();
   const navigate = useNavigate();
 
   const [book, setBook] = useState<Partial<Book>>({});
-  const [canEdit, setCanEdit] = useState(false);
+  const [canEdit, setCanEdit] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(false);
 
   const isViewMode = mode === "view" && !!bookId;
@@ -33,12 +38,29 @@ export const BookPage: FC<BookPageProps> = ({ mode }) => {
   const isCreateMode = mode === "create" && !bookId;
 
   useEffect(() => {
-    if (isCreateMode || !bookId) return;
+    if (!isInitialized) return;
 
-    const localBook = myBooks?.find((b) => b.id === bookId);
+    if (isCreateMode || !bookId) {
+      if (!myBookshelf || !editToken) {
+        toast.error(t("toast.notLoggedInToCreateBook"));
+        navigate(`/`, { replace: true });
+        return;
+      }
+      setBook({});
+      setCanEdit(Boolean(editToken));
+      return;
+    }
+
+    if (passedBook) {
+      setBook(passedBook);
+      setCanEdit(Boolean(passedCanEdit));
+      return;
+    }
+
+    const localBook = myBooks?.find((book) => book.id === Number(bookId));
     if (localBook) {
       setBook(localBook);
-      setCanEdit(true);
+      setCanEdit(Boolean(editToken));
       return;
     }
 
@@ -47,6 +69,7 @@ export const BookPage: FC<BookPageProps> = ({ mode }) => {
       try {
         const data = await getBookById(bookId);
         setBook(data || {});
+        setCanEdit(false);
       } catch (error) {
         console.error("Error fetching book:", error);
         toast.error(t("toast.failedToFetchBook"));
@@ -56,7 +79,35 @@ export const BookPage: FC<BookPageProps> = ({ mode }) => {
     };
 
     fetchBook();
-  }, [isCreateMode, myBookshelf, bookId, t, myBooks]);
+  }, [
+    isCreateMode,
+    myBookshelf,
+    bookId,
+    t,
+    myBooks,
+    passedBook,
+    passedCanEdit,
+    editToken,
+    isInitialized,
+    navigate,
+  ]);
+
+  useEffect(() => {
+    if (!isInitialized || loading || canEdit === null) return;
+    if (isEditMode && !canEdit) {
+      console.error("User does not have permission to edit this book.");
+      toast.error(t("toast.noPermissionToEditBook"));
+      navigate("/", { replace: true });
+    }
+  }, [isInitialized, isEditMode, canEdit, navigate, t, loading]);
+
+  const handleNavigateBackToBookshelf = () => {
+    if (canEdit) {
+      navigate("/my/bookshelf");
+      return;
+    }
+    navigate(`/bookshelves/${book.bookshelfPublicId}`);
+  };
 
   if (loading) return <div>{t("common.loading")}</div>;
 
@@ -95,10 +146,10 @@ export const BookPage: FC<BookPageProps> = ({ mode }) => {
   );
 
   return (
-    <div className="max-w-5xl mx-auto mt-10 px-6">
-      <div className="bg-white rounded-2xl shadow-lg p-8">
-        <div className="flex flex-col md:flex-row md:items-stretch gap-8 mb-10">
-          <div className="flex-shrink-0 self-start">
+    <main className="max-w-5xl mx-auto mt-10 px-6">
+      <article className="bg-white rounded-2xl shadow-lg p-8">
+        <header className="flex flex-col md:flex-row md:items-stretch gap-8 mb-10">
+          <figure className="flex-shrink-0 self-start">
             {book.coverUrl ? (
               <img
                 src={book.coverUrl}
@@ -118,7 +169,10 @@ export const BookPage: FC<BookPageProps> = ({ mode }) => {
                 </span>
               </div>
             )}
-          </div>
+            <figcaption className="sr-only">
+              {`${t("common.coverImageFor")}: title: ${book.title || t("common.coverNotAvailable")}`}
+            </figcaption>
+          </figure>
           <div className="flex-1 flex flex-col justify-between">
             <h1 className="text-3xl font-bold text-gray-900 leading-tight">
               {book.title}
@@ -147,9 +201,9 @@ export const BookPage: FC<BookPageProps> = ({ mode }) => {
               <Meta label={t("bookPage.isbn13")} value={book.isbn13} />
             </div>
           </div>
-        </div>
+        </header>
         <div className="grid grid-cols-2 gap-10 mb-8">
-          <div className="space-y-3">
+          <section className="space-y-3">
             <SectionTitle>{t("bookPage.readingDetails")}</SectionTitle>
             <Detail label={t("bookPage.status")} value={book.status} />
             <Detail
@@ -158,8 +212,8 @@ export const BookPage: FC<BookPageProps> = ({ mode }) => {
             />
             <Detail label={t("bookPage.startedAt")} value={book.startedAt} />
             <Detail label={t("bookPage.finishedAt")} value={book.finishedAt} />
-          </div>
-          <div className="space-y-3">
+          </section>
+          <section className="space-y-3">
             <SectionTitle>{t("bookPage.personalStats")}</SectionTitle>
             <Detail
               label={t("bookPage.rating")}
@@ -185,19 +239,60 @@ export const BookPage: FC<BookPageProps> = ({ mode }) => {
                 )
               }
             />
-          </div>
+          </section>
         </div>
-        <SectionTitle>{t("bookPage.personalNotes")}</SectionTitle>
-        {book.notes ? (
-          <p className="text-gray-800 leading-relaxed min-h-[6rem] pt-3">
-            {book.notes}
-          </p>
-        ) : (
-          <p className="italic text-gray-400 min-h-[6rem] flex items-center">
-            {t("bookPage.noNotes")}
-          </p>
-        )}
-      </div>
-    </div>
+        <section>
+          <SectionTitle>{t("bookPage.personalNotes")}</SectionTitle>
+          {book.notes ? (
+            <p className="text-gray-800 leading-relaxed min-h-[6rem] pt-3">
+              {book.notes}
+            </p>
+          ) : (
+            <p className="italic text-gray-400 min-h-[6rem] flex items-center">
+              {t("bookPage.noNotes")}
+            </p>
+          )}
+        </section>
+        <footer
+          className={`flex ${isViewMode ? "justify-between" : "justify-end"} gap-2 mt-8`}
+        >
+          {isViewMode && (
+            <Button
+              label={t("button.backToBookshelf")}
+              onClick={handleNavigateBackToBookshelf}
+            />
+          )}
+          {canEdit && (
+            <div className="flex gap-2">
+              <Button
+                label={t("button.delete")}
+                color="danger"
+                onClick={() => {}}
+              />
+              {isViewMode && (
+                <Button
+                  label={t("button.edit")}
+                  onClick={() =>
+                    navigate(`/books/${bookId}/edit`, {
+                      state: { book, canEdit },
+                    })
+                  }
+                />
+              )}
+              {isEditMode && (
+                <Button
+                  label={t("button.save")}
+                  onClick={() =>
+                    navigate(`/books/${bookId}`, {
+                      state: { book, canEdit },
+                    })
+                  }
+                />
+              )}
+            </div>
+          )}
+        </footer>
+      </article>
+    </main>
   );
 };

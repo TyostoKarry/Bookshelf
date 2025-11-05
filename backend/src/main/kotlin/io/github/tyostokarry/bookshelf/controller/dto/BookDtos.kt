@@ -15,7 +15,7 @@ import java.time.LocalDate
  */
 data class BookDto(
     val id: Long,
-    val bookshelfId: Long,
+    val bookshelfPublicId: String,
     val title: String,
     val author: String,
     val pages: Int?,

@@ -8,10 +8,13 @@ import io.github.tyostokarry.bookshelf.controller.advice.ErrorCodes
 import io.github.tyostokarry.bookshelf.controller.dto.BookDto
 import io.github.tyostokarry.bookshelf.controller.dto.toDto
 import io.github.tyostokarry.bookshelf.entity.Book
+import io.github.tyostokarry.bookshelf.entity.Bookshelf
 import io.github.tyostokarry.bookshelf.error.BookError
 import io.github.tyostokarry.bookshelf.service.BookService
+import io.github.tyostokarry.bookshelf.service.BookshelfService
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.any
 import org.mockito.kotlin.given
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -34,16 +37,21 @@ class BookControllerTest(
     @MockitoBean
     lateinit var bookService: BookService
 
+    @MockitoBean
+    lateinit var bookshelfService: BookshelfService
+
     @Nested
     inner class GetAllBooks {
         @Test
         fun `Get all books returns list of BookDto`() {
+            val bookshelf = Bookshelf(id = 1, publicId = "publicId", name = "Test Name")
             val books =
                 listOf(
                     Book(id = 1, bookshelfId = 1, title = "Test Book 1", author = "Author One"),
                     Book(id = 2, bookshelfId = 1, title = "Test Book 2", author = "Author Two"),
                 )
             given(bookService.getAllBooks()).willReturn(books)
+            given(bookshelfService.getBookshelfById(any())).willReturn(Either.Right(bookshelf))
 
             val responseBody =
                 mockMvc
@@ -59,7 +67,11 @@ class BookControllerTest(
             assertNotNull(response.data, "Response data should not be null")
             val responseData = response.data!!
             assertEquals(2, responseData.size, "Response should return two books")
-            assertEquals(books.map { it.toDto() }, responseData, "Response books should match expected DTO representations")
+            assertEquals(
+                books.map { it.toDto(bookshelf.publicId) },
+                responseData,
+                "Response books should match expected DTO representations",
+            )
             assertNull(response.error, "Response error should be null for successful response")
         }
     }
@@ -68,8 +80,10 @@ class BookControllerTest(
     inner class GetBookById {
         @Test
         fun `Get book returns BookDto when book is found`() {
+            val bookshelf = Bookshelf(id = 1, publicId = "publicId", name = "Test Name")
             val book = Book(id = 10, bookshelfId = 5, title = "Test Book 1", author = "Author One")
             given(bookService.getBookById(book.id)).willReturn(Either.Right(book))
+            given(bookshelfService.getBookshelfById(any())).willReturn(Either.Right(bookshelf))
 
             val responseBody =
                 mockMvc
@@ -84,7 +98,7 @@ class BookControllerTest(
 
             assertNotNull(response.data, "Response data should not be null")
             val responseData = response.data!!
-            assertEquals(book.toDto(), responseData, "Response book should match expected DTO representation")
+            assertEquals(book.toDto(bookshelf.publicId), responseData, "Response book should match expected DTO representation")
             assertNull(response.error, "Response error should be null for successful response")
         }
 

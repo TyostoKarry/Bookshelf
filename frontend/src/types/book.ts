@@ -31,8 +31,8 @@ export type Language =
   | "OTHER";
 
 export interface Book {
-  id: string;
-  bookshelfId: string;
+  id: number;
+  bookshelfPublicId: string;
 
   title: string;
   author: string;

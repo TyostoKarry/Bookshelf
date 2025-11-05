@@ -27,7 +27,9 @@ export const BookCard: FC<BookCardProps> = ({ book, canEdit }) => {
   };
 
   const handleCardClick = () => {
-    navigate(`/books/${id}`);
+    navigate(`/books/${id}`, {
+      state: { book, canEdit },
+    });
   };
 
   const handleToggleFavorite = async () => {
@@ -95,7 +97,7 @@ export const BookCard: FC<BookCardProps> = ({ book, canEdit }) => {
           <NotFavoriteIcon className="w-5 h-5" />
         )}
       </div>
-      <div className="flex items-center justify-center aspect-[3/4] mb-3 overflow-hidden rounded-lg bg-gray-200">
+      <figure className="flex items-center justify-center aspect-[3/4] mb-3 overflow-hidden rounded-lg bg-gray-200">
         {coverUrl ? (
           <img
             src={coverUrl}
@@ -115,7 +117,10 @@ export const BookCard: FC<BookCardProps> = ({ book, canEdit }) => {
             </span>
           </div>
         )}
-      </div>
+        <figcaption className="sr-only">
+          {`${t("common.coverImageFor")}: title: ${book.title || t("common.coverNotAvailable")}`}
+        </figcaption>
+      </figure>
       <h3
         className="text-lg font-semibold text-gray-900 mb-1 truncate"
         title={title}

@@ -128,7 +128,7 @@ export async function getBooksInBookshelfByToken(
 export async function updateBookInBookshelf(
   bookshelfPublicId: string,
   bookshelfEditToken: string,
-  bookId: string,
+  bookId: number,
   updatedFields: Partial<Book>,
 ): Promise<Book | null> {
   const response = await fetch(

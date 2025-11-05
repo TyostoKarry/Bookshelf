@@ -15,6 +15,7 @@ export const MyBookshelfProvider = ({ children }: { children: ReactNode }) => {
   );
   const [bookshelf, setBookshelf] = useState<Bookshelf | null>(null);
   const [books, setBooks] = useState<Book[]>([]);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   const { t } = useLanguage();
 
@@ -40,7 +41,13 @@ export const MyBookshelfProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    if (editToken) refreshBookshelf();
+    const init = async () => {
+      if (editToken) {
+        await refreshBookshelf();
+      }
+      setIsInitialized(true);
+    };
+    init();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editToken]);
 
@@ -48,6 +55,7 @@ export const MyBookshelfProvider = ({ children }: { children: ReactNode }) => {
     bookshelf,
     books,
     editToken,
+    isInitialized,
     setBookshelf,
     setBooks,
     setEditToken,

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.given
 import org.mockito.kotlin.mock
+import java.util.Optional
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -38,7 +39,31 @@ class BookshelfServiceTest {
     inner class GetBookshelfById {
         @Test
         fun `getBookshelfById returns Right when found`() {
-            val bookshelf = Bookshelf(id = 1L, name = "Test bookshelf")
+            val bookshelf = Bookshelf(id = 1L, publicId = "publicID", name = "Test bookshelf")
+            given(bookshelfRepository.findById(bookshelf.id)).willReturn(Optional.of(bookshelf))
+
+            val result = bookshelfService.getBookshelfById(bookshelf.id)
+
+            assertTrue(result.isRight(), "Expected Right result when found")
+            assertEquals(bookshelf, result.getOrNull(), "Returned bookshelf should match")
+        }
+
+        @Test
+        fun `getBookshelfById returns Left when not found`() {
+            given(bookshelfRepository.findById(999L)).willReturn(Optional.empty())
+
+            val result = bookshelfService.getBookshelfById(999L)
+
+            assertTrue(result.isLeft(), "Expected Left result when not found")
+            assertEquals(BookshelfError.NotFoundById(999L), result.leftOrNull(), "Expected bookshelf NotFoundById error variant")
+        }
+    }
+
+    @Nested
+    inner class GetBookshelfByPublicId {
+        @Test
+        fun `getBookshelfByPublicId returns Right when found`() {
+            val bookshelf = Bookshelf(id = 1L, publicId = "publicID", name = "Test bookshelf")
             given(bookshelfRepository.findByPublicId(bookshelf.publicId)).willReturn(bookshelf)
 
             val result = bookshelfService.getBookshelfByPublicId(bookshelf.publicId)
@@ -48,13 +73,17 @@ class BookshelfServiceTest {
         }
 
         @Test
-        fun `getBookshelfById returns Left when not found`() {
+        fun `getBookshelfByPublicId returns Left when not found`() {
             given(bookshelfRepository.findByPublicId("invalidId")).willReturn(null)
 
             val result = bookshelfService.getBookshelfByPublicId("invalidId")
 
             assertTrue(result.isLeft(), "Expected Left result when not found")
-            assertEquals(BookshelfError.NotFoundByPublicId("invalidId"), result.leftOrNull(), "Expected bookshelf NotFound error variant")
+            assertEquals(
+                BookshelfError.NotFoundByPublicId("invalidId"),
+                result.leftOrNull(),
+                "Expected bookshelf NotFoundByPublicId error variant",
+            )
         }
     }
 
