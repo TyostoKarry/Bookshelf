@@ -1,4 +1,5 @@
 import { type FC } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { BookCard } from "./BookCard";
 import { Button } from "./Button";
@@ -19,6 +20,7 @@ export const BookshelfView: FC<BookshelfViewProps> = ({
   books,
 }) => {
   const { t } = useLanguage();
+  const navigate = useNavigate();
 
   const handleCopyPublicId = async () => {
     try {
@@ -58,7 +60,7 @@ export const BookshelfView: FC<BookshelfViewProps> = ({
               <Button
                 label={t("button.addBook")}
                 onClick={() => {
-                  /* Handle add book action */
+                  navigate("/books/new");
                 }}
               />
               <Button

@@ -37,6 +37,41 @@ export async function createBookshelf(
   return json.data;
 }
 
+export async function createBookInBookshelf(
+  bookshelfPublicId: string,
+  bookshelfEditToken: string,
+  bookData: Partial<Book>,
+): Promise<Book | null> {
+  const response = await fetch(
+    `${API_URL}/bookshelves/${bookshelfPublicId}/books`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-API-KEY": API_KEY,
+        "X-BOOKSHELF-TOKEN": bookshelfEditToken,
+      },
+      body: JSON.stringify(bookData),
+    },
+  );
+
+  const json: ApiResponse<Book> = await response.json();
+
+  if (json.error) {
+    if (json.error.fieldErrors) {
+      const fieldErrors = formatApiFieldErrors(json.error.fieldErrors);
+      throw new Error(`${json.error.message}: ${fieldErrors}`);
+    }
+    throw new Error(json.error.message);
+  }
+
+  if (!response.ok) {
+    throw new Error("Failed to create book in bookshelf");
+  }
+
+  return json.data;
+}
+
 export async function getBookshelfByPublicId(
   publicId: string,
 ): Promise<Bookshelf | null> {
@@ -147,6 +182,10 @@ export async function updateBookInBookshelf(
   const json: ApiResponse<Book> = await response.json();
 
   if (json.error) {
+    if (json.error.fieldErrors) {
+      const fieldErrors = formatApiFieldErrors(json.error.fieldErrors);
+      throw new Error(`${json.error.message}: ${fieldErrors}`);
+    }
     throw new Error(json.error.message);
   }
 

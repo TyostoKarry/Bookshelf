@@ -1,17 +1,27 @@
-import { type FC } from "react";
-import { Meta } from "./Meta";
+import { type Dispatch, type FC, type SetStateAction } from "react";
 import { useLanguage } from "../../../hooks/useLanguage";
 import type { Book } from "../../../types/book";
+import type { BookPageMode } from "../../../types/book-page-mode";
 
 interface BookPageHeaderProps {
   book: Partial<Book>;
+  mode: BookPageMode;
+  onChange: (key: keyof Book, value: string | null) => void;
+  fieldErrors: { [key in keyof Book]?: boolean };
+  setFieldErrors: Dispatch<SetStateAction<{ [key in keyof Book]?: boolean }>>;
 }
 
-export const BookPageHeader: FC<BookPageHeaderProps> = ({ book }) => {
+export const BookPageHeader: FC<BookPageHeaderProps> = ({
+  book,
+  mode,
+  onChange,
+  fieldErrors,
+  setFieldErrors,
+}) => {
   const { t } = useLanguage();
 
   return (
-    <header className="flex flex-col md:flex-row md:items-stretch gap-8 mb-10">
+    <header className="flex flex-row items-stretch gap-8 mb-10">
       <figure className="flex-shrink-0 self-start">
         {book.coverUrl ? (
           <img
@@ -32,30 +42,57 @@ export const BookPageHeader: FC<BookPageHeaderProps> = ({ book }) => {
           {`${t("common.coverImageFor")}: title: ${book.title || t("common.coverNotAvailable")}`}
         </figcaption>
       </figure>
-      <section className="flex-1 flex flex-col justify-between">
-        <h1 className="text-3xl font-bold text-gray-900 leading-tight">
-          {book.title}
-        </h1>
-        <h2 className="text-xl text-gray-700 mb-4">{book.author}</h2>
+      <section className="flex-1 flex flex-col">
+        {mode === "view" ? (
+          <h1 className="text-3xl font-bold text-gray-900 leading-tight">
+            {book.title}
+          </h1>
+        ) : (
+          <input
+            type="text"
+            className={`text-3xl font-bold text-gray-900 leading-tight border ${fieldErrors.title ? "border-red-500" : "border-gray-300"} rounded-md p-2 mb-2`}
+            value={book.title || ""}
+            placeholder={t("placeholders.enterTitle")}
+            onChange={(value) => onChange("title", value.target.value)}
+            onFocus={() => {
+              setFieldErrors((prev) => ({ ...prev, title: false }));
+            }}
+          />
+        )}
+        {mode === "view" ? (
+          <h2 className="text-xl text-gray-700 mb-4">{book.author}</h2>
+        ) : (
+          <input
+            type="text"
+            className={`text-xl text-gray-700 mb-4 border ${fieldErrors.author ? "border-red-500" : "border-gray-300"} rounded-md p-2`}
+            value={book.author || ""}
+            placeholder={t("placeholders.enterAuthorName")}
+            onChange={(value) => onChange("author", value.target.value)}
+            onFocus={() =>
+              setFieldErrors((prev) => ({ ...prev, author: false }))
+            }
+          />
+        )}
         <h3 className="text-sm font-medium text-gray-600 mb-1">
           {t("bookPage.description")}:
         </h3>
-        <p
-          className={`${book.description ? "text-gray-800" : "text-gray-500"} leading-relaxed flex-grow`}
-        >
-          {book.description || t("bookPage.noDescription")}
-        </p>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-y-2 mt-6 text-sm">
-          <Meta label={t("bookPage.genre")} value={book.genre} />
-          <Meta label={t("bookPage.language")} value={book.language} />
-          <Meta
-            label={t("bookPage.pages")}
-            value={`${book.pages?.toString()} ${t("bookPage.pagesLowerCase")}`}
+        {mode === "view" ? (
+          <p
+            className={`${book.description ? "text-gray-800" : "text-gray-500"} leading-relaxed flex-grow`}
+          >
+            {book.description || t("bookPage.noDescription")}
+          </p>
+        ) : (
+          <textarea
+            className={`w-full h-32 border ${fieldErrors.description ? "border-red-500" : "border-gray-300"} rounded-md p-2 text-sm text-gray-800 resize-none`}
+            value={book.description || ""}
+            placeholder={t("placeholders.enterDescription")}
+            onChange={(value) => onChange("description", value.target.value)}
+            onFocus={() =>
+              setFieldErrors((prev) => ({ ...prev, description: false }))
+            }
           />
-          <Meta label={t("bookPage.publisher")} value={book.publisher} />
-          <Meta label={t("bookPage.published")} value={book.publishedDate} />
-          <Meta label={t("bookPage.isbn13")} value={book.isbn13} />
-        </div>
+        )}
       </section>
     </header>
   );

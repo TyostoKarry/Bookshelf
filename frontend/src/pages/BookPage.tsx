@@ -3,6 +3,11 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { getBookById } from "../api/books";
 import {
+  createBookInBookshelf,
+  updateBookInBookshelf,
+} from "../api/bookshelves";
+import {
+  BookMetadata,
   BookPageActions,
   BookPageHeader,
   BookPersonalNotes,
@@ -34,8 +39,13 @@ export const BookPage: FC<BookPageProps> = ({ mode }) => {
   const navigate = useNavigate();
 
   const [book, setBook] = useState<Partial<Book>>({});
+  const [draftBook, setDraftBook] = useState<Partial<Book>>({});
   const [canEdit, setCanEdit] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(false);
+
+  const [fieldErrors, setFieldErrors] = useState<
+    Partial<Record<keyof Book, boolean>>
+  >({});
 
   useEffect(() => {
     if (!isInitialized) return;
@@ -72,6 +82,7 @@ export const BookPage: FC<BookPageProps> = ({ mode }) => {
       } catch (error) {
         console.error("Error fetching book:", error);
         toast.error(t("toast.failedToFetchBook"));
+        navigate("/", { replace: true });
       } finally {
         setLoading(false);
       }
@@ -100,22 +111,134 @@ export const BookPage: FC<BookPageProps> = ({ mode }) => {
     }
   }, [isInitialized, mode, canEdit, navigate, t, loading]);
 
+  useEffect(() => {
+    if (book && (mode === "edit" || mode === "create")) {
+      setDraftBook(book);
+    }
+  }, [book, mode]);
+
+  const handleDraftChange = (
+    key: keyof Book,
+    value: string | number | boolean | null,
+  ) => {
+    setDraftBook((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
+
+  async function handleSave(): Promise<void> {
+    if (mode === "view") return;
+    if (!editToken) {
+      toast.error(t("toast.notLoggedInToSaveChanges"));
+      return;
+    }
+
+    try {
+      const updatedOrCreated =
+        mode === "edit"
+          ? await updateBookInBookshelf(
+              book.bookshelfPublicId!,
+              editToken,
+              book.id!,
+              draftBook,
+            )
+          : await createBookInBookshelf(
+              myBookshelf!.publicId,
+              editToken,
+              draftBook,
+            );
+
+      if (!updatedOrCreated) {
+        toast.error(t("toast.failedToSaveBook"));
+        return;
+      }
+
+      refreshBookshelf();
+      toast.success(
+        mode === "create"
+          ? `${t("toast.book")} “${updatedOrCreated.title}“ ${t("toast.createdSuccessfully")}`
+          : `${t("toast.book")} “${updatedOrCreated.title}“ ${t("toast.hasBeenUpdated")}`,
+      );
+      navigate(`/books/${updatedOrCreated.id}`);
+    } catch (error) {
+      const messageMode =
+        mode === "create"
+          ? t("toast.failedToCreateBook")
+          : t("toast.failedToUpdateBook");
+      console.error(error);
+      const message =
+        error instanceof Error
+          ? `${messageMode}! ${error.message}`
+          : t("toast.anErrorOccurred");
+
+      const newFieldErrors: Partial<Record<keyof Book, boolean>> = {};
+      if (error instanceof Error) {
+        const msg = error.message.toLowerCase();
+        if (msg.includes("title")) newFieldErrors.title = true;
+        if (msg.includes("author")) newFieldErrors.author = true;
+        if (msg.includes("description")) newFieldErrors.description = true;
+        if (msg.includes("publisher")) newFieldErrors.publisher = true;
+        if (msg.includes("pages")) newFieldErrors.pages = true;
+        if (msg.includes("isbn")) newFieldErrors.isbn13 = true;
+        if (msg.includes("progress")) newFieldErrors.progress = true;
+        if (msg.includes("rating")) newFieldErrors.rating = true;
+        if (msg.includes("read count")) newFieldErrors.readCount = true;
+
+        setFieldErrors(newFieldErrors);
+      }
+
+      toast.error(message);
+    }
+  }
+
   if (loading) return <div>{t("common.loading")}</div>;
 
   return (
     <main className="max-w-5xl mx-auto pt-10 pb-6 px-6">
       <article className="bg-white rounded-2xl shadow-lg p-8">
-        <BookPageHeader book={book} />
+        <BookPageHeader
+          book={mode === "view" ? book : draftBook}
+          mode={mode}
+          onChange={handleDraftChange}
+          fieldErrors={fieldErrors}
+          setFieldErrors={setFieldErrors}
+        />
+        <BookMetadata
+          book={mode === "view" ? book : draftBook}
+          mode={mode}
+          onChange={handleDraftChange}
+          fieldErrors={fieldErrors}
+          setFieldErrors={setFieldErrors}
+        />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-10">
-          <BookReadingDetails book={book} />
-          <BookPersonalStats book={book} />
+          <BookReadingDetails
+            book={mode === "view" ? book : draftBook}
+            mode={mode}
+            onChange={handleDraftChange}
+            fieldErrors={fieldErrors}
+            setFieldErrors={setFieldErrors}
+          />
+          <BookPersonalStats
+            book={mode === "view" ? book : draftBook}
+            mode={mode}
+            onChange={handleDraftChange}
+            fieldErrors={fieldErrors}
+            setFieldErrors={setFieldErrors}
+          />
         </div>
-        <BookPersonalNotes book={book} />
+        <BookPersonalNotes
+          book={mode === "view" ? book : draftBook}
+          mode={mode}
+          onChange={handleDraftChange}
+        />
         <BookPageActions
           book={book}
           mode={mode}
           canEdit={canEdit}
           bookId={bookId}
+          onSave={handleSave}
+          fieldErrors={fieldErrors}
         />
       </article>
     </main>

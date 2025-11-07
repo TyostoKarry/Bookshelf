@@ -4,7 +4,7 @@ interface ButtonProps {
   label: string;
   onClick: () => void;
   disabled?: boolean;
-  color?: "success" | "danger";
+  color?: "success" | "danger" | "neutral";
   className?: string;
 }
 
@@ -19,6 +19,7 @@ export const Button: FC<ButtonProps> = ({
     success:
       "bg-green-600 hover:bg-green-700 active:bg-green-700/90 text-white",
     danger: "bg-red-600 hover:bg-red-700 active:bg-red-700/90 text-white",
+    neutral: "bg-gray-500 hover:bg-gray-600 active:bg-gray-600/90 text-white",
   };
   return (
     <button
