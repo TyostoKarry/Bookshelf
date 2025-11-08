@@ -3,13 +3,13 @@
     "appName": "Bookshelf",
     "bookshelfNotFound": "Bookshelf not found",
     "coverImageFor": "Cover image for",
-    "coverNotAvailable": "Cover not available",
+    "coverNotProvided": "Cover not provided",
     "invalidBookshelfPublicId": "Invalid Bookshelf Public ID",
     "loading": "Loading...",
     "no": "No",
     "placeholderQuestionMark": "?",
     "placeholderNoCover": "No Cover",
-    "placeholderAvailable": "Available",
+    "placeholderProvided": "Provided",
     "unknown": "Unknown",
     "yes": "Yes"
   },
@@ -81,6 +81,7 @@
   },
   "placeholders": {
     "enterAuthorName": "Enter author name",
+    "enterCoverImageUrl": "Enter cover image URL",
     "enterDescription": "Enter description",
     "enterIsbn13": "Enter ISBN-13",
     "enterPages": "Enter number of pages",

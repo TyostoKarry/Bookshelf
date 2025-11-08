@@ -1,4 +1,5 @@
 import { type Dispatch, type FC, type SetStateAction } from "react";
+import { CoverImage } from "./CoverImage";
 import { useLanguage } from "../../../hooks/useLanguage";
 import type { Book } from "../../../types/book";
 import type { BookPageMode } from "../../../types/book-page-mode";
@@ -22,26 +23,18 @@ export const BookPageHeader: FC<BookPageHeaderProps> = ({
 
   return (
     <header className="flex flex-row items-stretch gap-8 mb-10">
-      <figure className="flex-shrink-0 self-start">
-        {book.coverUrl ? (
-          <img
-            src={book.coverUrl}
-            alt={book.title}
-            className="w-48 md:w-56 aspect-[2/3] rounded-lg object-fill"
+      <div className="flex flex-col">
+        <CoverImage coverUrl={book.coverUrl} title={book.title} width="small" />
+        {mode !== "view" && (
+          <input
+            type="text"
+            className="mt-2 text-sm text-gray-700 border border-gray-300 rounded-md p-2"
+            value={book.coverUrl || ""}
+            placeholder={t("placeholders.enterCoverImageUrl")}
+            onChange={(value) => onChange("coverUrl", value.target.value)}
           />
-        ) : (
-          <div className="w-48 md:w-56 aspect-[2/3] rounded-lg bg-gray-100 flex flex-col items-center justify-center text-gray-400">
-            <span className="text-8xl pb-4">
-              {t("common.placeholderQuestionMark")}
-            </span>
-            <span className="text-2xl">{t("common.placeholderNoCover")}</span>
-            <span className="text-2xl">{t("common.placeholderAvailable")}</span>
-          </div>
         )}
-        <figcaption className="sr-only">
-          {`${t("common.coverImageFor")}: title: ${book.title || t("common.coverNotAvailable")}`}
-        </figcaption>
-      </figure>
+      </div>
       <section className="flex-1 flex flex-col">
         {mode === "view" ? (
           <h1 className="text-3xl font-bold text-gray-900 leading-tight">
@@ -84,7 +77,7 @@ export const BookPageHeader: FC<BookPageHeaderProps> = ({
           </p>
         ) : (
           <textarea
-            className={`w-full h-32 border ${fieldErrors.description ? "border-red-500" : "border-gray-300"} rounded-md p-2 text-sm text-gray-800 resize-none`}
+            className={`w-full h-full border ${fieldErrors.description ? "border-red-500" : "border-gray-300"} rounded-md p-2 text-sm text-gray-800 resize-none`}
             value={book.description || ""}
             placeholder={t("placeholders.enterDescription")}
             onChange={(value) => onChange("description", value.target.value)}

@@ -1,6 +1,7 @@
 import { useState, type FC } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { CoverImage } from "./book";
 import { updateBookInBookshelf } from "../../api/bookshelves";
 import FavoriteIcon from "../../assets/icons/favorite.svg?react";
 import NotFavoriteIcon from "../../assets/icons/notFavorite.svg?react";
@@ -97,30 +98,7 @@ export const BookCard: FC<BookCardProps> = ({ book, canEdit }) => {
           <NotFavoriteIcon className="w-5 h-5" />
         )}
       </div>
-      <figure className="flex items-center justify-center aspect-[3/4] mb-3 overflow-hidden rounded-lg bg-gray-200">
-        {coverUrl ? (
-          <img
-            src={coverUrl}
-            alt={title}
-            className="object-fill w-full h-full"
-          />
-        ) : (
-          <div className="flex flex-col items-center justify-center">
-            <span className="text-gray-400 text-8xl pb-4">
-              {t("common.placeholderQuestionMark")}
-            </span>
-            <span className="text-gray-400 text-2xl">
-              {t("common.placeholderNoCover")}
-            </span>
-            <span className="text-gray-400 text-2xl">
-              {t("common.placeholderAvailable")}
-            </span>
-          </div>
-        )}
-        <figcaption className="sr-only">
-          {`${t("common.coverImageFor")}: title: ${book.title || t("common.coverNotAvailable")}`}
-        </figcaption>
-      </figure>
+      <CoverImage coverUrl={coverUrl} title={title} />
       <h3
         className="text-lg font-semibold text-gray-900 mb-1 truncate"
         title={title}

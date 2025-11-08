@@ -32,7 +32,7 @@ export const BookPersonalNotes: FC<BookPersonalNotesProps> = ({
         )
       ) : (
         <textarea
-          className="w-full min-h-[6rem] border border-gray-300 rounded-md p-2 mt-3 resize-y"
+          className="w-full min-h-[12rem] border border-gray-300 rounded-md p-2 mt-3 resize-y"
           value={book.notes || ""}
           placeholder={t("placeholders.enterPersonalNotes")}
           onChange={(ChangeEvent) =>
