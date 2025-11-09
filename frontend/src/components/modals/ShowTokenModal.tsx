@@ -2,15 +2,16 @@ import { type FC, useState } from "react";
 import { toast } from "sonner";
 import CopyIcon from "../../assets/icons/copy.svg?react";
 import { useLanguage } from "../../hooks/useLanguage";
+import { useModal } from "../../hooks/useModal";
 import { Button } from "../commons/Button";
 
 interface ShowTokenModalProps {
   token: string;
-  onClose: () => void;
 }
 
-export const ShowTokenModal: FC<ShowTokenModalProps> = ({ token, onClose }) => {
+export const ShowTokenModal: FC<ShowTokenModalProps> = ({ token }) => {
   const { t } = useLanguage();
+  const { closeModal } = useModal();
   const [rememberToken, setRememberToken] = useState(true);
 
   const handleCopyToken = async () => {
@@ -28,7 +29,7 @@ export const ShowTokenModal: FC<ShowTokenModalProps> = ({ token, onClose }) => {
       localStorage.setItem("editToken", token);
       toast.success(t("toast.tokenStored"));
     }
-    onClose();
+    closeModal();
   };
 
   return (

@@ -195,3 +195,57 @@ export async function updateBookInBookshelf(
 
   return json.data;
 }
+
+export async function deleteBookshelf(
+  bookshelfPublicId: string,
+  bookshelfEditToken: string,
+): Promise<boolean> {
+  const response = await fetch(`${API_URL}/bookshelves/${bookshelfPublicId}`, {
+    method: "DELETE",
+    headers: {
+      "X-API-KEY": API_KEY,
+      "X-BOOKSHELF-TOKEN": bookshelfEditToken,
+    },
+  });
+
+  const json: ApiResponse<null> = await response.json();
+
+  if (json.error) {
+    throw new Error(json.error.message);
+  }
+
+  if (!response.ok) {
+    throw new Error("Failed to delete bookshelf");
+  }
+
+  return true;
+}
+
+export async function deleteBookFromBookshelf(
+  bookshelfPublicId: string,
+  bookshelfEditToken: string,
+  bookId: number,
+): Promise<boolean> {
+  const response = await fetch(
+    `${API_URL}/bookshelves/${bookshelfPublicId}/books/${bookId}`,
+    {
+      method: "DELETE",
+      headers: {
+        "X-API-KEY": API_KEY,
+        "X-BOOKSHELF-TOKEN": bookshelfEditToken,
+      },
+    },
+  );
+
+  const json: ApiResponse<null> = await response.json();
+
+  if (json.error) {
+    throw new Error(json.error.message);
+  }
+
+  if (!response.ok) {
+    throw new Error("Failed to delete book from bookshelf");
+  }
+
+  return true;
+}

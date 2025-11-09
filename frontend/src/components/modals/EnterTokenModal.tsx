@@ -1,4 +1,4 @@
-import { type FC, useState } from "react";
+import { type FC, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { getBookshelfByToken } from "../../api/bookshelves";
@@ -14,6 +14,11 @@ export const EnterTokenModal: FC = () => {
   const navigate = useNavigate();
   const [token, setToken] = useState("");
   const [rememberToken, setRememberToken] = useState(true);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
 
   const handleSubmit = async () => {
     const trimmedToken = token.trim();
@@ -47,6 +52,7 @@ export const EnterTokenModal: FC = () => {
           {t("modal.enterEditToken")}
         </h2>
         <input
+          ref={inputRef}
           type="text"
           placeholder={t("modal.pasteTokenHere")}
           className="w-full p-2 border border-gray-300 rounded mb-4"

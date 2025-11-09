@@ -3,23 +3,30 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { BookCard } from "./BookCard";
 import { Button } from "./Button";
+import { deleteBookshelf } from "../../api/bookshelves";
 import CopyIcon from "../../assets/icons/copy.svg?react";
 import { useLanguage } from "../../hooks/useLanguage";
+import { useModal } from "../../hooks/useModal";
 import type { Book } from "../../types/book";
 import type { Bookshelf } from "../../types/bookshelf";
 
 interface BookshelfViewProps {
   bookshelf: Bookshelf;
   books: Book[];
+  editToken?: string | null;
   canEdit: boolean;
+  clearBookshelf?: () => void;
 }
 
 export const BookshelfView: FC<BookshelfViewProps> = ({
   canEdit,
   bookshelf,
+  editToken = null,
   books,
+  clearBookshelf,
 }) => {
   const { t } = useLanguage();
+  const { openModal, closeModal } = useModal();
   const navigate = useNavigate();
 
   const handleCopyPublicId = async () => {
@@ -32,8 +39,35 @@ export const BookshelfView: FC<BookshelfViewProps> = ({
     }
   };
 
+  const handleDeleteBookshelf = () => {
+    openModal("CONFIRMATION", {
+      title: t("modal.confirmationDeleteBookshelfTitle"),
+      message: t("modal.confirmationDeleteBookshelfMessage"),
+      confirmLabel: t("button.delete"),
+      confirmColor: "danger",
+      onConfirm: async () => {
+        if (!editToken || !clearBookshelf) {
+          toast.error(t("toast.errorOccurredWhileDeletingBookshelf"));
+          closeModal();
+          return;
+        }
+        try {
+          await deleteBookshelf(bookshelf.publicId, editToken);
+          toast.success(t("toast.bookshelfDeletedSuccessfully"));
+          clearBookshelf();
+          closeModal();
+          navigate("/");
+        } catch (error) {
+          console.error(error);
+          toast.error(t("toast.failedToDeleteBookshelf"));
+          closeModal();
+        }
+      },
+    });
+  };
+
   return (
-    <div className="w-full px-10">
+    <div className="w-full px-10 pb-10">
       <div className="max-w-3xl mx-auto py-10 px-4">
         <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
           <div className="text-center sm:text-left max-w-[70%]">
@@ -65,9 +99,7 @@ export const BookshelfView: FC<BookshelfViewProps> = ({
               />
               <Button
                 label={t("button.deleteBookshelf")}
-                onClick={() => {
-                  /* Handle delete bookshelf action */
-                }}
+                onClick={handleDeleteBookshelf}
                 color="danger"
               />
             </div>

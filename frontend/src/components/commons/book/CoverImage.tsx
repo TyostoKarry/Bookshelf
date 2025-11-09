@@ -20,16 +20,16 @@ export const CoverImage: FC<CoverImageProps> = ({
   const { t } = useLanguage();
 
   return (
-    <figure className="flex items-center justify-center aspect-[3/4] mb-3 overflow-hidden rounded-lg bg-gray-200">
+    <figure className="flex items-center justify-center mb-3">
       {coverUrl ? (
         <img
           src={coverUrl}
           alt={title}
-          className={`object-fill ${WIDTH_MAP[width]} h-full`}
+          className={`object-contain ${WIDTH_MAP[width]} h-full rounded-lg shadow-md border border-gray-100`}
         />
       ) : (
         <div
-          className={`flex flex-col ${WIDTH_MAP[width]} h-full items-center justify-center`}
+          className={`flex flex-col aspect-[6/9] ${WIDTH_MAP[width]} h-full items-center justify-center bg-gray-200 rounded-lg shadow-sm`}
         >
           <span className="text-gray-400 text-8xl pb-4">
             {t("common.placeholderQuestionMark")}

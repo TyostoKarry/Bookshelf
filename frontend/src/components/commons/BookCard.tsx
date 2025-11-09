@@ -65,7 +65,7 @@ export const BookCard: FC<BookCardProps> = ({ book, canEdit }) => {
   return (
     <div
       onClick={handleCardClick}
-      className="relative bg-white rounded-xl shadow-sm hover:shadow-lg hover:-translate-y-0.5 transform transition-all p-4 cursor-pointer"
+      className="flex flex-col justify-between relative bg-white rounded-xl shadow-sm hover:shadow-lg hover:-translate-y-0.5 transform transition-all p-4 cursor-pointer"
     >
       <div className="flex justify-between pb-2">
         <div
@@ -99,15 +99,17 @@ export const BookCard: FC<BookCardProps> = ({ book, canEdit }) => {
         )}
       </div>
       <CoverImage coverUrl={coverUrl} title={title} />
-      <h3
-        className="text-lg font-semibold text-gray-900 mb-1 truncate"
-        title={title}
-      >
-        {title}
-      </h3>
-      <p className="text-sm text-gray-700 truncate" title={author}>
-        {author}
-      </p>
+      <div>
+        <h3
+          className="text-lg font-semibold text-gray-900 mb-1 truncate"
+          title={title}
+        >
+          {title}
+        </h3>
+        <p className="text-sm text-gray-700 truncate" title={author}>
+          {author}
+        </p>
+      </div>
     </div>
   );
 };

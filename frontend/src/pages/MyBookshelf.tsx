@@ -6,7 +6,7 @@ import { useLanguage } from "../hooks/useLanguage";
 import { useMyBookshelf } from "../hooks/useMyBookshelf";
 
 export const MyBookshelf: FC = () => {
-  const { editToken, bookshelf, books } = useMyBookshelf();
+  const { editToken, bookshelf, books, clearBookshelf } = useMyBookshelf();
   const { t } = useLanguage();
   const navigate = useNavigate();
 
@@ -21,5 +21,13 @@ export const MyBookshelf: FC = () => {
     return <div>{t("common.loading")}</div>;
   }
 
-  return <BookshelfView bookshelf={bookshelf} books={books} canEdit={true} />;
+  return (
+    <BookshelfView
+      bookshelf={bookshelf}
+      books={books}
+      editToken={editToken}
+      canEdit={true}
+      clearBookshelf={clearBookshelf}
+    />
+  );
 };

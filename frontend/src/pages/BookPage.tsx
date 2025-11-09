@@ -237,7 +237,9 @@ export const BookPage: FC<BookPageProps> = ({ mode }) => {
           mode={mode}
           canEdit={canEdit}
           bookId={bookId}
+          editToken={editToken}
           onSave={handleSave}
+          refreshBookshelf={refreshBookshelf}
           fieldErrors={fieldErrors}
         />
       </article>
