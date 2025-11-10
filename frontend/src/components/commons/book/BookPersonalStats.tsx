@@ -1,8 +1,9 @@
 import { type Dispatch, type FC, type SetStateAction } from "react";
 import { Detail } from "./Detail";
 import { SectionTitle } from "./SectionTitle";
-import FavoriteIcon from "../../../assets/icons/favorite.svg?react";
-import NotFavoriteIcon from "../../../assets/icons/notFavorite.svg?react";
+import { StarRating } from "./StarRating";
+import NotFavoriteIcon from "../../../assets/icons/star-empty.svg?react";
+import FavoriteIcon from "../../../assets/icons/star-full.svg?react";
 import { useLanguage } from "../../../hooks/useLanguage";
 import type { Book } from "../../../types/book";
 import type { BookPageMode } from "../../../types/book-page-mode";
@@ -27,19 +28,16 @@ export const BookPersonalStats: FC<BookPersonalStatsProps> = ({
   return (
     <section className="space-y-3">
       <SectionTitle>{t("bookPage.personalStats")}</SectionTitle>
-      <Detail
-        label={t("bookPage.rating")}
-        value={book.rating}
-        mode={mode}
-        type="number"
-        onChange={(value) => onChange("rating", value)}
-        placeholder={t("placeholders.enterRating")}
-        maxNumber={10}
-        fieldError={fieldErrors.rating}
-        onFocus={() => {
-          setFieldErrors((prev) => ({ ...prev, rating: false }));
-        }}
-      />
+      <div className="flex items-center justify-between border-b border-gray-100 pb-1">
+        <label className="flex-1 items-center text-gray-600 text-sm">
+          {t("bookPage.rating")}
+        </label>
+        <StarRating
+          rating={book.rating ?? 0}
+          mode={mode}
+          onChange={(value) => onChange("rating", Math.round(value))}
+        />
+      </div>
       <Detail
         label={t("bookPage.readCount")}
         value={book.readCount}

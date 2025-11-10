@@ -56,7 +56,7 @@ export const BookPage: FC<BookPageProps> = ({ mode }) => {
         navigate(`/`, { replace: true });
         return;
       }
-      setBook({});
+      setBook({ favorite: false });
       return;
     }
 

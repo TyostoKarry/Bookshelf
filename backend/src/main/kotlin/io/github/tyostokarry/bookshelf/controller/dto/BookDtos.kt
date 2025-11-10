@@ -78,11 +78,9 @@ data class CreateBookDto(
  * Payload for updating an existing book.
  */
 data class UpdateBookDto(
-    @field:NotBlank(message = "Title is required")
-    @field:Size(max = 255, message = "Title cannot exceed 255 characters")
+    @field:Size(min = 1, max = 255, message = "Title cannot be empty or exceed 255 characters")
     val title: String? = null,
-    @field:NotBlank(message = "Author is required")
-    @field:Size(max = 255, message = "Author cannot exceed 255 characters")
+    @field:Size(min = 1, max = 255, message = "Author cannot be empty or exceed 255 characters")
     val author: String? = null,
     @field:Min(1, message = "Pages must be at least 1")
     val pages: Int? = null,

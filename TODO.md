@@ -26,12 +26,12 @@
   - [x] Manual book entry form
   - [x] Submit new book → `POST /books`
 
-- [ ] **Book Detail Page**
+- [x] **Book Detail Page**
 
   - [x] Edit book details (title, author, pages, status, startedAt, finishedAt, rating, notes, etc)
   - [x] Edit book coverUrl
   - [x] Save changes updates database
-  - [ ] Delete book with confirmation modal
+  - [x] Delete book with confirmation modal
 
 - [ ] **Achievements Page**
   - [ ] Fetch `/achievements`
