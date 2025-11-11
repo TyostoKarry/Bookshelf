@@ -1,4 +1,4 @@
-import { type FC } from "react";
+import { type Dispatch, type FC, type SetStateAction } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { deleteBookFromBookshelf } from "../../../api/bookshelves";
@@ -6,6 +6,7 @@ import { useLanguage } from "../../../hooks/useLanguage";
 import { useModal } from "../../../hooks/useModal";
 import type { Book } from "../../../types/book";
 import type { BookPageMode } from "../../../types/book-page-mode";
+import { mergeOpenLibraryBook } from "../../../utils/mergeOpenLibraryBook";
 import { Button } from "../Button";
 
 interface BookPageActionsProps {
@@ -14,6 +15,7 @@ interface BookPageActionsProps {
   canEdit: boolean | null;
   bookId?: string;
   editToken: string | null;
+  setDraftBook?: Dispatch<SetStateAction<Partial<Book>>>;
   onSave: () => void;
   refreshBookshelf: () => Promise<void>;
   fieldErrors: { [key in keyof Book]?: boolean };
@@ -25,6 +27,7 @@ export const BookPageActions: FC<BookPageActionsProps> = ({
   canEdit,
   bookId,
   editToken,
+  setDraftBook,
   onSave,
   refreshBookshelf,
   fieldErrors,
@@ -112,20 +115,52 @@ export const BookPageActions: FC<BookPageActionsProps> = ({
             />
           )}
           {mode === "edit" && (
-            <Button
-              label={t("button.save")}
-              onClick={onSave}
-              disabled={Object.values(fieldErrors).some(Boolean)}
-            />
+            <div className="flex gap-2">
+              <Button
+                label={t("button.updateFromOpenLibrary")}
+                onClick={() => {
+                  if (!setDraftBook) return;
+                  openModal("SEARCH_OPEN_LIBRARY", {
+                    onBookSelect: (openLibBook) => {
+                      setDraftBook((prev) =>
+                        mergeOpenLibraryBook(prev, openLibBook),
+                      );
+                    },
+                  });
+                }}
+                color="neutral"
+              />
+              <Button
+                label={t("button.save")}
+                onClick={onSave}
+                disabled={Object.values(fieldErrors).some(Boolean)}
+              />
+            </div>
           )}
         </div>
       )}
       {mode === "create" && (
-        <Button
-          label={t("button.create")}
-          onClick={onSave}
-          disabled={Object.values(fieldErrors).some(Boolean)}
-        />
+        <div className="flex gap-2">
+          <Button
+            label={t("button.addFromOpenLibrary")}
+            onClick={() => {
+              if (!setDraftBook) return;
+              openModal("SEARCH_OPEN_LIBRARY", {
+                onBookSelect: (openLibBook) => {
+                  setDraftBook((prev) =>
+                    mergeOpenLibraryBook(prev, openLibBook),
+                  );
+                },
+              });
+            }}
+            color="neutral"
+          />
+          <Button
+            label={t("button.create")}
+            onClick={onSave}
+            disabled={Object.values(fieldErrors).some(Boolean)}
+          />
+        </div>
       )}
     </footer>
   );

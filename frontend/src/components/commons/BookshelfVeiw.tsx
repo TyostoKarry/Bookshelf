@@ -9,6 +9,7 @@ import { useLanguage } from "../../hooks/useLanguage";
 import { useModal } from "../../hooks/useModal";
 import type { Book } from "../../types/book";
 import type { Bookshelf } from "../../types/bookshelf";
+import { mergeOpenLibraryBook } from "../../utils/mergeOpenLibraryBook";
 
 interface BookshelfViewProps {
   bookshelf: Bookshelf;
@@ -96,6 +97,20 @@ export const BookshelfView: FC<BookshelfViewProps> = ({
                 onClick={() => {
                   navigate("/books/new");
                 }}
+              />
+              <Button
+                label={t("button.addFromOpenLibrary")}
+                onClick={() =>
+                  openModal("SEARCH_OPEN_LIBRARY", {
+                    onBookSelect: (openLibBook) => {
+                      const newBook = mergeOpenLibraryBook({}, openLibBook);
+                      navigate(`/books/new`, {
+                        state: { book: newBook },
+                      });
+                    },
+                  })
+                }
+                color="neutral"
               />
               <Button
                 label={t("button.deleteBookshelf")}

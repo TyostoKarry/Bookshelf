@@ -3,6 +3,7 @@ import { ConfirmationModal } from "./Confirmation";
 import { CreateBookshelfModal } from "./CreateBookshelfModal";
 import { EnterPublicIdModal } from "./EnterPublicIdModal";
 import { EnterTokenModal } from "./EnterTokenModal";
+import { SearchOpenLibraryModal } from "./SearchOpenLibraryModal";
 import { ShowTokenModal } from "./ShowTokenModal";
 import { type ModalState } from "../../contexts/ModalContext";
 
@@ -29,6 +30,10 @@ export const ModalRoot: FC<ModalRootProps> = ({ modalState }) => {
           confirmColor={modalState.props.confirmColor}
           onConfirm={modalState.props.onConfirm}
         />
+      );
+    case "SEARCH_OPEN_LIBRARY":
+      return (
+        <SearchOpenLibraryModal onBookSelect={modalState.props.onBookSelect} />
       );
     case null:
       return null;

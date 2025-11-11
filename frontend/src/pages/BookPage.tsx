@@ -57,6 +57,7 @@ export const BookPage: FC<BookPageProps> = ({ mode }) => {
         return;
       }
       setBook({ favorite: false });
+      if (passedBook) setBook((prev) => ({ ...prev, ...passedBook }));
       return;
     }
 
@@ -238,6 +239,7 @@ export const BookPage: FC<BookPageProps> = ({ mode }) => {
           canEdit={canEdit}
           bookId={bookId}
           editToken={editToken}
+          setDraftBook={setDraftBook}
           onSave={handleSave}
           refreshBookshelf={refreshBookshelf}
           fieldErrors={fieldErrors}
