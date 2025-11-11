@@ -1,6 +1,7 @@
-import { type FC, useState } from "react";
+import { type FC, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { ModalBase } from "./ModalBase";
 import { getBookshelfByToken } from "../../api/bookshelves";
 import { useLanguage } from "../../hooks/useLanguage";
 import { useModal } from "../../hooks/useModal";
@@ -14,6 +15,11 @@ export const EnterTokenModal: FC = () => {
   const navigate = useNavigate();
   const [token, setToken] = useState("");
   const [rememberToken, setRememberToken] = useState(true);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
 
   const handleSubmit = async () => {
     const trimmedToken = token.trim();
@@ -41,46 +47,45 @@ export const EnterTokenModal: FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-      <div className="bg-white p-6 rounded-xl shadow-xl w-full max-w-md text-center">
-        <h2 className="text-xl font-semibold text-text text-shadow-sm mb-4">
-          {t("modal.enterEditToken")}
-        </h2>
+    <ModalBase>
+      <h2 className="text-xl font-semibold text-text text-shadow-sm mb-4">
+        {t("modal.enterEditToken")}
+      </h2>
+      <input
+        ref={inputRef}
+        type="text"
+        placeholder={t("modal.pasteTokenHere")}
+        className="w-full p-2 border border-gray-300 rounded mb-4"
+        value={token}
+        onChange={(e) => setToken(e.target.value)}
+      />
+      <div className="flex items-center justify-center mb-4 space-x-2">
         <input
-          type="text"
-          placeholder={t("modal.pasteTokenHere")}
-          className="w-full p-2 border border-gray-300 rounded mb-4"
-          value={token}
-          onChange={(e) => setToken(e.target.value)}
+          id="rememberToken"
+          type="checkbox"
+          checked={rememberToken}
+          onChange={() => setRememberToken(!rememberToken)}
+          className="cursor-pointer"
         />
-        <div className="flex items-center justify-center mb-4 space-x-2">
-          <input
-            id="rememberToken"
-            type="checkbox"
-            checked={rememberToken}
-            onChange={() => setRememberToken(!rememberToken)}
-            className="cursor-pointer"
-          />
-          <label
-            htmlFor="rememberToken"
-            className="text-sm text-gray-800 text-shadow-sm select-none cursor-pointer"
-          >
-            {t("modal.rememberToken")}
-          </label>
-        </div>
-        <div className="flex justify-end space-x-2">
-          <Button
-            label={t("button.cancel")}
-            onClick={() => closeModal()}
-            color="danger"
-          />
-          <Button
-            label={t("button.open")}
-            onClick={() => handleSubmit()}
-            disabled={!token.trim()}
-          />
-        </div>
+        <label
+          htmlFor="rememberToken"
+          className="text-sm text-gray-800 text-shadow-sm select-none cursor-pointer"
+        >
+          {t("modal.rememberToken")}
+        </label>
       </div>
-    </div>
+      <div className="flex justify-end space-x-2">
+        <Button
+          label={t("button.cancel")}
+          onClick={() => closeModal()}
+          color="danger"
+        />
+        <Button
+          label={t("button.open")}
+          onClick={() => handleSubmit()}
+          disabled={!token.trim()}
+        />
+      </div>
+    </ModalBase>
   );
 };

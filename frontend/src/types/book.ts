@@ -1,38 +1,52 @@
-export type BookStatus = "WISHLIST" | "READING" | "COMPLETED";
+export const BOOK_STATUS_OPTIONS = [
+  "WISHLIST",
+  "READING",
+  "COMPLETED",
+] as const;
 
-export type Genre =
-  | "UNKNOWN"
-  | "FICTION"
-  | "NONFICTION"
-  | "SCIFI"
-  | "FANTASY"
-  | "BIOGRAPHY"
-  | "HISTORY"
-  | "MYSTERY"
-  | "THRILLER"
-  | "ROMANCE"
-  | "OTHER";
+export type BookStatus = (typeof BOOK_STATUS_OPTIONS)[number];
 
-export type Language =
-  | "UNKNOWN"
-  | "ENGLISH"
-  | "FINNISH"
-  | "GERMAN"
-  | "FRENCH"
-  | "SPANISH"
-  | "SWEDISH"
-  | "ITALIAN"
-  | "JAPANESE"
-  | "PORTUGUESE"
-  | "RUSSIAN"
-  | "CHINESE"
-  | "HINDI"
-  | "ARABIC"
-  | "OTHER";
+export const GENRE_OPTIONS = [
+  "UNKNOWN",
+  "FICTION",
+  "NONFICTION",
+  "SCIFI",
+  "FANTASY",
+  "BIOGRAPHY",
+  "HISTORY",
+  "MYSTERY",
+  "THRILLER",
+  "ROMANCE",
+  "SCIENCE",
+  "TECHNOLOGY",
+  "OTHER",
+] as const;
+
+export type Genre = (typeof GENRE_OPTIONS)[number];
+
+export const LANGUAGE_OPTIONS = [
+  "UNKNOWN",
+  "ENGLISH",
+  "FINNISH",
+  "GERMAN",
+  "FRENCH",
+  "SPANISH",
+  "SWEDISH",
+  "ITALIAN",
+  "JAPANESE",
+  "PORTUGUESE",
+  "RUSSIAN",
+  "CHINESE",
+  "HINDI",
+  "ARABIC",
+  "OTHER",
+] as const;
+
+export type Language = (typeof LANGUAGE_OPTIONS)[number];
 
 export interface Book {
-  id: string;
-  bookshelfId: string;
+  id: number;
+  bookshelfPublicId: string;
 
   title: string;
   author: string;

@@ -75,7 +75,7 @@ class BookshelfController(
         when (val bookshelfExists = bookshelfService.getBookshelfByPublicId(publicId)) {
             is Either.Right -> {
                 val books = bookService.getBooksByBookshelf(bookshelfExists.value.id)
-                ResponseEntity.ok(ApiResponse(data = books.map { it.toDto() }))
+                ResponseEntity.ok(ApiResponse(data = books.map { it.toDto(bookshelfExists.value.publicId) }))
             }
             is Either.Left ->
                 ResponseEntity
@@ -98,7 +98,7 @@ class BookshelfController(
         when (val bookshelfExists = bookshelfService.getBookshelfByToken(token)) {
             is Either.Right -> {
                 val books = bookService.getBooksByBookshelf(bookshelfExists.value.id)
-                ResponseEntity.ok(ApiResponse(data = books.map { it.toDto() }))
+                ResponseEntity.ok(ApiResponse(data = books.map { it.toDto(bookshelfExists.value.publicId) }))
             }
             is Either.Left ->
                 ResponseEntity
@@ -145,7 +145,7 @@ class BookshelfController(
                 }
 
                 val newBook = bookService.saveBook(dto.toEntity(bookshelf.value.id))
-                ResponseEntity.ok(ApiResponse(data = newBook.toDto()))
+                ResponseEntity.ok(ApiResponse(data = newBook.toDto(bookshelf.value.publicId)))
             }
             is Either.Left ->
                 ResponseEntity
@@ -231,7 +231,7 @@ class BookshelfController(
                     val updatedEntity = dto.applyTo(existingBook.value)
                     when (val result = bookService.updateBook(bookId, updatedEntity)) {
                         is Either.Right ->
-                            ResponseEntity.ok(ApiResponse(data = result.value.toDto()))
+                            ResponseEntity.ok(ApiResponse(data = result.value.toDto(bookshelf.value.publicId)))
 
                         is Either.Left ->
                             ResponseEntity.status(404).body(

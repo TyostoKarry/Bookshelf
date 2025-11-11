@@ -2,10 +2,10 @@ package io.github.tyostokarry.bookshelf.controller.dto
 
 import io.github.tyostokarry.bookshelf.entity.Book
 
-fun Book.toDto() =
+fun Book.toDto(bookshelfPublicId: String) =
     BookDto(
         id = id,
-        bookshelfId = bookshelfId,
+        bookshelfPublicId = bookshelfPublicId,
         title = title,
         author = author,
         pages = pages,

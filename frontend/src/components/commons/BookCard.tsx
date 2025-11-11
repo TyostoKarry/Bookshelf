@@ -1,8 +1,10 @@
 import { useState, type FC } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { CoverImage } from "./book";
 import { updateBookInBookshelf } from "../../api/bookshelves";
-import FavoriteIcon from "../../assets/icons/favorite.svg?react";
-import NotFavoriteIcon from "../../assets/icons/notFavorite.svg?react";
+import NotFavoriteIcon from "../../assets/icons/star-empty.svg?react";
+import FavoriteIcon from "../../assets/icons/star-full.svg?react";
 import { useLanguage } from "../../hooks/useLanguage";
 import { useMyBookshelf } from "../../hooks/useMyBookshelf";
 import type { Book } from "../../types/book";
@@ -14,6 +16,7 @@ interface BookCardProps {
 
 export const BookCard: FC<BookCardProps> = ({ book, canEdit }) => {
   const { t } = useLanguage();
+  const navigate = useNavigate();
   const { title, author, coverUrl, favorite, status, id } = book;
   const { editToken, bookshelf, refreshBookshelf } = useMyBookshelf();
   const [updating, setUpdating] = useState(false);
@@ -22,6 +25,12 @@ export const BookCard: FC<BookCardProps> = ({ book, canEdit }) => {
     WISHLIST: "bg-blue-400",
     READING: "bg-yellow-500",
     COMPLETED: "bg-green-500",
+  };
+
+  const handleCardClick = () => {
+    navigate(`/books/${id}`, {
+      state: { book, canEdit },
+    });
   };
 
   const handleToggleFavorite = async () => {
@@ -54,7 +63,10 @@ export const BookCard: FC<BookCardProps> = ({ book, canEdit }) => {
   };
 
   return (
-    <div className="relative bg-white rounded-xl shadow-sm hover:shadow-lg hover:-translate-y-0.5 transform transition-all p-4">
+    <div
+      onClick={handleCardClick}
+      className="flex flex-col justify-between relative bg-white rounded-xl shadow-sm hover:shadow-lg hover:-translate-y-0.5 transform transition-all p-4 cursor-pointer"
+    >
       <div className="flex justify-between pb-2">
         <div
           className={`px-2 py-1 text-xs font-semibold text-white rounded ${statusColors[status]}`}
@@ -86,36 +98,18 @@ export const BookCard: FC<BookCardProps> = ({ book, canEdit }) => {
           <NotFavoriteIcon className="w-5 h-5" />
         )}
       </div>
-      <div className="flex items-center justify-center aspect-[3/4] mb-3 overflow-hidden rounded-lg bg-gray-200">
-        {coverUrl ? (
-          <img
-            src={coverUrl}
-            alt={title}
-            className="object-fill w-full h-full"
-          />
-        ) : (
-          <div className="flex flex-col items-center justify-center">
-            <span className="text-gray-400 text-8xl pb-4">
-              {t("bookCard.placeholderQuestionMark")}
-            </span>
-            <span className="text-gray-400 text-2xl">
-              {t("bookCard.placeholderNoCover")}
-            </span>
-            <span className="text-gray-400 text-2xl">
-              {t("bookCard.placeholderAvailable")}
-            </span>
-          </div>
-        )}
+      <CoverImage coverUrl={coverUrl} title={title} />
+      <div>
+        <h3
+          className="text-lg font-semibold text-gray-900 mb-1 truncate"
+          title={title}
+        >
+          {title}
+        </h3>
+        <p className="text-sm text-gray-700 truncate" title={author}>
+          {author}
+        </p>
       </div>
-      <h3
-        className="text-lg font-semibold text-gray-900 mb-1 truncate"
-        title={title}
-      >
-        {title}
-      </h3>
-      <p className="text-sm text-gray-700 truncate" title={author}>
-        {author}
-      </p>
     </div>
   );
 };

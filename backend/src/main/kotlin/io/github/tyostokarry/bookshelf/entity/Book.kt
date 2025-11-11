@@ -161,6 +161,8 @@ enum class Genre {
     MYSTERY,
     THRILLER,
     ROMANCE,
+    SCIENCE,
+    TECHNOLOGY,
     OTHER,
 }
 

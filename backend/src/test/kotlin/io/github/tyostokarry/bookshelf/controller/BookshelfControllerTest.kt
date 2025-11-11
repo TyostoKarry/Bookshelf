@@ -233,7 +233,7 @@ class BookshelfControllerTest(
             val responseData = response.data!!
             assertEquals(2, responseData.size, "Response should return two books")
             assertEquals(
-                books.map { it.toDto() },
+                books.map { it.toDto(bookshelf.publicId) },
                 responseData,
                 "Response books should match expected DTO representations",
             )
@@ -298,7 +298,7 @@ class BookshelfControllerTest(
             val responseData = response.data!!
             assertEquals(2, responseData.size, "Response should return two books")
             assertEquals(
-                books.map { it.toDto() },
+                books.map { it.toDto(bookshelf.publicId) },
                 responseData,
                 "Response books should match expected DTO representations",
             )
@@ -423,7 +423,7 @@ class BookshelfControllerTest(
 
             assertNotNull(response.data, "Response data should not be null")
             val responseData = response.data!!
-            assertEquals(savedBook.toDto(), responseData, "Response book should match expected DTO representation")
+            assertEquals(savedBook.toDto(bookshelf.publicId), responseData, "Response book should match expected DTO representation")
             assertNull(response.error, "Response error should be null for successful response")
         }
 
@@ -686,7 +686,7 @@ class BookshelfControllerTest(
 
             assertNotNull(response.data, "Response data should not be null")
             val responseData = response.data!!
-            assertEquals(updated.toDto(), responseData, "Response book should match expected DTO representation")
+            assertEquals(updated.toDto(bookshelf.publicId), responseData, "Response book should match expected DTO representation")
             assertNull(response.error, "Response error should be null for successful response")
         }
 
@@ -785,7 +785,7 @@ class BookshelfControllerTest(
                 "Response error message should indicate failed validation",
             )
             assertEquals(
-                "Author cannot exceed 255 characters",
+                "Author cannot be empty or exceed 255 characters",
                 responseError.fieldErrors?.values?.first(),
                 "Response field errors should indicate invalid bookshelf name",
             )

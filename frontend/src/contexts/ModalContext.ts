@@ -13,6 +13,16 @@ export type ModalState =
   | { modalType: "TOKEN"; props: { token: string } }
   | { modalType: "ENTER_TOKEN"; props: EmptyObject }
   | { modalType: "ENTER_ID"; props: EmptyObject }
+  | {
+      modalType: "CONFIRMATION";
+      props: {
+        title: string;
+        message: string;
+        confirmLabel: string;
+        confirmColor?: "success" | "danger" | "neutral";
+        onConfirm: () => void;
+      };
+    }
   | { modalType: null; props: EmptyObject };
 
 export interface ModalContextValue {

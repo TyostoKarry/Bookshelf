@@ -6,6 +6,7 @@ import arrow.core.right
 import io.github.tyostokarry.bookshelf.entity.Bookshelf
 import io.github.tyostokarry.bookshelf.error.BookshelfError
 import io.github.tyostokarry.bookshelf.repository.BookshelfRepository
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 @Service
@@ -14,6 +15,9 @@ class BookshelfService(
     private val bookshelfRepository: BookshelfRepository,
 ) {
     fun getAllBookshelves(): List<Bookshelf> = bookshelfRepository.findAll()
+
+    fun getBookshelfById(id: Long): Either<BookshelfError, Bookshelf> =
+        bookshelfRepository.findByIdOrNull(id)?.right() ?: BookshelfError.NotFoundById(id).left()
 
     fun getBookshelfByPublicId(publicId: String): Either<BookshelfError, Bookshelf> =
         bookshelfRepository.findByPublicId(publicId)?.right() ?: BookshelfError.NotFoundByPublicId(publicId).left()

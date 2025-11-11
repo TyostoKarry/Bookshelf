@@ -11,25 +11,27 @@
 - [ ] **Routing**
 
   - [x] Install + set up React Router
-  - [ ] Create routes: `/bookshelf`, `/add`, `/detail/:id`, `/achievements`
+  - [x] Create routes: `/my/bookshelf`, `/bookshelves/:publicId`, `/books/:bookId`, `/books/:bookId/edit`, `/books/new`
+  - [ ] Create routes: `/achievements`
 
-- [ ] **Bookshelf Page**
+- [x] **Bookshelf Page**
 
   - [x] Fetch `/books`
-  - [ ] Display covers, author and title grouped by status (Wishlist | Reading | Completed)
-  - [ ] Show Google Books coverUrl, else placeholder image
+  - [x] Display covers, author, title, status and favorite status
+  - [x] Show Google Books coverUrl, else placeholder image
 
 - [ ] **Add Book Page**
 
   - [ ] Integrate Google Books `/search`
-  - [ ] Manual book entry form
-  - [ ] Submit new book → `POST /books`
+  - [x] Manual book entry form
+  - [x] Submit new book → `POST /books`
 
-- [ ] **Book Detail Page**
+- [x] **Book Detail Page**
 
-  - [ ] Edit book status (Wishlist → Reading → Completed)
-  - [ ] Edit rating (1–5), notes
-  - [ ] Save changes → `PUT /books/{id}`
+  - [x] Edit book details (title, author, pages, status, startedAt, finishedAt, rating, notes, etc)
+  - [x] Edit book coverUrl
+  - [x] Save changes updates database
+  - [x] Delete book with confirmation modal
 
 - [ ] **Achievements Page**
   - [ ] Fetch `/achievements`
@@ -49,9 +51,10 @@
 
   - [x] Create `Book` entity (id, title, author, pages, coverUrl, status, startedAt, finishedAt, rating, notes)
   - [x] `GET /books` → list all books
-  - [x] `POST /books` → add new book
-  - [x] `PUT /books/{id}` → update book
-  - [x] `DELETE /books/{id}` → remove book
+  - [x] `GET /books/{id}` → list book by id
+  - [x] `POST /bookshelves/{bookshelfPublicId}/books` → add new book to bookshelf
+  - [x] `PUT /bookshelves/{bookshelfPublicId}/books/{bookId}` → update book in bookshelf
+  - [x] `DELETE /bookshelves/{bookshelfPublicId}/books/{id}` → remove book from bookshelf
 
 - [x] **API Key Authentication**
 
@@ -96,7 +99,7 @@
 ## Deliverable MVP
 
 - [ ] Search & add books from Google API
-- [ ] Add books manually
-- [ ] Update status, rating, notes
-- [ ] View covers grouped by status
+- [x] Add books manually
+- [x] Update details (title, author, status, rating, notes, etc)
+- [x] View BookCards (covers, titles and authors) in bookshelf view
 - [ ] Track infinite-tier achievements
