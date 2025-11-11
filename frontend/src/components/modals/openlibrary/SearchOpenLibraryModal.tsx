@@ -26,12 +26,13 @@ export const SearchOpenLibraryModal: FC<SearchOpenLibraryModalProps> = ({
 
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<OpenLibrarySearchBook[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [selectedBookLoading, setSelectedBookLoading] = useState(false);
   const [selectedBook, setSelectedBook] =
     useState<OpenLibraryImportBookDetails | null>(null);
 
   const handleSearch = useCallback(async () => {
-    setLoading(true);
+    setSearchLoading(true);
     try {
       const data = await searchOpenLibrary(query);
       setResults(data);
@@ -40,7 +41,7 @@ export const SearchOpenLibraryModal: FC<SearchOpenLibraryModalProps> = ({
       console.error("Error searching Open Library:", error);
       toast.error(t("toast.openLibrarySearchError"));
     } finally {
-      setLoading(false);
+      setSearchLoading(false);
     }
   }, [query, t]);
 
@@ -59,7 +60,7 @@ export const SearchOpenLibraryModal: FC<SearchOpenLibraryModalProps> = ({
   };
 
   const handleSelectBook = async (book: OpenLibrarySearchBook) => {
-    setLoading(true);
+    setSelectedBookLoading(true);
     try {
       const importBook = await buildOpenLibraryImport(book);
       setSelectedBook(importBook);
@@ -68,7 +69,7 @@ export const SearchOpenLibraryModal: FC<SearchOpenLibraryModalProps> = ({
       toast.error(t("toast.openLibraryFetchBookError"));
       setSelectedBook(null);
     } finally {
-      setLoading(false);
+      setSelectedBookLoading(false);
     }
   };
 
@@ -89,7 +90,8 @@ export const SearchOpenLibraryModal: FC<SearchOpenLibraryModalProps> = ({
           query={query}
           setQuery={setQuery}
           results={results}
-          loading={loading}
+          searchLoading={searchLoading}
+          selectedBookLoading={selectedBookLoading}
           onSearch={handleSearch}
           onSelectBook={handleSelectBook}
         />

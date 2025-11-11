@@ -2,6 +2,7 @@
   "common": {
     "appName": "Bookshelf",
     "bookshelfNotFound": "Bookshelf not found",
+    "close": "Close",
     "coverImageFor": "Cover image for",
     "coverNotProvided": "Cover not provided",
     "invalidBookshelfPublicId": "Invalid Bookshelf Public ID",
@@ -102,16 +103,18 @@
     "enterTitle": "Enter book title"
   },
   "searchOpenLibrary": {
+    "authorsToggle": "Authors",
     "confirmImportTitle": "Import this book from Open Library?",
+    "coverUrlToggle": "Cover Image",
+    "descriptionToggle": "Description",
     "firstPublished": "First published",
+    "loadingBookDetails": "Loading book details...",
+    "noResults": "No results found in Open Library.",
+    "publishYearToggle": "Publish Year",
     "searchPlaceholder": "Search by title, author, ISBN, etc.",
     "selectFieldsToImport": "Select fields to import",
-    "titleToggle": "Title",
-    "authorsToggle": "Authors",
-    "publishYearToggle": "Publish Year",
-    "descriptionToggle": "Description",
-    "coverUrlToggle": "Cover Image",
     "title": "Search Open Library",
+    "titleToggle": "Title",
     "unknownAuthor": "Unknown Author"
   },
   "toast": {

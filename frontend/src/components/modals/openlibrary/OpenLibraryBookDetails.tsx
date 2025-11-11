@@ -1,5 +1,7 @@
 import { useState, type FC } from "react";
+import CrossIcon from "../../../assets/icons/cross.svg?react";
 import { useLanguage } from "../../../hooks/useLanguage";
+import { useModal } from "../../../hooks/useModal";
 import type { OpenLibraryImportBookDetails } from "../../../types/openlibrary";
 import { Button } from "../../commons/Button";
 
@@ -23,6 +25,7 @@ export const OpenLibraryBookDetails: FC<OpenLibraryBookDetailsProps> = ({
   onConfirm,
 }) => {
   const { t } = useLanguage();
+  const { closeModal } = useModal();
 
   const [selectedFields, setSelectedFields] = useState({
     title: true,
@@ -46,8 +49,15 @@ export const OpenLibraryBookDetails: FC<OpenLibraryBookDetailsProps> = ({
   };
 
   return (
-    <>
-      <h3 className="text-lg font-semibold text-gray-800 border-b border-gray-400 pb-2 mb-4">
+    <div className="relative">
+      <button
+        onClick={closeModal}
+        aria-label={t("common.close")}
+        className="absolute top-0 right-0 text-gray-700 hover:text-gray-900 hover:bg-gray-200 rounded-xl p-1 transition-colors active:scale-95"
+      >
+        <CrossIcon width={22} height={22} strokeWidth={2.5} />
+      </button>
+      <h3 className="text-lg font-semibold text-gray-800 border-b border-gray-400 pb-4 mb-4">
         {t("searchOpenLibrary.confirmImportTitle")}
       </h3>
 
@@ -138,6 +148,6 @@ export const OpenLibraryBookDetails: FC<OpenLibraryBookDetailsProps> = ({
           color="success"
         />
       </div>
-    </>
+    </div>
   );
 };

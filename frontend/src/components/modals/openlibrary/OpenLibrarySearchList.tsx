@@ -1,5 +1,7 @@
 import { type FC } from "react";
+import CrossIcon from "../../../assets/icons/cross.svg?react";
 import { useLanguage } from "../../../hooks/useLanguage";
+import { useModal } from "../../../hooks/useModal";
 import type { OpenLibrarySearchBook } from "../../../types/openlibrary";
 import { Button } from "../../commons/Button";
 
@@ -7,7 +9,8 @@ interface OpenLibrarySearchListProps {
   query: string;
   setQuery: (query: string) => void;
   results: OpenLibrarySearchBook[];
-  loading: boolean;
+  searchLoading: boolean;
+  selectedBookLoading: boolean;
   onSearch: () => void;
   onSelectBook: (book: OpenLibrarySearchBook) => void;
 }
@@ -16,14 +19,34 @@ export const OpenLibrarySearchList: FC<OpenLibrarySearchListProps> = ({
   query,
   setQuery,
   results,
-  loading,
+  searchLoading,
+  selectedBookLoading,
   onSearch,
   onSelectBook,
 }) => {
   const { t } = useLanguage();
+  const { closeModal } = useModal();
+
+  if (selectedBookLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-10 gap-3">
+        <div className="h-10 w-10 border-4 border-gray-400 border-t-transparent rounded-full animate-spin" />
+        <p className="text-gray-600">
+          {t("searchOpenLibrary.loadingBookDetails")}
+        </p>
+      </div>
+    );
+  }
 
   return (
-    <>
+    <div className="relative">
+      <button
+        onClick={closeModal}
+        aria-label={t("common.close")}
+        className="absolute top-0 right-0 text-gray-700 hover:text-gray-900 hover:bg-gray-200 rounded-xl p-1 transition-colors active:scale-95"
+      >
+        <CrossIcon width={22} height={22} strokeWidth={2.5} />
+      </button>
       <h2 className="text-xl font-semibold text-text mb-3">
         {t("searchOpenLibrary.title")}
       </h2>
@@ -38,13 +61,18 @@ export const OpenLibrarySearchList: FC<OpenLibrarySearchListProps> = ({
         <Button
           label={t("button.search")}
           onClick={onSearch}
-          disabled={loading || !query.trim()}
+          disabled={searchLoading || !query.trim()}
         />
       </div>
 
-      {loading && <p className="text-gray-600">{t("common.loading")}</p>}
+      {searchLoading && (
+        <div className="flex flex-col items-center justify-center py-10 gap-3">
+          <div className="h-10 w-10 border-4 border-gray-400 border-t-transparent rounded-full animate-spin" />
+          <p className="text-gray-600">{t("common.loading")}</p>
+        </div>
+      )}
 
-      {!loading && results.length > 0 && (
+      {!searchLoading && results.length > 0 && (
         <ul className="max-h-96 overflow-y-auto space-y-2 mt-2">
           {results.map((bookFromList) => (
             <li
@@ -85,6 +113,12 @@ export const OpenLibrarySearchList: FC<OpenLibrarySearchListProps> = ({
           ))}
         </ul>
       )}
-    </>
+
+      {!searchLoading && results.length === 0 && query.trim() && (
+        <p className="text-gray-500 italic mt-6 text-center">
+          {t("searchOpenLibrary.noResults")}
+        </p>
+      )}
+    </div>
   );
 };
