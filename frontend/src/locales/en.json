@@ -2,6 +2,7 @@
   "common": {
     "appName": "Bookshelf",
     "bookshelfNotFound": "Bookshelf not found",
+    "close": "Close",
     "coverImageFor": "Cover image for",
     "coverNotProvided": "Cover not provided",
     "invalidBookshelfPublicId": "Invalid Bookshelf Public ID",
@@ -41,6 +42,8 @@
   },
   "button": {
     "addBook": "Add Book",
+    "addFromOpenLibrary": "Add from Open Library",
+    "back": "Back",
     "backToBookshelf": "Back to Bookshelf",
     "cancel": "Cancel",
     "confirm": "Confirm",
@@ -52,11 +55,14 @@
     "delete": "Delete",
     "edit": "Edit",
     "gotIt": "Got it!",
+    "importBook": "Import Book",
     "markAsFavorite": "Mark as Favorite",
     "open": "Open",
     "openMyBookshelf": "Open My Bookshelf",
     "save": "Save",
+    "search": "Search",
     "unmarkAsFavorite": "Unmark as Favorite",
+    "searchFromOpenLibrary": "Search from Open Library",
     "visitBookshelf": "Visit Bookshelf"
   },
   "home": {
@@ -96,6 +102,21 @@
     "enterReadCount": "Enter how many times you've read this book",
     "enterTitle": "Enter book title"
   },
+  "searchOpenLibrary": {
+    "authorsToggle": "Authors",
+    "confirmImportTitle": "Import this book from Open Library?",
+    "coverUrlToggle": "Cover Image",
+    "descriptionToggle": "Description",
+    "firstPublished": "First published",
+    "loadingBookDetails": "Loading book details...",
+    "noResults": "No results found in Open Library.",
+    "publishYearToggle": "Publish Year",
+    "searchPlaceholder": "Search by title, author, ISBN, etc.",
+    "selectFieldsToImport": "Select fields to import",
+    "title": "Search Open Library",
+    "titleToggle": "Title",
+    "unknownAuthor": "Unknown Author"
+  },
   "toast": {
     "anErrorOccurred": "An error occurred",
     "book": "Book",
@@ -120,6 +141,9 @@
     "noTokenFound": "No token found.",
     "notLoggedInToCreateBook": "You must be logged in to create a book.",
     "notLoggedInToSaveChanges": "You must be logged in to save changes.",
+    "openLibraryFetchBookError": "Error fetching book details from Open Library. Please try again.",
+    "openLibraryNoResults": "No results found in Open Library.",
+    "openLibrarySearchError": "Error searching Open Library. Please try again.",
     "publicIdCopied": "Public ID copied to clipboard",
     "publicIdCopyFailed": "Failed to copy Public ID to clipboard",
     "removedFromFavorites": "Removed from favorites:",

@@ -1,5 +1,6 @@
 import { createContext } from "react";
 import type { EmptyObject } from "../types/emptyObject";
+import type { OpenLibraryImportBookDetails } from "../types/openlibrary";
 
 export type ModalType =
   | "CREATE_BOOKSHELF"
@@ -22,6 +23,10 @@ export type ModalState =
         confirmColor?: "success" | "danger" | "neutral";
         onConfirm: () => void;
       };
+    }
+  | {
+      modalType: "SEARCH_OPEN_LIBRARY";
+      props: { onBookSelect: (book: OpenLibraryImportBookDetails) => void };
     }
   | { modalType: null; props: EmptyObject };
 
