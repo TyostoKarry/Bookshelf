@@ -785,7 +785,7 @@ class BookshelfControllerTest(
                 "Response error message should indicate failed validation",
             )
             assertEquals(
-                "Author cannot exceed 255 characters",
+                "Author cannot be empty or exceed 255 characters",
                 responseError.fieldErrors?.values?.first(),
                 "Response field errors should indicate invalid bookshelf name",
             )
