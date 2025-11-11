@@ -117,7 +117,7 @@ export const BookPageActions: FC<BookPageActionsProps> = ({
           {mode === "edit" && (
             <div className="flex gap-2">
               <Button
-                label={t("button.updateFromOpenLibrary")}
+                label={t("button.searchFromOpenLibrary")}
                 onClick={() => {
                   if (!setDraftBook) return;
                   openModal("SEARCH_OPEN_LIBRARY", {
@@ -142,7 +142,7 @@ export const BookPageActions: FC<BookPageActionsProps> = ({
       {mode === "create" && (
         <div className="flex gap-2">
           <Button
-            label={t("button.addFromOpenLibrary")}
+            label={t("button.searchFromOpenLibrary")}
             onClick={() => {
               if (!setDraftBook) return;
               openModal("SEARCH_OPEN_LIBRARY", {

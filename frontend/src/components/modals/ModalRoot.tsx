@@ -3,7 +3,7 @@ import { ConfirmationModal } from "./Confirmation";
 import { CreateBookshelfModal } from "./CreateBookshelfModal";
 import { EnterPublicIdModal } from "./EnterPublicIdModal";
 import { EnterTokenModal } from "./EnterTokenModal";
-import { SearchOpenLibraryModal } from "./SearchOpenLibraryModal";
+import { SearchOpenLibraryModal } from "./openlibrary/SearchOpenLibraryModal";
 import { ShowTokenModal } from "./ShowTokenModal";
 import { type ModalState } from "../../contexts/ModalContext";
 

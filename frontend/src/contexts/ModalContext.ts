@@ -1,6 +1,6 @@
 import { createContext } from "react";
 import type { EmptyObject } from "../types/emptyObject";
-import type { OpenLibrarySearchBook } from "../types/openLibrary";
+import type { OpenLibraryImportBookDetails } from "../types/openlibrary";
 
 export type ModalType =
   | "CREATE_BOOKSHELF"
@@ -26,7 +26,7 @@ export type ModalState =
     }
   | {
       modalType: "SEARCH_OPEN_LIBRARY";
-      props: { onBookSelect: (book: OpenLibrarySearchBook) => void };
+      props: { onBookSelect: (book: OpenLibraryImportBookDetails) => void };
     }
   | { modalType: null; props: EmptyObject };
 

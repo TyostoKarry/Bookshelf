@@ -1,9 +1,9 @@
 import type { Book } from "../types/book";
-import type { OpenLibrarySearchBook } from "../types/openLibrary";
+import type { OpenLibraryImportBookDetails } from "../types/openlibrary";
 
 export function mergeOpenLibraryBook(
   draft: Partial<Book>,
-  imported: OpenLibrarySearchBook,
+  imported: OpenLibraryImportBookDetails,
 ): Partial<Book> {
   return {
     ...draft,
@@ -13,5 +13,6 @@ export function mergeOpenLibraryBook(
       ? `${imported.publishYear}-01-01`
       : (draft.publishedDate ?? null),
     coverUrl: imported.coverUrl ?? draft.coverUrl ?? null,
+    description: imported.description ?? draft.description ?? null,
   };
 }
