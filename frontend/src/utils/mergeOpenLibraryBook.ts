@@ -1,10 +1,10 @@
-import type { Book } from "../types/book";
 import type { OpenLibraryImportBookDetails } from "../types/openlibrary";
+import type { BookForm } from "../validation/bookFormSchema";
 
 export function mergeOpenLibraryBook(
-  draft: Partial<Book>,
+  draft: BookForm,
   imported: OpenLibraryImportBookDetails,
-): Partial<Book> {
+): BookForm {
   return {
     ...draft,
     title: imported.title ?? draft.title,

@@ -1,28 +1,28 @@
-import { type Dispatch, type FC, type SetStateAction } from "react";
+import { type FC } from "react";
+import { type UseFormRegister, type FieldErrors } from "react-hook-form";
 import { Detail } from "./Detail";
 import { SectionTitle } from "./SectionTitle";
 import { useLanguage } from "../../../hooks/useLanguage";
 import {
-  type Book,
   GENRE_OPTIONS,
   LANGUAGE_OPTIONS,
+  type Book,
 } from "../../../types/book";
 import type { BookPageMode } from "../../../types/book-page-mode";
+import type { BookForm } from "../../../validation/bookFormSchema";
 
 interface BookMetadataProps {
   book: Partial<Book>;
   mode: BookPageMode;
-  onChange: (key: keyof Book, value: string | number | boolean | null) => void;
-  fieldErrors: { [key in keyof Book]?: boolean };
-  setFieldErrors: Dispatch<SetStateAction<{ [key in keyof Book]?: boolean }>>;
+  register: UseFormRegister<BookForm>;
+  errors: FieldErrors<BookForm>;
 }
 
 export const BookMetadata: FC<BookMetadataProps> = ({
   book,
   mode,
-  onChange,
-  fieldErrors,
-  setFieldErrors,
+  register,
+  errors,
 }) => {
   const { t } = useLanguage();
 
@@ -39,38 +39,34 @@ export const BookMetadata: FC<BookMetadataProps> = ({
           mode={mode}
           type="select"
           options={GENRE_OPTIONS}
-          onChange={(value) => onChange("genre", value)}
+          error={errors.genre?.message}
+          register={register("genre")}
         />
         <Detail
           label={t("bookPage.pages")}
           value={book.pages}
           mode={mode}
           type="number"
-          onChange={(value) => onChange("pages", value)}
           placeholder={t("placeholders.enterPages")}
-          fieldError={fieldErrors.pages}
-          onFocus={() => {
-            setFieldErrors((prev) => ({ ...prev, pages: false }));
-          }}
+          error={errors.pages?.message}
+          register={register("pages")}
         />
         <Detail
           label={t("bookPage.publisher")}
           value={book.publisher}
           mode={mode}
           type="text"
-          onChange={(value) => onChange("publisher", value)}
           placeholder={t("placeholders.enterPublisherName")}
-          fieldError={fieldErrors.publisher}
-          onFocus={() => {
-            setFieldErrors((prev) => ({ ...prev, publisher: false }));
-          }}
+          error={errors.publisher?.message}
+          register={register("publisher")}
         />
         <Detail
           label={t("bookPage.published")}
           value={book.publishedDate}
           mode={mode}
           type="date"
-          onChange={(value) => onChange("publishedDate", value)}
+          error={errors.publishedDate?.message}
+          register={register("publishedDate")}
         />
         <Detail
           label={t("bookPage.language")}
@@ -78,19 +74,17 @@ export const BookMetadata: FC<BookMetadataProps> = ({
           mode={mode}
           type="select"
           options={LANGUAGE_OPTIONS}
-          onChange={(value) => onChange("language", value)}
+          error={errors.language?.message}
+          register={register("language")}
         />
         <Detail
           label={t("bookPage.isbn13")}
           value={book.isbn13}
           mode={mode}
           type="text"
-          onChange={(value) => onChange("isbn13", value)}
           placeholder={t("placeholders.enterIsbn13")}
-          fieldError={fieldErrors.isbn13}
-          onFocus={() => {
-            setFieldErrors((prev) => ({ ...prev, isbn13: false }));
-          }}
+          error={errors.isbn13?.message}
+          register={register("isbn13")}
         />
       </div>
     </section>

@@ -2,11 +2,15 @@ import { type FC } from "react";
 
 interface FieldErrorMessageProps {
   message?: string;
+  align?: "left" | "right";
 }
 
-export const FieldErrorMessage: FC<FieldErrorMessageProps> = ({ message }) => (
+export const FieldErrorMessage: FC<FieldErrorMessageProps> = ({
+  message,
+  align = "left",
+}) => (
   <p
-    className={`min-h-[1rem] text-left pl-2 text-xs transition-opacity duration-200 ${
+    className={`min-h-[1rem] ${align === "left" ? "text-left" : "text-right"} pl-2 text-xs transition-opacity duration-200 ${
       message ? "text-red-400 opacity-100" : "opacity-0"
     }`}
   >

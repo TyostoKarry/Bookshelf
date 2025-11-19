@@ -1,23 +1,24 @@
-import { type Dispatch, type FC, type SetStateAction } from "react";
+import { type FC } from "react";
+import type { FieldErrors, UseFormRegister } from "react-hook-form";
 import { CoverImage } from "./CoverImage";
 import { useLanguage } from "../../../hooks/useLanguage";
 import type { Book } from "../../../types/book";
 import type { BookPageMode } from "../../../types/book-page-mode";
+import type { BookForm } from "../../../validation/bookFormSchema";
+import { FieldErrorMessage } from "../FieldErrorMessage";
 
 interface BookPageHeaderProps {
   book: Partial<Book>;
   mode: BookPageMode;
-  onChange: (key: keyof Book, value: string | null) => void;
-  fieldErrors: { [key in keyof Book]?: boolean };
-  setFieldErrors: Dispatch<SetStateAction<{ [key in keyof Book]?: boolean }>>;
+  register: UseFormRegister<BookForm>;
+  errors: FieldErrors<BookForm>;
 }
 
 export const BookPageHeader: FC<BookPageHeaderProps> = ({
   book,
   mode,
-  onChange,
-  fieldErrors,
-  setFieldErrors,
+  register,
+  errors,
 }) => {
   const { t } = useLanguage();
 
@@ -26,66 +27,74 @@ export const BookPageHeader: FC<BookPageHeaderProps> = ({
       <div className="flex flex-col">
         <CoverImage coverUrl={book.coverUrl} title={book.title} width="small" />
         {mode !== "view" && (
-          <input
-            type="text"
-            className="mt-2 text-sm text-gray-700 border border-gray-300 rounded-md p-2"
-            value={book.coverUrl || ""}
-            placeholder={t("placeholders.enterCoverImageUrl")}
-            onChange={(value) => onChange("coverUrl", value.target.value)}
-          />
+          <div className="flex flex-col">
+            <input
+              type="text"
+              className={`mt-2 text-sm text-gray-700 border ${errors.coverUrl ? "border-red-500" : "border-gray-300"} rounded-md p-2`}
+              placeholder={t("placeholders.enterCoverImageUrl")}
+              {...register("coverUrl")}
+            />
+            <FieldErrorMessage
+              message={errors.coverUrl?.message}
+              align="right"
+            />
+          </div>
         )}
       </div>
       <section className="flex-1 flex flex-col">
-        {mode === "view" ? (
-          <h1 className="text-3xl font-bold text-gray-900 leading-tight">
-            {book.title}
-          </h1>
-        ) : (
-          <input
-            type="text"
-            className={`text-3xl font-bold text-gray-900 leading-tight border ${fieldErrors.title ? "border-red-500" : "border-gray-300"} rounded-md p-2 mb-2`}
-            value={book.title || ""}
-            placeholder={t("placeholders.enterTitle")}
-            onChange={(value) => onChange("title", value.target.value)}
-            onFocus={() => {
-              setFieldErrors((prev) => ({ ...prev, title: false }));
-            }}
-          />
-        )}
-        {mode === "view" ? (
-          <h2 className="text-xl text-gray-700 mb-4">{book.author}</h2>
-        ) : (
-          <input
-            type="text"
-            className={`text-xl text-gray-700 mb-4 border ${fieldErrors.author ? "border-red-500" : "border-gray-300"} rounded-md p-2`}
-            value={book.author || ""}
-            placeholder={t("placeholders.enterAuthorName")}
-            onChange={(value) => onChange("author", value.target.value)}
-            onFocus={() =>
-              setFieldErrors((prev) => ({ ...prev, author: false }))
-            }
-          />
-        )}
-        <h3 className="text-sm font-medium text-gray-600 mb-1">
-          {t("bookPage.description")}:
-        </h3>
-        {mode === "view" ? (
-          <p
-            className={`${book.description ? "text-gray-800" : "text-gray-500"} leading-relaxed flex-grow`}
-          >
-            {book.description || t("bookPage.noDescription")}
-          </p>
-        ) : (
-          <textarea
-            className={`w-full h-full border ${fieldErrors.description ? "border-red-500" : "border-gray-300"} rounded-md p-2 text-sm text-gray-800 resize-none`}
-            value={book.description || ""}
-            placeholder={t("placeholders.enterDescription")}
-            onChange={(value) => onChange("description", value.target.value)}
-            onFocus={() =>
-              setFieldErrors((prev) => ({ ...prev, description: false }))
-            }
-          />
-        )}
+        <div className="flex flex-col mb-2">
+          {mode === "view" ? (
+            <h1 className="text-3xl font-bold text-gray-900 leading-tight">
+              {book.title}
+            </h1>
+          ) : (
+            <input
+              type="text"
+              className={`text-3xl font-bold text-gray-900 leading-tight border ${errors.title ? "border-red-500" : "border-gray-300"} rounded-md p-2`}
+              placeholder={t("placeholders.enterTitle")}
+              {...register("title")}
+            />
+          )}
+          {mode !== "view" && (
+            <FieldErrorMessage message={errors.title?.message} />
+          )}
+        </div>
+        <div className="flex flex-col mb-4">
+          {mode === "view" ? (
+            <h2 className="text-xl text-gray-700">{book.author}</h2>
+          ) : (
+            <input
+              type="text"
+              className={`text-xl text-gray-700 border ${errors.author ? "border-red-500" : "border-gray-300"} rounded-md p-2`}
+              placeholder={t("placeholders.enterAuthorName")}
+              {...register("author")}
+            />
+          )}
+          {mode !== "view" && (
+            <FieldErrorMessage message={errors.author?.message} />
+          )}
+        </div>
+        <div className="flex flex-col flex-grow">
+          <h3 className="text-sm font-medium text-gray-600 mb-1">
+            {t("bookPage.description")}:
+          </h3>
+          {mode === "view" ? (
+            <p
+              className={`${book.description ? "text-gray-800" : "text-gray-500"} leading-relaxed flex-grow`}
+            >
+              {book.description || t("bookPage.noDescription")}
+            </p>
+          ) : (
+            <textarea
+              className={`w-full h-full border ${errors.description ? "border-red-500" : "border-gray-300"} rounded-md p-2 text-sm text-gray-800 resize-none`}
+              placeholder={t("placeholders.enterDescription")}
+              {...register("description")}
+            />
+          )}
+          {mode !== "view" && (
+            <FieldErrorMessage message={errors.description?.message} />
+          )}
+        </div>
       </section>
     </header>
   );

@@ -12,4 +12,4 @@ export const bookshelfFormSchema = z.object({
     .optional(),
 });
 
-export type BookshelfFormSchema = z.infer<typeof bookshelfFormSchema>;
+export type BookshelfForm = z.infer<typeof bookshelfFormSchema>;

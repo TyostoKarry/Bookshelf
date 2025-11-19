@@ -10,7 +10,7 @@ import { useModal } from "../../hooks/useModal";
 import { useMyBookshelf } from "../../hooks/useMyBookshelf";
 import {
   bookshelfFormSchema,
-  type BookshelfFormSchema,
+  type BookshelfForm,
 } from "../../validation/bookshelfFormSchema";
 import { Button } from "../commons/Button";
 import { FieldErrorMessage } from "../commons/FieldErrorMessage";
@@ -27,7 +27,7 @@ export const CreateBookshelfModal: FC = () => {
     watch,
     formState: { errors, isSubmitting },
     reset,
-  } = useForm<BookshelfFormSchema>({
+  } = useForm<BookshelfForm>({
     resolver: zodResolver(bookshelfFormSchema),
     defaultValues: {
       name: "",
@@ -38,7 +38,7 @@ export const CreateBookshelfModal: FC = () => {
   const nameValue = watch("name") ?? "";
   const descriptionValue = watch("description") ?? "";
 
-  const onSubmit = async (data: BookshelfFormSchema) => {
+  const onSubmit = async (data: BookshelfForm) => {
     try {
       const newBookshelf = await createBookshelf({
         name: data.name,

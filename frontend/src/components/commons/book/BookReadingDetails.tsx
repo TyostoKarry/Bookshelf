@@ -1,24 +1,24 @@
-import { type Dispatch, type FC, type SetStateAction } from "react";
+import { type FC } from "react";
+import type { FieldErrors, UseFormRegister } from "react-hook-form";
 import { Detail } from "./Detail";
 import { SectionTitle } from "./SectionTitle";
 import { useLanguage } from "../../../hooks/useLanguage";
 import { BOOK_STATUS_OPTIONS, type Book } from "../../../types/book";
 import type { BookPageMode } from "../../../types/book-page-mode";
+import type { BookForm } from "../../../validation/bookFormSchema";
 
 interface BookReadingDetailsProps {
   book: Partial<Book>;
   mode: BookPageMode;
-  onChange: (key: keyof Book, value: string | number | boolean | null) => void;
-  fieldErrors: { [key in keyof Book]?: boolean };
-  setFieldErrors: Dispatch<SetStateAction<{ [key in keyof Book]?: boolean }>>;
+  register: UseFormRegister<BookForm>;
+  errors: FieldErrors<BookForm>;
 }
 
 export const BookReadingDetails: FC<BookReadingDetailsProps> = ({
   book,
   mode,
-  onChange,
-  fieldErrors,
-  setFieldErrors,
+  register,
+  errors,
 }) => {
   const { t } = useLanguage();
 
@@ -31,33 +31,33 @@ export const BookReadingDetails: FC<BookReadingDetailsProps> = ({
         mode={mode}
         type="select"
         options={BOOK_STATUS_OPTIONS}
-        onChange={(value) => onChange("status", value)}
+        error={errors.status?.message}
+        register={register("status")}
       />
       <Detail
         label={t("bookPage.progress")}
         value={book.progress}
         mode={mode}
         type="number"
-        onChange={(value) => onChange("progress", value)}
         placeholder={t("placeholders.enterProgress")}
-        fieldError={fieldErrors.progress}
-        onFocus={() => {
-          setFieldErrors((prev) => ({ ...prev, progress: false }));
-        }}
+        error={errors.progress?.message}
+        register={register("progress", { valueAsNumber: true })}
       />
       <Detail
         label={t("bookPage.startedAt")}
         value={book.startedAt}
         mode={mode}
         type="date"
-        onChange={(value) => onChange("startedAt", value)}
+        error={errors.startedAt?.message}
+        register={register("startedAt")}
       />
       <Detail
         label={t("bookPage.finishedAt")}
         value={book.finishedAt}
         mode={mode}
         type="date"
-        onChange={(value) => onChange("finishedAt", value)}
+        error={errors.finishedAt?.message}
+        register={register("finishedAt")}
       />
     </section>
   );
