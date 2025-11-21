@@ -29,7 +29,7 @@ fun CreateBookshelfDto.toEntity() =
 
 fun UpdateBookshelfDto.applyTo(bookshelf: Bookshelf): Bookshelf {
     name?.let { bookshelf.name = it }
-    description?.let { bookshelf.description = it }
+    bookshelf.description = this.description
 
     return bookshelf
 }

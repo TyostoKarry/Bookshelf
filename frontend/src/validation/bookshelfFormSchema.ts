@@ -8,6 +8,7 @@ export const bookshelfFormSchema = z.object({
   description: z
     .string()
     .max(1000, "Description must be at most 1000 characters")
+    .transform((value) => (value === "" ? null : value))
     .nullable()
     .optional(),
 });

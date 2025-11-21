@@ -26,24 +26,20 @@ export const bookFormSchema = z.object({
     (v) => (v === "" ? null : v),
     z.url("Invalid URL format").nullable().optional().default(null),
   ),
-  description: z.preprocess(
-    (value) => (value === "" ? null : value),
-    z
-      .string()
-      .max(1000, "Description must be at most 1000 characters")
-      .nullable()
-      .optional()
-      .default(null),
-  ),
-  publisher: z.preprocess(
-    (value) => (value === "" ? null : value),
-    z
-      .string()
-      .max(100, "Publisher must be at most 100 characters")
-      .nullable()
-      .optional()
-      .default(null),
-  ),
+  description: z
+    .string()
+    .max(1000, "Description must be at most 1000 characters")
+    .transform((value) => (value === "" ? null : value))
+    .nullable()
+    .optional()
+    .default(null),
+  publisher: z
+    .string()
+    .max(100, "Publisher must be at most 100 characters")
+    .transform((value) => (value === "" ? null : value))
+    .nullable()
+    .optional()
+    .default(null),
   publishedDate: z.preprocess(
     (value) => (value === "" ? null : value),
     z
@@ -99,15 +95,13 @@ export const bookFormSchema = z.object({
     .nullable()
     .optional()
     .default(null),
-  notes: z.preprocess(
-    (value) => (value === "" ? null : value),
-    z
-      .string()
-      .max(2000, "Notes must be at most 2000 characters")
-      .nullable()
-      .optional()
-      .default(null),
-  ),
+  notes: z
+    .string()
+    .max(2000, "Notes must be at most 2000 characters")
+    .transform((value) => (value === "" ? null : value))
+    .nullable()
+    .optional()
+    .default(null),
   favorite: z.boolean().default(false),
 });
 

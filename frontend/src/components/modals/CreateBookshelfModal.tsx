@@ -29,10 +29,7 @@ export const CreateBookshelfModal: FC = () => {
     reset,
   } = useForm<BookshelfForm>({
     resolver: zodResolver(bookshelfFormSchema),
-    defaultValues: {
-      name: "",
-      description: "",
-    },
+    defaultValues: {},
   });
 
   const nameValue = watch("name") ?? "";
