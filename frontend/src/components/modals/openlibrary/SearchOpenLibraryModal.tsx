@@ -30,8 +30,11 @@ export const SearchOpenLibraryModal: FC<SearchOpenLibraryModalProps> = ({
   const [selectedBookLoading, setSelectedBookLoading] = useState(false);
   const [selectedBook, setSelectedBook] =
     useState<OpenLibraryImportBookDetails | null>(null);
+  const [hasSearched, setHasSearched] = useState(false);
 
   const handleSearch = useCallback(async () => {
+    if (!query.trim()) return;
+    setHasSearched(true);
     setSearchLoading(true);
     try {
       const data = await searchOpenLibrary(query);
@@ -74,14 +77,8 @@ export const SearchOpenLibraryModal: FC<SearchOpenLibraryModalProps> = ({
   };
 
   useEffect(() => {
-    const handleEnterKey = (event: KeyboardEvent) => {
-      if (event.key === "Enter" && query.trim()) {
-        handleSearch();
-      }
-    };
-    document.addEventListener("keydown", handleEnterKey);
-    return () => document.removeEventListener("keydown", handleEnterKey);
-  }, [handleSearch, query]);
+    setHasSearched(false);
+  }, [query]);
 
   return (
     <ModalBase>
@@ -89,6 +86,7 @@ export const SearchOpenLibraryModal: FC<SearchOpenLibraryModalProps> = ({
         <OpenLibrarySearchList
           query={query}
           setQuery={setQuery}
+          hasSearched={hasSearched}
           results={results}
           searchLoading={searchLoading}
           selectedBookLoading={selectedBookLoading}
