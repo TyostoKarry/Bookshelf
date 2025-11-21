@@ -2,7 +2,8 @@ import { type FC } from "react";
 
 interface ButtonProps {
   label: string;
-  onClick: () => void;
+  onClick?: () => void;
+  type?: "button" | "submit" | "reset";
   disabled?: boolean;
   color?: "success" | "danger" | "neutral";
   className?: string;
@@ -11,6 +12,7 @@ interface ButtonProps {
 export const Button: FC<ButtonProps> = ({
   label,
   onClick,
+  type = "button",
   disabled = false,
   color = "success",
   className = "",
@@ -25,7 +27,7 @@ export const Button: FC<ButtonProps> = ({
     <button
       onClick={onClick}
       disabled={disabled}
-      type="button"
+      type={type}
       className={`${colorStyles[color]} px-4 py-2 text-shadow-lg rounded shadow-lg
         ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"} ${className}`}
     >

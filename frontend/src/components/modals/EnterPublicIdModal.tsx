@@ -7,7 +7,7 @@ import { useModal } from "../../hooks/useModal";
 import { Button } from "../commons/Button";
 
 const isValidPublicId = (value: string) =>
-  /^[A-Za-z0-9_-]{10,30}$/.test(value.trim());
+  /^[A-Za-z0-9_-]{21}$/.test(value.trim());
 
 export const EnterPublicIdModal: FC = () => {
   const { t } = useLanguage();
@@ -20,7 +20,8 @@ export const EnterPublicIdModal: FC = () => {
     inputRef.current?.focus();
   }, []);
 
-  const handleSubmit = async () => {
+  async function handleSubmit(event: React.FormEvent) {
+    event.preventDefault();
     const trimmedPublicId = publicId.trim();
     if (!isValidPublicId(trimmedPublicId)) {
       toast.error(t("toast.invalidBookshelfPublicId"));
@@ -30,32 +31,34 @@ export const EnterPublicIdModal: FC = () => {
       navigate(`/bookshelves/${trimmedPublicId}`);
       closeModal();
     }
-  };
+  }
 
   return (
     <ModalBase>
       <h2 className="text-xl font-semibold text-text text-shadow-sm mb-4">
         {t("modal.enterPublicIdToVisit")}
       </h2>
-      <input
-        ref={inputRef}
-        placeholder={t("modal.pastePublicIdHere")}
-        className="w-full p-2 border border-gray-300 rounded mb-4"
-        value={publicId}
-        onChange={(e) => setPublicId(e.target.value)}
-      />
-      <div className="flex justify-end space-x-2">
-        <Button
-          label={t("button.cancel")}
-          onClick={() => closeModal()}
-          color="danger"
+      <form onSubmit={handleSubmit}>
+        <input
+          ref={inputRef}
+          placeholder={t("modal.pastePublicIdHere")}
+          className="w-full p-2 border border-gray-300 rounded mb-4"
+          value={publicId}
+          onChange={(e) => setPublicId(e.target.value)}
         />
-        <Button
-          label={t("button.open")}
-          onClick={() => handleSubmit()}
-          disabled={!publicId.trim()}
-        />
-      </div>
+        <div className="flex justify-end space-x-2">
+          <Button
+            label={t("button.cancel")}
+            onClick={() => closeModal()}
+            color="danger"
+          />
+          <Button
+            label={t("button.open")}
+            type="submit"
+            disabled={!publicId.trim()}
+          />
+        </div>
+      </form>
     </ModalBase>
   );
 };

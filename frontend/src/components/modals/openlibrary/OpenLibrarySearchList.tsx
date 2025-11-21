@@ -1,4 +1,4 @@
-import { type FC } from "react";
+import { useEffect, useRef, type FC } from "react";
 import CrossIcon from "../../../assets/icons/cross.svg?react";
 import { useLanguage } from "../../../hooks/useLanguage";
 import { useModal } from "../../../hooks/useModal";
@@ -8,6 +8,7 @@ import { Button } from "../../commons/Button";
 interface OpenLibrarySearchListProps {
   query: string;
   setQuery: (query: string) => void;
+  hasSearched: boolean;
   results: OpenLibrarySearchBook[];
   searchLoading: boolean;
   selectedBookLoading: boolean;
@@ -18,6 +19,7 @@ interface OpenLibrarySearchListProps {
 export const OpenLibrarySearchList: FC<OpenLibrarySearchListProps> = ({
   query,
   setQuery,
+  hasSearched,
   results,
   searchLoading,
   selectedBookLoading,
@@ -26,6 +28,11 @@ export const OpenLibrarySearchList: FC<OpenLibrarySearchListProps> = ({
 }) => {
   const { t } = useLanguage();
   const { closeModal } = useModal();
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
 
   if (selectedBookLoading) {
     return (
@@ -50,8 +57,15 @@ export const OpenLibrarySearchList: FC<OpenLibrarySearchListProps> = ({
       <h2 className="text-xl font-semibold text-text mb-3">
         {t("searchOpenLibrary.title")}
       </h2>
-      <div className="flex gap-2 mb-4">
+      <form
+        className="flex gap-2 mb-4"
+        onSubmit={(event) => {
+          event.preventDefault();
+          onSearch();
+        }}
+      >
         <input
+          ref={inputRef}
           type="text"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
@@ -59,11 +73,11 @@ export const OpenLibrarySearchList: FC<OpenLibrarySearchListProps> = ({
           className="flex-1 border border-gray-300 rounded p-2 text-sm"
         />
         <Button
+          type="submit"
           label={t("button.search")}
-          onClick={onSearch}
           disabled={searchLoading || !query.trim()}
         />
-      </div>
+      </form>
 
       {searchLoading && (
         <div className="flex flex-col items-center justify-center py-10 gap-3">
@@ -114,11 +128,14 @@ export const OpenLibrarySearchList: FC<OpenLibrarySearchListProps> = ({
         </ul>
       )}
 
-      {!searchLoading && results.length === 0 && query.trim() && (
-        <p className="text-gray-500 italic mt-6 text-center">
-          {t("searchOpenLibrary.noResults")}
-        </p>
-      )}
+      {!searchLoading &&
+        results.length === 0 &&
+        query.trim() &&
+        hasSearched && (
+          <p className="text-gray-500 italic mt-6 text-center">
+            {t("searchOpenLibrary.noResults")}
+          </p>
+        )}
     </div>
   );
 };

@@ -1,4 +1,6 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState, type FC } from "react";
+import { useForm } from "react-hook-form";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { getBookById } from "../api/books";
@@ -18,6 +20,7 @@ import { useLanguage } from "../hooks/useLanguage";
 import { useMyBookshelf } from "../hooks/useMyBookshelf";
 import type { Book } from "../types/book";
 import type { BookPageMode } from "../types/book-page-mode";
+import { bookFormSchema, type BookForm } from "../validation/bookFormSchema";
 
 interface BookPageProps {
   mode: BookPageMode;
@@ -39,13 +42,22 @@ export const BookPage: FC<BookPageProps> = ({ mode }) => {
   const navigate = useNavigate();
 
   const [book, setBook] = useState<Partial<Book>>({});
-  const [draftBook, setDraftBook] = useState<Partial<Book>>({});
   const [canEdit, setCanEdit] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const [fieldErrors, setFieldErrors] = useState<
-    Partial<Record<keyof Book, boolean>>
-  >({});
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm<BookForm>({
+    resolver: zodResolver(bookFormSchema),
+    defaultValues: {
+      readCount: 0,
+      favorite: false,
+    },
+  });
 
   useEffect(() => {
     if (!isInitialized) return;
@@ -113,125 +125,86 @@ export const BookPage: FC<BookPageProps> = ({ mode }) => {
   }, [isInitialized, mode, canEdit, navigate, t, loading]);
 
   useEffect(() => {
-    if (book && (mode === "edit" || mode === "create")) {
-      setDraftBook(book);
+    if (book && (mode === "edit" || mode === "create") && isInitialized) {
+      reset(book);
     }
-  }, [book, mode]);
+  }, [book, mode, isInitialized, reset]);
 
-  const handleDraftChange = (
-    key: keyof Book,
-    value: string | number | boolean | null,
-  ) => {
-    setDraftBook((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
-  };
-
-  async function handleSave(): Promise<void> {
-    if (mode === "view") return;
-    if (!editToken) {
-      toast.error(t("toast.notLoggedInToSaveChanges"));
-      return;
-    }
-
+  const onSubmit = async (data: BookForm) => {
     try {
-      const updatedOrCreated =
-        mode === "edit"
-          ? await updateBookInBookshelf(
-              book.bookshelfPublicId!,
-              editToken,
-              book.id!,
-              draftBook,
-            )
-          : await createBookInBookshelf(
-              myBookshelf!.publicId,
-              editToken,
-              draftBook,
-            );
+      const parsedData = bookFormSchema.parse(data);
 
-      if (!updatedOrCreated) {
+      const resultBook =
+        mode === "create"
+          ? await createBookInBookshelf(
+              myBookshelf!.publicId,
+              editToken!,
+              parsedData,
+            )
+          : await updateBookInBookshelf(
+              book.bookshelfPublicId!,
+              editToken!,
+              book.id!,
+              parsedData,
+            );
+      if (!resultBook) {
         toast.error(t("toast.failedToSaveBook"));
         return;
       }
-
-      refreshBookshelf();
+      await refreshBookshelf();
       toast.success(
         mode === "create"
-          ? `${t("toast.book")} “${updatedOrCreated.title}“ ${t("toast.createdSuccessfully")}`
-          : `${t("toast.book")} “${updatedOrCreated.title}“ ${t("toast.hasBeenUpdated")}`,
+          ? t("toast.bookCreatedSuccessfully")
+          : t("toast.bookHasBeenUpdated"),
       );
-      navigate(`/books/${updatedOrCreated.id}`);
+      reset();
+      navigate(`/books/${resultBook.id}`);
     } catch (error) {
-      const messageMode =
-        mode === "create"
-          ? t("toast.failedToCreateBook")
-          : t("toast.failedToUpdateBook");
-      console.error(error);
-      const message =
-        error instanceof Error
-          ? `${messageMode}! ${error.message}`
-          : t("toast.anErrorOccurred");
-
-      const newFieldErrors: Partial<Record<keyof Book, boolean>> = {};
-      if (error instanceof Error) {
-        const msg = error.message.toLowerCase();
-        if (msg.includes("title")) newFieldErrors.title = true;
-        if (msg.includes("author")) newFieldErrors.author = true;
-        if (msg.includes("description")) newFieldErrors.description = true;
-        if (msg.includes("publisher")) newFieldErrors.publisher = true;
-        if (msg.includes("pages")) newFieldErrors.pages = true;
-        if (msg.includes("isbn")) newFieldErrors.isbn13 = true;
-        if (msg.includes("progress")) newFieldErrors.progress = true;
-        if (msg.includes("rating")) newFieldErrors.rating = true;
-        if (msg.includes("read count")) newFieldErrors.readCount = true;
-
-        setFieldErrors(newFieldErrors);
-      }
-
-      toast.error(message);
+      console.error("Error updating book:", error);
+      toast.error(t("toast.failedToSaveBook"));
     }
-  }
+  };
 
   if (loading) return <div>{t("common.loading")}</div>;
 
   return (
     <main className="max-w-5xl mx-auto pt-10 pb-6 px-6">
-      <article className="bg-white rounded-2xl shadow-lg p-8">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="bg-white rounded-2xl shadow-lg p-8"
+      >
         <BookPageHeader
-          book={mode === "view" ? book : draftBook}
+          book={book}
           mode={mode}
-          onChange={handleDraftChange}
-          fieldErrors={fieldErrors}
-          setFieldErrors={setFieldErrors}
+          register={register}
+          errors={errors}
         />
         <BookMetadata
-          book={mode === "view" ? book : draftBook}
+          book={book}
           mode={mode}
-          onChange={handleDraftChange}
-          fieldErrors={fieldErrors}
-          setFieldErrors={setFieldErrors}
+          register={register}
+          errors={errors}
         />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-10">
           <BookReadingDetails
-            book={mode === "view" ? book : draftBook}
+            book={book}
             mode={mode}
-            onChange={handleDraftChange}
-            fieldErrors={fieldErrors}
-            setFieldErrors={setFieldErrors}
+            register={register}
+            errors={errors}
           />
           <BookPersonalStats
-            book={mode === "view" ? book : draftBook}
+            book={book}
             mode={mode}
-            onChange={handleDraftChange}
-            fieldErrors={fieldErrors}
-            setFieldErrors={setFieldErrors}
+            register={register}
+            control={control}
+            errors={errors}
           />
         </div>
         <BookPersonalNotes
-          book={mode === "view" ? book : draftBook}
+          book={book}
           mode={mode}
-          onChange={handleDraftChange}
+          register={register}
+          errors={errors}
         />
         <BookPageActions
           book={book}
@@ -239,12 +212,11 @@ export const BookPage: FC<BookPageProps> = ({ mode }) => {
           canEdit={canEdit}
           bookId={bookId}
           editToken={editToken}
-          setDraftBook={setDraftBook}
-          onSave={handleSave}
           refreshBookshelf={refreshBookshelf}
-          fieldErrors={fieldErrors}
+          reset={reset}
+          isSubmitting={isSubmitting}
         />
-      </article>
+      </form>
     </main>
   );
 };

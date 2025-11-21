@@ -54,22 +54,22 @@ fun CreateBookDto.toEntity(bookshelfId: Long) =
 fun UpdateBookDto.applyTo(book: Book): Book {
     title?.let { book.title = it }
     author?.let { book.author = it }
-    pages?.let { book.pages = it }
-    coverUrl?.let { book.coverUrl = it }
-    description?.let { book.description = it }
-    publisher?.let { book.publisher = it }
-    publishedDate?.let { book.publishedDate = it }
-    isbn13?.let { book.isbn13 = it }
+    book.pages = this.pages
+    book.coverUrl = this.coverUrl
+    book.description = this.description
+    book.publisher = this.publisher
+    book.publishedDate = this.publishedDate
+    book.isbn13 = this.isbn13
     googleId?.let { book.googleId = it }
     genre?.let { book.genre = it }
     language?.let { book.language = it }
     status?.let { book.status = it }
-    progress?.let { book.progress = it }
-    startedAt?.let { book.startedAt = it }
-    finishedAt?.let { book.finishedAt = it }
+    book.progress = this.progress
+    book.startedAt = this.startedAt
+    book.finishedAt = this.finishedAt
     readCount?.let { book.readCount = it }
     rating?.let { book.rating = it }
-    notes?.let { book.notes = it }
+    book.notes = this.notes
     favorite?.let { book.favorite = it }
 
     return book
