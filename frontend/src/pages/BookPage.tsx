@@ -130,10 +130,6 @@ export const BookPage: FC<BookPageProps> = ({ mode }) => {
     }
   }, [book, mode, isInitialized, reset]);
 
-  useEffect(() => {
-    console.error(errors);
-  }, [errors]);
-
   const onSubmit = async (data: BookForm) => {
     try {
       const parsedData = bookFormSchema.parse(data);

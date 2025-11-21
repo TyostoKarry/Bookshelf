@@ -36,7 +36,7 @@ export const BookPageHeader: FC<BookPageHeaderProps> = ({
             />
             <FieldErrorMessage
               message={errors.coverUrl?.message}
-              align="right"
+              align="left"
             />
           </div>
         )}
