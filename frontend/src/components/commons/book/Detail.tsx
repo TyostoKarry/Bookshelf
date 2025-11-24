@@ -12,7 +12,7 @@ interface DetailProps {
   placeholder?: string;
   error?: string;
   register?: UseFormRegisterReturn;
-  maxNumber?: number;
+  clampNumberToInt32?: boolean;
 }
 
 export const Detail: FC<DetailProps> = ({
@@ -24,8 +24,10 @@ export const Detail: FC<DetailProps> = ({
   placeholder,
   error,
   register,
-  maxNumber = 99999,
+  clampNumberToInt32 = true,
 }) => {
+  const MAX_INT_32 = 2_147_483_647;
+
   if (mode === "view") {
     return (
       <div className="flex items-baseline justify-between border-b border-gray-100 pb-1">
@@ -55,12 +57,21 @@ export const Detail: FC<DetailProps> = ({
         )}
         {type === "number" && (
           <input
-            type="number"
-            min={0}
-            max={maxNumber}
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
             className={`flex-2 text-end border ${error ? "border-red-500" : "border-gray-300"} rounded-md p-2 text-sm text-gray-900`}
             placeholder={placeholder}
             {...register}
+            onInput={(event) => {
+              const target = event.target as HTMLInputElement;
+              let newValue = target.value.replace(/\D+/g, "");
+              if (clampNumberToInt32 && newValue) {
+                const numericValue = Number(newValue);
+                if (numericValue > MAX_INT_32) newValue = MAX_INT_32.toString();
+              }
+              target.value = newValue;
+            }}
           />
         )}
         {type === "date" && (

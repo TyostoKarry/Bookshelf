@@ -49,7 +49,7 @@ export const BookMetadata: FC<BookMetadataProps> = ({
           type="number"
           placeholder={t("placeholders.enterPages")}
           error={errors.pages?.message}
-          register={register("pages")}
+          register={register("pages", { valueAsNumber: true })}
         />
         <Detail
           label={t("bookPage.publisher")}
@@ -81,10 +81,11 @@ export const BookMetadata: FC<BookMetadataProps> = ({
           label={t("bookPage.isbn13")}
           value={book.isbn13}
           mode={mode}
-          type="text"
+          type="number"
           placeholder={t("placeholders.enterIsbn13")}
           error={errors.isbn13?.message}
           register={register("isbn13")}
+          clampNumberToInt32={false}
         />
       </div>
     </section>

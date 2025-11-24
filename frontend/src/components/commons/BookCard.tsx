@@ -43,6 +43,7 @@ export const BookCard: FC<BookCardProps> = ({ book, canEdit }) => {
         editToken,
         id,
         {
+          ...book,
           favorite: !favorite,
         },
       );
