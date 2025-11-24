@@ -34,7 +34,6 @@ export const BookshelfView: FC<BookshelfViewProps> = ({
     genre: "",
     language: "",
     status: "",
-    favorite: false,
     searchQuery: "",
     sort: "",
   });
@@ -51,7 +50,6 @@ export const BookshelfView: FC<BookshelfViewProps> = ({
       genre: "",
       language: "",
       status: "",
-      favorite: false,
       searchQuery: "",
       sort: "",
     });
@@ -65,8 +63,6 @@ export const BookshelfView: FC<BookshelfViewProps> = ({
       result = result.filter((book) => book.language === filters.language);
     if (filters.status)
       result = result.filter((book) => book.status === filters.status);
-    if (filters.favorite)
-      result = result.filter((book) => book.favorite === true);
     if (filters.searchQuery)
       result = result.filter((b) =>
         [b.title, b.author, b.isbn13, b.publisher]

@@ -7,6 +7,7 @@ interface BookshelfToolbarProps {
     language?: string;
     status?: string;
     searchQuery?: string;
+    sort?: string;
   };
   onFilterChange: (field: string, value: string | boolean) => void;
   onSearchChange: (query: string) => void;
@@ -118,6 +119,7 @@ export const BookshelfToolbar: FC<BookshelfToolbarProps> = ({
           </option>
         </select>
         <select
+          value={filters.sort || ""}
           onChange={(event) => onSortChange(event.target.value)}
           className="border border-gray-300 rounded-md p-2 text-sm shadow-sm hover:border-gray-400 transition"
         >
