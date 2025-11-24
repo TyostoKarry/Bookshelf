@@ -32,6 +32,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("com.aventrix.jnanoid:jnanoid:2.0.0")
+    implementation("org.springframework.security:spring-security-crypto")
+    implementation("org.bouncycastle:bcprov-jdk18on:1.82")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
