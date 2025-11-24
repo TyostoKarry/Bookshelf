@@ -1,6 +1,5 @@
 package io.github.tyostokarry.bookshelf.entity
 
-import com.aventrix.jnanoid.jnanoid.NanoIdUtils
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
