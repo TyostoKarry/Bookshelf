@@ -23,10 +23,14 @@ data class Bookshelf(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
     /**
-     * Auto-generated publicly facing identifier used for bookshelf visits
+     * Publicly visible, random identifier that uniquely references this bookshelf.
+     *
+     * Generated once in the service layer (using NanoID) during creation,
+     * and remains stable for the lifetime of the bookshelf. Used both for
+     * sharing and as the public prefix in the owner’s edit token.
      */
     @Column(nullable = false, unique = true, updatable = false)
-    val publicId: String = NanoIdUtils.randomNanoId(),
+    val publicId: String,
     /**
      * Name of the bookshelf (e.g. "My Shelf", "Summer Reads").
      */
@@ -49,13 +53,12 @@ data class Bookshelf(
     @Column(nullable = false)
     var updatedAt: LocalDateTime = LocalDateTime.now(),
     /**
-     * Secret owner token (do NOT expose in normal responses)
+     * Hashed edit token for bookshelf ownership verification.
+     * The raw token is generated once, returned to the client, and never stored.
+     * Only this Argon2 id hash is saved and used for future token validation.
      */
     @Column(nullable = false)
-    var editToken: String =
-        java.util.UUID
-            .randomUUID()
-            .toString(),
+    var editTokenHash: String,
 ) {
     @PreUpdate
     fun onUpdate() {

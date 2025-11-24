@@ -11,20 +11,14 @@ fun Bookshelf.toBookshelfDto() =
         updatedAt = this.updatedAt,
     )
 
-fun Bookshelf.toBookshelfWithTokenDto() =
+fun Bookshelf.toBookshelfWithTokenDto(rawEditToken: String) =
     BookshelfWithTokenDto(
         publicId = this.publicId,
         name = this.name,
         description = this.description,
         createdAt = this.createdAt,
         updatedAt = this.updatedAt,
-        editToken = this.editToken,
-    )
-
-fun CreateBookshelfDto.toEntity() =
-    Bookshelf(
-        name = name,
-        description = description,
+        editToken = rawEditToken,
     )
 
 fun UpdateBookshelfDto.applyTo(bookshelf: Bookshelf): Bookshelf {

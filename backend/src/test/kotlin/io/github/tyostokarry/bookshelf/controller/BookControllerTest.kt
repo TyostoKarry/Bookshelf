@@ -44,7 +44,7 @@ class BookControllerTest(
     inner class GetAllBooks {
         @Test
         fun `Get all books returns list of BookDto`() {
-            val bookshelf = Bookshelf(id = 1, publicId = "publicId", name = "Test Name")
+            val bookshelf = Bookshelf(id = 1, publicId = "publicId", name = "Test Name", editTokenHash = "editTokenHash")
             val books =
                 listOf(
                     Book(id = 1, bookshelfId = 1, title = "Test Book 1", author = "Author One"),
@@ -80,7 +80,7 @@ class BookControllerTest(
     inner class GetBookById {
         @Test
         fun `Get book returns BookDto when book is found`() {
-            val bookshelf = Bookshelf(id = 1, publicId = "publicId", name = "Test Name")
+            val bookshelf = Bookshelf(id = 1, publicId = "publicId", name = "Test Name", editTokenHash = "editTokenHash")
             val book = Book(id = 10, bookshelfId = 5, title = "Test Book 1", author = "Author One")
             given(bookService.getBookById(book.id)).willReturn(Either.Right(book))
             given(bookshelfService.getBookshelfById(any())).willReturn(Either.Right(bookshelf))

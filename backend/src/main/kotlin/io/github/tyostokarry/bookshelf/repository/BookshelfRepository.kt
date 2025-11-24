@@ -14,12 +14,4 @@ interface BookshelfRepository : JpaRepository<Bookshelf, Long> {
      * @return bookshelf that is linked with the publicId
      */
     fun findByPublicId(publicId: String): Bookshelf?
-
-    /**
-     * Finds bookshelf that is linked to given edit token.
-     *
-     * @param editToken of the bookshelf
-     * @return bookshelf that is linked with the edit token
-     */
-    fun findByEditToken(editToken: String): Bookshelf?
 }

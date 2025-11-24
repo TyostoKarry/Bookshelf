@@ -118,8 +118,9 @@ class BookshelfController(
     fun createBookshelf(
         @Valid @RequestBody dto: CreateBookshelfDto,
     ): ResponseEntity<ApiResponse<BookshelfWithTokenDto>> {
-        val newBookshelf = bookshelfService.saveBookshelf(dto.toEntity())
-        return ResponseEntity.ok(ApiResponse(data = newBookshelf.toBookshelfWithTokenDto()))
+        val (rawEditToken, bookshelf) = bookshelfService.createBookshelf(dto.name, dto.description)
+        val createBookshelfResponse = bookshelf.toBookshelfWithTokenDto(rawEditToken)
+        return ResponseEntity.ok(ApiResponse(data = createBookshelfResponse))
     }
 
     @PostMapping("/{publicId}/books")
@@ -130,7 +131,7 @@ class BookshelfController(
     ): ResponseEntity<ApiResponse<BookDto>> {
         return when (val bookshelf = bookshelfService.getBookshelfByPublicId(publicId)) {
             is Either.Right -> {
-                if (token == null || bookshelf.value.editToken != token) {
+                if (token == null || !bookshelfService.verifyToken(bookshelf.value, token)) {
                     return ResponseEntity
                         .status(403)
                         .body(
@@ -170,7 +171,7 @@ class BookshelfController(
     ): ResponseEntity<ApiResponse<BookshelfDto>> {
         return when (val existingBookshelf = bookshelfService.getBookshelfByPublicId(publicId)) {
             is Either.Right -> {
-                if (token == null || existingBookshelf.value.editToken != token) {
+                if (token == null || !bookshelfService.verifyToken(existingBookshelf.value, token)) {
                     return ResponseEntity
                         .status(403)
                         .body(
@@ -212,7 +213,7 @@ class BookshelfController(
     ): ResponseEntity<ApiResponse<BookDto>> {
         return when (val bookshelf = bookshelfService.getBookshelfByPublicId(publicId)) {
             is Either.Right -> {
-                if (token == null || bookshelf.value.editToken != token) {
+                if (token == null || !bookshelfService.verifyToken(bookshelf.value, token)) {
                     return ResponseEntity
                         .status(403)
                         .body(
@@ -280,7 +281,7 @@ class BookshelfController(
     ): ResponseEntity<ApiResponse<DeleteBookshelfResult>> {
         return when (val bookshelf = bookshelfService.getBookshelfByPublicId(publicId)) {
             is Either.Right -> {
-                if (token == null || bookshelf.value.editToken != token) {
+                if (token == null || !bookshelfService.verifyToken(bookshelf.value, token)) {
                     return ResponseEntity
                         .status(403)
                         .body(
@@ -325,7 +326,7 @@ class BookshelfController(
     ): ResponseEntity<ApiResponse<Long>> {
         return when (val bookshelf = bookshelfService.getBookshelfByPublicId(publicId)) {
             is Either.Right -> {
-                if (token == null || bookshelf.value.editToken != token) {
+                if (token == null || !bookshelfService.verifyToken(bookshelf.value, token)) {
                     return ResponseEntity
                         .status(
                             403,
