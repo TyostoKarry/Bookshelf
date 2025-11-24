@@ -1,4 +1,5 @@
 import { type FC, type ReactNode, useEffect } from "react";
+import CrossIcon from "../../assets/icons/cross.svg?react";
 import { useModal } from "../../hooks/useModal";
 
 interface ModalBaseProps {
@@ -28,9 +29,16 @@ export const ModalBase: FC<ModalBaseProps> = ({
       onClick={closeOnOutsideClick ? closeModal : undefined}
     >
       <div
-        className="bg-white p-6 rounded-xl shadow-xl w-full max-w-md text-center"
+        className="relative bg-white p-6 rounded-xl shadow-xl w-full max-w-md text-center"
         onClick={(event) => event.stopPropagation()}
       >
+        <button
+          className="absolute -top-3 -right-3 p-2 rounded-full bg-white border border-gray-300 shadow-sm hover:bg-gray-100 active:scale-95 transition"
+          onClick={closeModal}
+          aria-label="Close modal"
+        >
+          <CrossIcon className="w-4 h-4 text-gray-700" strokeWidth={4} />
+        </button>
         {children}
       </div>
     </div>

@@ -1,7 +1,5 @@
 import { useEffect, useRef, type FC } from "react";
-import CrossIcon from "../../../assets/icons/cross.svg?react";
 import { useLanguage } from "../../../hooks/useLanguage";
-import { useModal } from "../../../hooks/useModal";
 import type { OpenLibrarySearchBook } from "../../../types/openlibrary";
 import { Button } from "../../commons/Button";
 
@@ -27,7 +25,6 @@ export const OpenLibrarySearchList: FC<OpenLibrarySearchListProps> = ({
   onSelectBook,
 }) => {
   const { t } = useLanguage();
-  const { closeModal } = useModal();
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -46,14 +43,7 @@ export const OpenLibrarySearchList: FC<OpenLibrarySearchListProps> = ({
   }
 
   return (
-    <div className="relative">
-      <button
-        onClick={closeModal}
-        aria-label={t("common.close")}
-        className="absolute top-0 right-0 text-gray-700 hover:text-gray-900 hover:bg-gray-200 rounded-xl p-1 transition-colors active:scale-95"
-      >
-        <CrossIcon width={22} height={22} strokeWidth={2.5} />
-      </button>
+    <div>
       <h2 className="text-xl font-semibold text-text mb-3">
         {t("searchOpenLibrary.title")}
       </h2>
