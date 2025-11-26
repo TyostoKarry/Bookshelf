@@ -20,7 +20,7 @@ export const CoverImage: FC<CoverImageProps> = ({
   const { t } = useLanguage();
 
   return (
-    <figure className="flex items-center justify-center mb-3">
+    <figure className="flex items-center justify-center">
       {coverUrl ? (
         <img
           src={coverUrl}
