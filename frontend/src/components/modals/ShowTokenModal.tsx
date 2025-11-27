@@ -38,7 +38,7 @@ export const ShowTokenModal: FC<ShowTokenModalProps> = ({ token }) => {
       <h2 className="text-xl font-semibold text-text text-shadow-sm mb-4">
         {t("modal.newBookshelfCreated")}
       </h2>
-      <div className="text-gray-800 text-sm leading-relaxed mb-5 px-3">
+      <div className="text-foreground text-sm leading-relaxed mb-5 px-3">
         <p className="font-medium">{t("modal.saveTokenTitle")}</p>
         <p>{t("modal.saveTokenPurpose")}</p>
         <p className="mt-1">{t("modal.saveTokenInstruction")}</p>
@@ -63,7 +63,7 @@ export const ShowTokenModal: FC<ShowTokenModalProps> = ({ token }) => {
         />
         <label
           htmlFor="rememberToken"
-          className="text-sm text-gray-800 text-shadow-sm select-none cursor-pointer"
+          className="text-sm text-foreground text-shadow-sm select-none cursor-pointer"
         >
           {t("modal.rememberToken")}
         </label>

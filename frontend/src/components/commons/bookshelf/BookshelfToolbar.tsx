@@ -199,7 +199,7 @@ export const BookshelfToolbar: FC<BookshelfToolbarProps> = ({
           <Button
             onClick={clearFilters}
             variant="outline"
-            className="text-muted-foreground"
+            className="text-muted-foreground hover:cursor-pointer"
           >
             {t("bookshelfToolbar.clearFilters")}
           </Button>

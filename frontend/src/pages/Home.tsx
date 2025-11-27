@@ -1,7 +1,7 @@
 import { type FC } from "react";
-import { Button } from "../components/commons/Button";
 import { useLanguage } from "../hooks/useLanguage";
 import { useModal } from "../hooks/useModal";
+import { Button } from "@/components/ui/button";
 
 export const Home: FC = () => {
   const { t } = useLanguage();
@@ -15,14 +15,19 @@ export const Home: FC = () => {
       <h2 className="text-text text-2xl text-shadow-md mb-2">
         {t("home.welcomeTitle")}
       </h2>
-      <p className="text-gray-800 text-shadow-sm">{t("home.welcomeTagline")}</p>
-      <p className="text-gray-700 text-shadow-sm mb-4">
+      <p className="text-muted-foreground text-shadow-sm">
+        {t("home.welcomeTagline")}
+      </p>
+      <p className="text-muted-foreground text-shadow-sm mb-4">
         {t("home.welcomeDescription")}
       </p>
       <Button
-        label={t("button.createBookshelf")}
+        variant="default"
+        className="bg-primary text-xl text-primary-foreground hover:bg-primary/90 hover:cursor-pointer px-6 py-6"
         onClick={() => openModal("CREATE_BOOKSHELF", {})}
-      />
+      >
+        {t("button.createBookshelf")}
+      </Button>
     </div>
   );
 };

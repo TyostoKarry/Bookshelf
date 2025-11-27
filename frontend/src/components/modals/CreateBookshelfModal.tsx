@@ -63,7 +63,7 @@ export const CreateBookshelfModal: FC = () => {
       </h2>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
-          <label className="block text-sm text-gray-800 text-shadow-sm mb-1">
+          <label className="block text-sm text-foreground text-shadow-sm mb-1">
             {t("modal.nameOfBookshelf")}
           </label>
           <input
@@ -75,14 +75,14 @@ export const CreateBookshelfModal: FC = () => {
           <div className="flex flex-row justify-between">
             <FieldErrorMessage message={errors.name?.message} />
             <p
-              className={`text-xs ${nameValue.length <= 100 ? "text-gray-400" : "text-red-400"} text-right`}
+              className={`text-xs ${nameValue.length <= 100 ? "text-muted-foreground" : "text-red-400"} text-right`}
             >
               {nameValue.length}/100
             </p>
           </div>
         </div>
         <div>
-          <label className="block text-sm text-gray-800 text-shadow-sm mb-1">
+          <label className="block text-sm text-foreground text-shadow-sm mb-1">
             {t("modal.descriptionOfBookshelf")}
           </label>
           <textarea
@@ -94,7 +94,7 @@ export const CreateBookshelfModal: FC = () => {
           <div className="flex flex-row justify-between">
             <FieldErrorMessage message={errors.description?.message} />
             <p
-              className={`text-xs ${(descriptionValue?.length ?? 0) <= 1000 ? "text-gray-400" : "text-red-400"} text-right`}
+              className={`text-xs ${(descriptionValue?.length ?? 0) <= 1000 ? "text-muted-foreground" : "text-red-400"} text-right`}
             >
               {descriptionValue ? descriptionValue.length : 0}/1000
             </p>

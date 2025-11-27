@@ -34,10 +34,10 @@ export const ConfirmationModal: FC<ConfirmationModalProps> = ({
 
   return (
     <ModalBase>
-      <h2 className="text-xl font-semibold text-text text-shadow-sm mb-4">
+      <h2 className="text-xl font-semibold text-foreground text-shadow-sm mb-4">
         {title}
       </h2>
-      <p className="text-gray-800 text-sm leading-relaxed mb-5 px-3">
+      <p className="text-foreground text-sm leading-relaxed mb-5 px-3">
         {message}
       </p>
       <div className="flex justify-around space-x-4">

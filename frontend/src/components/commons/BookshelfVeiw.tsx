@@ -110,7 +110,7 @@ export const BookshelfView: FC<BookshelfViewProps> = ({
         onSortChange={(value) => handleFilterChange("sort", value)}
         clearFilters={handleClearFilters}
       />
-      <h2 className="text-2xl font-semibold text-gray-800 mb-2">
+      <h2 className="text-2xl font-semibold text-foreground mb-2">
         {t("bookshelfView.books")}
       </h2>
       {books.length === 0 ? (

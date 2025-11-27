@@ -37,7 +37,7 @@ export const ModalBase: FC<ModalBaseProps> = ({
           onClick={closeModal}
           aria-label="Close modal"
         >
-          <CrossIcon className="w-4 h-4 text-gray-700" strokeWidth={4} />
+          <CrossIcon className="w-4 h-4 text-foreground" strokeWidth={4} />
         </button>
         {children}
       </div>

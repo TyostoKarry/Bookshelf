@@ -1,7 +1,6 @@
 import { type FC } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { deleteBookshelf } from "../../../api/bookshelves";
 import CopyIcon from "../../../assets/icons/copy.svg?react";
 import { useLanguage } from "../../../hooks/useLanguage";
 import { useModal } from "../../../hooks/useModal";
@@ -20,12 +19,10 @@ interface BookshelfHeaderProps {
 export const BookshelfHeader: FC<BookshelfHeaderProps> = ({
   bookshelf,
   canEdit,
-  editToken,
-  clearBookshelf,
 }) => {
   const { t } = useLanguage();
   const navigate = useNavigate();
-  const { openModal, closeModal } = useModal();
+  const { openModal } = useModal();
 
   const handleCopyPublicId = async () => {
     try {
@@ -35,33 +32,6 @@ export const BookshelfHeader: FC<BookshelfHeaderProps> = ({
       console.error("Failed to copy public ID to clipboard:", err);
       toast.error(t("toast.publicIdCopyFailed"));
     }
-  };
-
-  const handleDeleteBookshelf = () => {
-    openModal("CONFIRMATION", {
-      title: t("modal.confirmationDeleteBookshelfTitle"),
-      message: t("modal.confirmationDeleteBookshelfMessage"),
-      confirmLabel: t("button.delete"),
-      confirmColor: "danger",
-      onConfirm: async () => {
-        if (!editToken || !clearBookshelf) {
-          toast.error(t("toast.errorOccurredWhileDeletingBookshelf"));
-          closeModal();
-          return;
-        }
-        try {
-          await deleteBookshelf(bookshelf.publicId, editToken);
-          toast.success(t("toast.bookshelfDeletedSuccessfully"));
-          clearBookshelf();
-          closeModal();
-          navigate("/");
-        } catch (error) {
-          console.error(error);
-          toast.error(t("toast.failedToDeleteBookshelf"));
-          closeModal();
-        }
-      },
-    });
   };
 
   return (
@@ -87,7 +57,7 @@ export const BookshelfHeader: FC<BookshelfHeaderProps> = ({
             </p>
             <button
               onClick={handleCopyPublicId}
-              className="rounded hover:bg-gray-200 hover:cursor-pointer active:bg-gray-300"
+              className="rounded hover:bg-muted/60 hover:cursor-pointer active:bg-muted"
               title={t("button.copyPublicIdToClipboard")}
             >
               <CopyIcon className="w-5 h-5" />
@@ -106,8 +76,8 @@ export const BookshelfHeader: FC<BookshelfHeaderProps> = ({
               {t("button.addBook")}
             </Button>
             <Button
-              variant="secondary"
-              className="bg-muted text-foreground hover:bg-muted/70 hover:cursor-pointer"
+              variant="outline"
+              className="text-muted-foreground hover:cursor-pointer"
               onClick={() =>
                 openModal("SEARCH_OPEN_LIBRARY", {
                   onBookSelect: (openLibBook) => {
@@ -118,16 +88,8 @@ export const BookshelfHeader: FC<BookshelfHeaderProps> = ({
                   },
                 })
               }
-              color="neutral"
             >
               {t("button.addFromOpenLibrary")}
-            </Button>
-            <Button
-              variant="destructive"
-              className="bg-rose-500 hover:bg-rose-600 text-white hover:cursor-pointer"
-              onClick={handleDeleteBookshelf}
-            >
-              {t("button.deleteBookshelf")}
             </Button>
           </div>
         )}

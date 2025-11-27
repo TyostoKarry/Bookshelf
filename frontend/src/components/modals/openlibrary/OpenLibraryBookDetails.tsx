@@ -47,7 +47,7 @@ export const OpenLibraryBookDetails: FC<OpenLibraryBookDetailsProps> = ({
 
   return (
     <div>
-      <h3 className="text-lg font-semibold text-gray-800 border-b border-gray-400 pb-4 mb-4">
+      <h3 className="text-lg font-semibold text-foreground border-b border-muted-foreground pb-4 mb-4">
         {t("searchOpenLibrary.confirmImportTitle")}
       </h3>
 
@@ -60,21 +60,21 @@ export const OpenLibraryBookDetails: FC<OpenLibraryBookDetailsProps> = ({
           />
         ) : (
           <div className="w-30 h-42 bg-gray-200 rounded flex items-center justify-center">
-            <p className="text-2xl text-gray-400">
+            <p className="text-2xl text-muted-foreground">
               {t("common.placeholderQuestionMark")}
             </p>
           </div>
         )}
 
         <div className="flex-1 flex flex-col justify-center">
-          <p className="font-semibold text-gray-800 text-lg">
+          <p className="font-semibold text-foreground text-lg">
             {selectedBook.title}
           </p>
           {selectedBook.authors && (
-            <p className="text-gray-700">{selectedBook.authors.join(", ")}</p>
+            <p className="text-foreground">{selectedBook.authors.join(", ")}</p>
           )}
           {selectedBook.publishYear && (
-            <p className="text-gray-500">
+            <p className="text-muted-foreground">
               {t("searchOpenLibrary.firstPublished")}:{" "}
               {selectedBook.publishYear}
             </p>
@@ -83,21 +83,21 @@ export const OpenLibraryBookDetails: FC<OpenLibraryBookDetailsProps> = ({
       </div>
 
       <div
-        className={`${selectedBook.description ? "border border-gray-400" : ""} rounded-md px-2 mb-2`}
+        className={`${selectedBook.description ? "border border-muted-foreground" : ""} rounded-md px-2 mb-2`}
       >
         {selectedBook.description ? (
-          <p className="max-h-100 overflow-y-auto text-gray-700 text-sm leading-relaxed break-words whitespace-pre-wrap">
+          <p className="max-h-100 overflow-y-auto text-foreground text-sm leading-relaxed break-words whitespace-pre-wrap">
             {selectedBook.description}
           </p>
         ) : (
-          <p className="italic text-gray-400 mb-4">
+          <p className="italic text-muted-foreground mb-4">
             {t("bookPage.noDescription")}
           </p>
         )}
       </div>
 
-      <div className="mb-4 border border-gray-400 rounded-md p-3">
-        <h4 className="font-medium text-gray-800 mb-2">
+      <div className="mb-4 border border-muted-foreground rounded-md p-3">
+        <h4 className="font-medium text-muted-foreground mb-2">
           {t("searchOpenLibrary.selectFieldsToImport")}
         </h4>
         <div className="grid grid-cols-2 gap-y-1 text-sm">
@@ -122,7 +122,7 @@ export const OpenLibraryBookDetails: FC<OpenLibraryBookDetailsProps> = ({
                 }
                 className="cursor-pointer"
               />
-              <span className="text-gray-700 capitalize">
+              <span className="text-muted-foreground capitalize">
                 {t(FIELD_TRANSLATION_KEYS[key])}
               </span>
             </label>

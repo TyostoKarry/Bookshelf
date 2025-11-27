@@ -48,7 +48,7 @@ export const EnterTokenModal: FC = () => {
 
   return (
     <ModalBase>
-      <h2 className="text-xl font-semibold text-text text-shadow-sm mb-4">
+      <h2 className="text-xl font-semibold text-foreground text-shadow-sm mb-4">
         {t("modal.enterEditToken")}
       </h2>
       <form onSubmit={handleSubmit}>
@@ -70,7 +70,7 @@ export const EnterTokenModal: FC = () => {
           />
           <label
             htmlFor="rememberToken"
-            className="text-sm text-gray-800 text-shadow-sm select-none cursor-pointer"
+            className="text-sm text-foreground text-shadow-sm select-none cursor-pointer"
           >
             {t("modal.rememberToken")}
           </label>

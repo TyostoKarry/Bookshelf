@@ -34,8 +34,8 @@ export const OpenLibrarySearchList: FC<OpenLibrarySearchListProps> = ({
   if (selectedBookLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-10 gap-3">
-        <div className="h-10 w-10 border-4 border-gray-400 border-t-transparent rounded-full animate-spin" />
-        <p className="text-gray-600">
+        <div className="h-10 w-10 border-4 border-muted-foreground border-t-transparent rounded-full animate-spin" />
+        <p className="text-foreground">
           {t("searchOpenLibrary.loadingBookDetails")}
         </p>
       </div>
@@ -60,7 +60,7 @@ export const OpenLibrarySearchList: FC<OpenLibrarySearchListProps> = ({
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder={t("searchOpenLibrary.searchPlaceholder")}
-          className="flex-1 border border-gray-300 rounded p-2 text-sm"
+          className="flex-1 border border-muted-foreground rounded p-2 text-sm"
         />
         <Button
           type="submit"
@@ -71,8 +71,8 @@ export const OpenLibrarySearchList: FC<OpenLibrarySearchListProps> = ({
 
       {searchLoading && (
         <div className="flex flex-col items-center justify-center py-10 gap-3">
-          <div className="h-10 w-10 border-4 border-gray-400 border-t-transparent rounded-full animate-spin" />
-          <p className="text-gray-600">{t("common.loading")}</p>
+          <div className="h-10 w-10 border-4 border-muted-foreground border-t-transparent rounded-full animate-spin" />
+          <p className="text-muted-foreground">{t("common.loading")}</p>
         </div>
       )}
 
@@ -81,7 +81,7 @@ export const OpenLibrarySearchList: FC<OpenLibrarySearchListProps> = ({
           {results.map((bookFromList) => (
             <li
               key={bookFromList.key}
-              className="flex gap-3 p-2 border border-gray-200 rounded-md hover:bg-gray-50 cursor-pointer"
+              className="flex gap-3 p-2 border border-muted-foreground rounded-md hover:bg-gray-50 cursor-pointer"
               onClick={() => onSelectBook(bookFromList)}
             >
               {bookFromList.coverUrl ? (
@@ -92,23 +92,23 @@ export const OpenLibrarySearchList: FC<OpenLibrarySearchListProps> = ({
                 />
               ) : (
                 <div className="w-20 h-28 flex items-center justify-center bg-gray-200 rounded">
-                  <p className="text-2xl text-gray-400">
+                  <p className="text-2xl text-muted-foreground">
                     {t("common.placeholderQuestionMark")}
                   </p>
                 </div>
               )}
               <div className="flex-1 flex flex-col justify-center text-center">
-                <span className="font-semibold text-gray-800">
+                <span className="font-semibold text-foreground">
                   {bookFromList.title}
                 </span>
                 {bookFromList.authors && (
-                  <span className="text-sm text-gray-600">
+                  <span className="text-sm text-muted-foreground">
                     {bookFromList.authors.join(", ") ||
                       t("searchOpenLibrary.unknownAuthor")}
                   </span>
                 )}
                 {bookFromList.publishYear && (
-                  <span className="text-sm text-gray-500">
+                  <span className="text-sm text-muted-foreground">
                     {`${t("searchOpenLibrary.firstPublished")}: ${bookFromList.publishYear}`}
                   </span>
                 )}
@@ -122,7 +122,7 @@ export const OpenLibrarySearchList: FC<OpenLibrarySearchListProps> = ({
         results.length === 0 &&
         query.trim() &&
         hasSearched && (
-          <p className="text-gray-500 italic mt-6 text-center">
+          <p className="text-muted-foreground italic mt-6 text-center">
             {t("searchOpenLibrary.noResults")}
           </p>
         )}
