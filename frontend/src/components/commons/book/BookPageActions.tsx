@@ -9,7 +9,7 @@ import type { Book } from "../../../types/book";
 import type { BookPageMode } from "../../../types/book-page-mode";
 import { mergeOpenLibraryBook } from "../../../utils/mergeOpenLibraryBook";
 import type { BookForm } from "../../../validation/bookFormSchema";
-import { Button } from "../Button";
+import { Button } from "@/components/ui/button";
 
 interface BookPageActionsProps {
   book: Partial<Book>;
@@ -67,9 +67,9 @@ export const BookPageActions: FC<BookPageActionsProps> = ({
             Number(bookId),
           );
           toast.success(t("toast.bookDeletedSuccessfully"));
-          await refreshBookshelf();
           closeModal();
           navigate("/my/bookshelf");
+          await refreshBookshelf();
         } catch (error) {
           console.error(error);
           toast.error(t("toast.failedToDeleteBook"));
@@ -83,41 +83,57 @@ export const BookPageActions: FC<BookPageActionsProps> = ({
     <footer className="flex justify-between gap-2 mt-8 mb-4">
       {mode === "view" ? (
         <Button
-          label={t("button.backToBookshelf")}
+          type="button"
+          variant="secondary"
+          className="hover:cursor-pointer"
           onClick={handleNavigateBackToBookshelf}
-        />
+        >
+          {t("button.backToBookshelf")}
+        </Button>
       ) : (
         <Button
-          label={t("button.cancel")}
-          color="neutral"
+          type="button"
+          variant="outline"
+          className="hover:cursor-pointer"
           onClick={
             mode === "edit"
               ? () => navigate(`/books/${bookId}`)
               : handleNavigateBackToBookshelf
           }
-        />
+        >
+          {t("button.cancel")}
+        </Button>
       )}
       {canEdit && (
         <div className="flex gap-2">
           <Button
-            label={t("button.delete")}
-            color="danger"
+            type="button"
+            variant="destructive"
+            className="hover:cursor-pointer"
             onClick={handleDelete}
-          />
+          >
+            {t("button.delete")}
+          </Button>
           {mode === "view" && (
             <Button
-              label={t("button.edit")}
+              type="button"
+              variant="outline"
+              className="hover:cursor-pointer"
               onClick={() =>
                 navigate(`/books/${bookId}/edit`, {
                   state: { book, canEdit },
                 })
               }
-            />
+            >
+              {t("button.edit")}
+            </Button>
           )}
           {mode === "edit" && (
             <div className="flex gap-2">
               <Button
-                label={t("button.searchFromOpenLibrary")}
+                type="button"
+                variant="secondary"
+                className="hover:cursor-pointer"
                 onClick={() => {
                   openModal("SEARCH_OPEN_LIBRARY", {
                     onBookSelect: (openLibBook) => {
@@ -125,13 +141,16 @@ export const BookPageActions: FC<BookPageActionsProps> = ({
                     },
                   });
                 }}
-                color="neutral"
-              />
+              >
+                {t("button.searchFromOpenLibrary")}
+              </Button>
               <Button
                 type="submit"
-                label={t("button.save")}
+                className="hover:cursor-pointer"
                 disabled={isSubmitting}
-              />
+              >
+                {t("button.save")}
+              </Button>
             </div>
           )}
         </div>
@@ -139,7 +158,9 @@ export const BookPageActions: FC<BookPageActionsProps> = ({
       {mode === "create" && (
         <div className="flex gap-2">
           <Button
-            label={t("button.searchFromOpenLibrary")}
+            type="button"
+            variant="secondary"
+            className="hover:cursor-pointer"
             onClick={() => {
               openModal("SEARCH_OPEN_LIBRARY", {
                 onBookSelect: (openLibBook) => {
@@ -147,13 +168,16 @@ export const BookPageActions: FC<BookPageActionsProps> = ({
                 },
               });
             }}
-            color="neutral"
-          />
+          >
+            {t("button.searchFromOpenLibrary")}
+          </Button>
           <Button
             type="submit"
-            label={t("button.create")}
+            className="hover:cursor-pointer"
             disabled={isSubmitting}
-          />
+          >
+            {t("button.create")}
+          </Button>
         </div>
       )}
     </footer>
