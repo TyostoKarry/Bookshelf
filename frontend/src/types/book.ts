@@ -57,7 +57,6 @@ export interface Book {
   publisher?: string | null;
   publishedDate?: string | null;
   isbn13?: string | null;
-  googleId?: string | null;
   genre: Genre;
   language: Language;
   status: BookStatus;

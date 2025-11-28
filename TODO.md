@@ -18,7 +18,7 @@
 
   - [x] Fetch `/books`
   - [x] Display covers, author, title, status and favorite status
-  - [x] Show Google Books coverUrl, else placeholder image
+  - [x] Show Books coverUrl, else placeholder image
 
 - [x] **Add Book Page**
 

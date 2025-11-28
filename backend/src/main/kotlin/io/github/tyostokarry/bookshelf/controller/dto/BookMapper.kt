@@ -14,7 +14,6 @@ fun Book.toDto(bookshelfPublicId: String) =
         publisher = publisher,
         publishedDate = publishedDate,
         isbn13 = isbn13,
-        googleId = googleId,
         genre = genre,
         language = language,
         status = status,
@@ -38,7 +37,6 @@ fun CreateBookDto.toEntity(bookshelfId: Long) =
         publisher = publisher,
         publishedDate = publishedDate,
         isbn13 = isbn13,
-        googleId = googleId,
         genre = genre,
         language = language,
         status = status,
@@ -60,7 +58,6 @@ fun UpdateBookDto.applyTo(book: Book): Book {
     book.publisher = this.publisher
     book.publishedDate = this.publishedDate
     book.isbn13 = this.isbn13
-    googleId?.let { book.googleId = it }
     genre?.let { book.genre = it }
     language?.let { book.language = it }
     status?.let { book.status = it }
@@ -74,3 +71,48 @@ fun UpdateBookDto.applyTo(book: Book): Book {
 
     return book
 }
+
+fun Book.toPortableDto(): BookPortableDto =
+    BookPortableDto(
+        title = title,
+        author = author,
+        pages = pages,
+        coverUrl = coverUrl,
+        description = description,
+        publisher = publisher,
+        publishedDate = publishedDate,
+        isbn13 = isbn13,
+        genre = genre,
+        language = language,
+        status = status,
+        progress = progress,
+        startedAt = startedAt,
+        finishedAt = finishedAt,
+        readCount = readCount,
+        rating = rating,
+        notes = notes,
+        favorite = favorite,
+    )
+
+fun BookPortableDto.toEntity(bookshelfId: Long): Book =
+    Book(
+        bookshelfId = bookshelfId,
+        title = title,
+        author = author,
+        pages = pages,
+        coverUrl = coverUrl,
+        description = description,
+        publisher = publisher,
+        publishedDate = publishedDate,
+        isbn13 = isbn13,
+        genre = genre,
+        language = language,
+        status = status,
+        progress = progress,
+        startedAt = startedAt,
+        finishedAt = finishedAt,
+        readCount = readCount,
+        rating = rating,
+        notes = notes,
+        favorite = favorite,
+    )

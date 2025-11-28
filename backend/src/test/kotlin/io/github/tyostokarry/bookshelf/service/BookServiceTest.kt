@@ -95,6 +95,25 @@ class BookServiceTest {
     }
 
     @Nested
+    inner class SaveAllBooks {
+        @Test
+        fun `saveAllBooks saves list and returns persisted entities`() {
+            val unsaved =
+                listOf(
+                    Book(bookshelfId = 5L, title = "Title 1", author = "Author 1"),
+                    Book(bookshelfId = 5L, title = "Title 2", author = "Author 2"),
+                )
+            val saved = unsaved.mapIndexed { index, book -> book.copy(id = (index + 1).toLong()) }
+            given(bookRepository.saveAll(unsaved)).willReturn(saved)
+
+            val result = bookService.saveAllBooks(unsaved)
+
+            assertEquals(saved, result, "Saved books should match the returned result")
+            assertEquals(2, result.size, "Saved book count should equal to 2")
+        }
+    }
+
+    @Nested
     inner class UpdateBook {
         @Test
         fun `updateBook updates fields and returns Right`() {

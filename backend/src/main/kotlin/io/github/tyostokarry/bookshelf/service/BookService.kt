@@ -23,6 +23,9 @@ class BookService(
     fun saveBook(book: Book): Book = bookRepository.save(book)
 
     @Transactional
+    fun saveAllBooks(books: List<Book>): List<Book> = bookRepository.saveAll(books)
+
+    @Transactional
     fun updateBook(
         id: Long,
         updatedBook: Book,
@@ -37,7 +40,6 @@ class BookService(
             publisher = updatedBook.publisher
             publishedDate = updatedBook.publishedDate
             isbn13 = updatedBook.isbn13
-            googleId = updatedBook.googleId
             genre = updatedBook.genre
             language = updatedBook.language
             status = updatedBook.status
