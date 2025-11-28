@@ -20,7 +20,7 @@ export type ModalState =
         title: string;
         message: string;
         confirmLabel: string;
-        confirmColor?: "success" | "danger" | "neutral";
+        confirmColor?: "success" | "danger";
         onConfirm: () => void;
       };
     }

@@ -4,7 +4,13 @@ import { toast } from "sonner";
 import { ModalBase } from "./ModalBase";
 import { useLanguage } from "../../hooks/useLanguage";
 import { useModal } from "../../hooks/useModal";
-import { Button } from "../commons/Button";
+import { Button } from "@/components/ui/button";
+import {
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 
 const isValidPublicId = (value: string) =>
   /^[A-Za-z0-9_-]{21}$/.test(value.trim());
@@ -35,28 +41,41 @@ export const EnterPublicIdModal: FC = () => {
 
   return (
     <ModalBase>
-      <h2 className="text-xl font-semibold text-text text-shadow-sm mb-4">
-        {t("modal.enterPublicIdToVisit")}
-      </h2>
+      <DialogHeader>
+        <DialogTitle className="text-center text-lg text-foreground">
+          {t("modal.enterPublicIdToVisit")}
+        </DialogTitle>
+        <DialogDescription className="text-center text-muted-foreground">
+          {t("modal.enterPublicIdToVisitDescriptionStart")} <br />
+          {t("modal.enterPublicIdToVisitDescriptionEnd")}
+        </DialogDescription>
+      </DialogHeader>
       <form onSubmit={handleSubmit}>
-        <input
+        <Input
           ref={inputRef}
+          type="text"
           placeholder={t("modal.pastePublicIdHere")}
-          className="w-full p-2 border border-gray-300 rounded mb-4"
+          className="w-full mb-4"
           value={publicId}
-          onChange={(e) => setPublicId(e.target.value)}
+          onChange={(event) => setPublicId(event.target.value)}
         />
         <div className="flex justify-end space-x-2">
           <Button
-            label={t("button.cancel")}
+            type="button"
+            variant="outline"
+            className="hover:cursor-pointer"
             onClick={() => closeModal()}
-            color="danger"
-          />
+          >
+            {t("button.cancel")}
+          </Button>
           <Button
-            label={t("button.open")}
             type="submit"
+            variant="default"
+            className="hover:cursor-pointer"
             disabled={!publicId.trim()}
-          />
+          >
+            {t("button.open")}
+          </Button>
         </div>
       </form>
     </ModalBase>

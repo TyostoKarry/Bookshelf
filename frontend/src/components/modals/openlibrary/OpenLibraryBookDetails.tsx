@@ -1,7 +1,15 @@
 import { useState, type FC } from "react";
 import { useLanguage } from "../../../hooks/useLanguage";
 import type { OpenLibraryImportBookDetails } from "../../../types/openlibrary";
-import { Button } from "../../commons/Button";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 
 interface OpenLibraryBookDetailsProps {
   selectedBook: OpenLibraryImportBookDetails;
@@ -47,54 +55,61 @@ export const OpenLibraryBookDetails: FC<OpenLibraryBookDetailsProps> = ({
 
   return (
     <div>
-      <h3 className="text-lg font-semibold text-foreground border-b border-muted-foreground pb-4 mb-4">
-        {t("searchOpenLibrary.confirmImportTitle")}
-      </h3>
-
-      <div className="flex gap-3 mb-3">
-        {selectedBook.coverUrl ? (
-          <img
-            src={selectedBook.coverUrl}
-            alt={selectedBook.title ?? t("common.unknown")}
-            className="w-30 h-42 object-cover rounded shadow"
-          />
-        ) : (
-          <div className="w-30 h-42 bg-gray-200 rounded flex items-center justify-center">
-            <p className="text-2xl text-muted-foreground">
-              {t("common.placeholderQuestionMark")}
-            </p>
-          </div>
-        )}
-
-        <div className="flex-1 flex flex-col justify-center">
-          <p className="font-semibold text-foreground text-lg">
-            {selectedBook.title}
-          </p>
-          {selectedBook.authors && (
-            <p className="text-foreground">{selectedBook.authors.join(", ")}</p>
+      <DialogHeader>
+        <DialogTitle className="text-center text-lg text-foreground text-shadow-md">
+          {t("searchOpenLibrary.confirmImportTitle")}
+        </DialogTitle>
+        <DialogDescription className="text-center text-muted-foreground mb-3">
+          {t("searchOpenLibrary.confirmImportDescription")}
+        </DialogDescription>
+      </DialogHeader>
+      <Card className="flex gap-4 p-3 mt-3 bg-card border-border mb-2">
+        <div className="flex flex-row">
+          {selectedBook.coverUrl ? (
+            <img
+              src={selectedBook.coverUrl}
+              alt={selectedBook.title ?? t("common.unknown")}
+              className="w-30 h-42 object-cover rounded shadow"
+            />
+          ) : (
+            <div className="w-30 h-42 bg-gray-200 rounded flex items-center justify-center">
+              <p className="text-2xl text-muted-foreground">
+                {t("common.placeholderQuestionMark")}
+              </p>
+            </div>
           )}
-          {selectedBook.publishYear && (
-            <p className="text-muted-foreground">
-              {t("searchOpenLibrary.firstPublished")}:{" "}
-              {selectedBook.publishYear}
+
+          <div className="flex-1 flex flex-col justify-center align-center text-center">
+            <p className="font-semibold text-foreground text-lg">
+              {selectedBook.title}
+            </p>
+            {selectedBook.authors && (
+              <p className="text-foreground">
+                {selectedBook.authors.join(", ")}
+              </p>
+            )}
+            {selectedBook.publishYear && (
+              <p className="text-muted-foreground">
+                {t("searchOpenLibrary.firstPublished")}:{" "}
+                {selectedBook.publishYear}
+              </p>
+            )}
+          </div>
+        </div>
+        <div
+          className={`${selectedBook.description ? "border border-muted-foreground" : ""} rounded-md px-2`}
+        >
+          {selectedBook.description ? (
+            <p className="max-h-100 overflow-y-auto text-foreground text-sm leading-relaxed break-words whitespace-pre-wrap">
+              {selectedBook.description}
+            </p>
+          ) : (
+            <p className="italic text-center text-muted-foreground mb-4">
+              {t("bookPage.noDescription")}
             </p>
           )}
         </div>
-      </div>
-
-      <div
-        className={`${selectedBook.description ? "border border-muted-foreground" : ""} rounded-md px-2 mb-2`}
-      >
-        {selectedBook.description ? (
-          <p className="max-h-100 overflow-y-auto text-foreground text-sm leading-relaxed break-words whitespace-pre-wrap">
-            {selectedBook.description}
-          </p>
-        ) : (
-          <p className="italic text-muted-foreground mb-4">
-            {t("bookPage.noDescription")}
-          </p>
-        )}
-      </div>
+      </Card>
 
       <div className="mb-4 border border-muted-foreground rounded-md p-3">
         <h4 className="font-medium text-muted-foreground mb-2">
@@ -107,36 +122,46 @@ export const OpenLibraryBookDetails: FC<OpenLibraryBookDetailsProps> = ({
               boolean,
             ][]
           ).map(([key, checked]) => (
-            <label
-              key={key}
-              className="flex items-center gap-2 cursor-pointer select-none"
-            >
-              <input
-                type="checkbox"
+            <div key={key} className="flex items-center gap-2 select-none">
+              <Checkbox
+                id={`field-${key}`}
                 checked={checked}
-                onChange={() =>
+                onCheckedChange={() =>
                   setSelectedFields((prev) => ({
                     ...prev,
-                    [key]: !prev[key as keyof typeof prev],
+                    [key]: !prev[key],
                   }))
                 }
                 className="cursor-pointer"
               />
-              <span className="text-muted-foreground capitalize">
+              <Label
+                htmlFor={`field-${key}`}
+                className="text-sm text-muted-foreground capitalize cursor-pointer"
+              >
                 {t(FIELD_TRANSLATION_KEYS[key])}
-              </span>
-            </label>
+              </Label>
+            </div>
           ))}
         </div>
       </div>
 
       <div className="flex justify-between gap-3">
-        <Button label={t("button.back")} onClick={onBack} color="neutral" />
         <Button
-          label={t("button.importBook")}
+          type="button"
+          variant="outline"
+          className="hover:cursor-pointer"
+          onClick={onBack}
+        >
+          {t("button.back")}
+        </Button>
+        <Button
+          type="button"
+          variant="default"
+          className="hover:cursor-pointer"
           onClick={handleConfirm}
-          color="success"
-        />
+        >
+          {t("button.importBook")}
+        </Button>
       </div>
     </div>
   );

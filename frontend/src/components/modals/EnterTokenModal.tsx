@@ -6,7 +6,15 @@ import { getBookshelfByToken } from "../../api/bookshelves";
 import { useLanguage } from "../../hooks/useLanguage";
 import { useModal } from "../../hooks/useModal";
 import { useMyBookshelf } from "../../hooks/useMyBookshelf";
-import { Button } from "../commons/Button";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export const EnterTokenModal: FC = () => {
   const { t } = useLanguage();
@@ -48,44 +56,54 @@ export const EnterTokenModal: FC = () => {
 
   return (
     <ModalBase>
-      <h2 className="text-xl font-semibold text-foreground text-shadow-sm mb-4">
-        {t("modal.enterEditToken")}
-      </h2>
+      <DialogHeader>
+        <DialogTitle className="text-center text-lg text-foreground">
+          {t("modal.enterEditToken")}
+        </DialogTitle>
+        <DialogDescription className="text-center text-muted-foreground">
+          {t("modal.enterEditTokenDescription")}
+        </DialogDescription>
+      </DialogHeader>
       <form onSubmit={handleSubmit}>
-        <input
+        <Input
           ref={inputRef}
           type="text"
           placeholder={t("modal.pasteTokenHere")}
-          className="w-full p-2 border border-gray-300 rounded mb-4"
+          className="w-full mb-4"
           value={token}
           onChange={(event) => setToken(event.target.value)}
         />
-        <div className="flex items-center justify-center mb-4 space-x-2">
-          <input
+        <div className="flex items-center justify-center mb-4">
+          <Checkbox
             id="rememberToken"
-            type="checkbox"
             checked={rememberToken}
-            onChange={() => setRememberToken(!rememberToken)}
+            onCheckedChange={(value) => setRememberToken(Boolean(value))}
             className="cursor-pointer"
           />
-          <label
+          <Label
             htmlFor="rememberToken"
-            className="text-sm text-foreground text-shadow-sm select-none cursor-pointer"
+            className="pl-2 text-sm text-muted-foreground select-none cursor-pointer"
           >
             {t("modal.rememberToken")}
-          </label>
+          </Label>
         </div>
         <div className="flex justify-end space-x-2">
           <Button
-            label={t("button.cancel")}
+            type="button"
+            variant="outline"
+            className="hover:cursor-pointer"
             onClick={() => closeModal()}
-            color="danger"
-          />
+          >
+            {t("button.cancel")}
+          </Button>
           <Button
-            label={t("button.open")}
             type="submit"
+            variant="default"
+            className="hover:cursor-pointer"
             disabled={!token.trim()}
-          />
+          >
+            {t("button.open")}
+          </Button>
         </div>
       </form>
     </ModalBase>

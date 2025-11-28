@@ -106,7 +106,7 @@ export const Topbar: FC = () => {
           onClick={() => openModal("ENTER_TOKEN", {})}
           className="bg-muted text-foreground hover:bg-muted/80 hover:cursor-pointer"
         >
-          {t("button.openMyBookshelf")}
+          {t("button.myBookshelf")}
         </Button>
       )}
     </nav>
