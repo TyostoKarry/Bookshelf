@@ -2,13 +2,18 @@ import { useState, type FC } from "react";
 import { ModalBase } from "./ModalBase";
 import { useLanguage } from "../../hooks/useLanguage";
 import { useModal } from "../../hooks/useModal";
-import { Button } from "../commons/Button";
+import { Button } from "@/components/ui/button";
+import {
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface ConfirmationModalProps {
   title: string;
   message: string;
   confirmLabel: string;
-  confirmColor?: "success" | "danger" | "neutral";
+  confirmColor?: "success" | "danger";
   onConfirm: () => Promise<void> | void;
 }
 
@@ -34,24 +39,32 @@ export const ConfirmationModal: FC<ConfirmationModalProps> = ({
 
   return (
     <ModalBase>
-      <h2 className="text-xl font-semibold text-text text-shadow-sm mb-4">
-        {title}
-      </h2>
-      <p className="text-gray-800 text-sm leading-relaxed mb-5 px-3">
-        {message}
-      </p>
+      <DialogHeader>
+        <DialogTitle className="text-center text-lg text-foreground text-shadow-md">
+          {title}
+        </DialogTitle>
+        <DialogDescription className="text-center text-muted-foreground">
+          {message}
+        </DialogDescription>
+      </DialogHeader>
       <div className="flex justify-around space-x-4">
         <Button
-          label={t("button.cancel")}
+          type="button"
+          variant="outline"
+          className="hover:cursor-pointer"
           onClick={closeModal}
-          color="neutral"
-        />
+        >
+          {t("button.cancel")}
+        </Button>
         <Button
-          label={confirmLabel}
+          type="button"
+          variant={confirmColor === "danger" ? "destructive" : "default"}
+          className="hover:cursor-pointer"
           onClick={handleConfirmClick}
           disabled={isProcessing}
-          color={confirmColor}
-        />
+        >
+          {confirmLabel}
+        </Button>
       </div>
     </ModalBase>
   );

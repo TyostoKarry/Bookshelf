@@ -20,9 +20,8 @@
   - [x] Display covers, author, title, status and favorite status
   - [x] Show Google Books coverUrl, else placeholder image
 
-- [ ] **Add Book Page**
+- [x] **Add Book Page**
 
-  - [ ] Integrate Google Books `/search`
   - [x] Manual book entry form
   - [x] Submit new book → `POST /books`
 
@@ -80,9 +79,6 @@
     - [ ] Critic → ratings given = `2^tier`
   - [ ] `GET /achievements` → return achievements + progress
 
-- [ ] **Google Books API**
-  - [ ] `GET /search?q=term` → proxy to Google Books API
-
 ---
 
 ## Stretch / Nice-to-Haves
@@ -90,7 +86,7 @@
 - [x] Authentication → per-user shelves
 - [ ] Responsive design for mobile
 - [ ] Bundle frontend build with backend (Spring serving React)
-- [ ] Search / filter / sort bookshelf (by title, author, status, rating, finished date)
+- [x] Search / filter / sort bookshelf (by title, author, status, rating, finished date)
 - [ ] Export / import data (export JSON of bookshelf for backup or migration)
 - [ ] Global Stats page (graphs for books/pages per month, ratings breakdown, totals)
 
@@ -98,7 +94,6 @@
 
 ## Deliverable MVP
 
-- [ ] Search & add books from Google API
 - [x] Add books manually
 - [x] Update details (title, author, status, rating, notes, etc)
 - [x] View BookCards (covers, titles and authors) in bookshelf view

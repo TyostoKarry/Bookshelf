@@ -1,5 +1,5 @@
 import { type FC } from "react";
-import type { Control, FieldErrors, UseFormRegister } from "react-hook-form";
+import type { UseFormReturn } from "react-hook-form";
 import { Detail } from "./Detail";
 import { FavoriteToggle } from "./FavoriteToggle";
 import { SectionTitle } from "./SectionTitle";
@@ -12,19 +12,19 @@ import type { BookForm } from "../../../validation/bookFormSchema";
 interface BookPersonalStatsProps {
   book: Partial<Book>;
   mode: BookPageMode;
-  register: UseFormRegister<BookForm>;
-  control: Control<BookForm>;
-  errors: FieldErrors<BookForm>;
+  form: UseFormReturn<BookForm>;
 }
 
 export const BookPersonalStats: FC<BookPersonalStatsProps> = ({
   book,
   mode,
-  register,
-  control,
-  errors,
+  form,
 }) => {
   const { t } = useLanguage();
+  const {
+    control,
+    formState: { errors },
+  } = form;
 
   return (
     <section className="space-y-3">
@@ -42,8 +42,10 @@ export const BookPersonalStats: FC<BookPersonalStatsProps> = ({
         mode={mode}
         type="number"
         placeholder={t("placeholders.enterReadCount")}
-        register={register("readCount", { valueAsNumber: true })}
+        control={control}
+        controlName="readCount"
         error={errors.readCount?.message}
+        defaultValue={0}
       />
       <FavoriteToggle
         control={control}

@@ -4,7 +4,15 @@ import { ModalBase } from "./ModalBase";
 import CopyIcon from "../../assets/icons/copy.svg?react";
 import { useLanguage } from "../../hooks/useLanguage";
 import { useModal } from "../../hooks/useModal";
-import { Button } from "../commons/Button";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 
 interface ShowTokenModalProps {
   token: string;
@@ -34,41 +42,53 @@ export const ShowTokenModal: FC<ShowTokenModalProps> = ({ token }) => {
   };
 
   return (
-    <ModalBase closeOnOutsideClick={false}>
-      <h2 className="text-xl font-semibold text-text text-shadow-sm mb-4">
-        {t("modal.newBookshelfCreated")}
-      </h2>
-      <div className="text-gray-800 text-sm leading-relaxed mb-5 px-3">
-        <p className="font-medium">{t("modal.saveTokenTitle")}</p>
-        <p>{t("modal.saveTokenPurpose")}</p>
-        <p className="mt-1">{t("modal.saveTokenInstruction")}</p>
-      </div>
-      <div className="flex flex-row justify-between bg-gray-100 p-4 rounded mb-4 break-all">
-        <span>{token}</span>
-        <button
+    <ModalBase>
+      <DialogHeader>
+        <DialogTitle className="text-center text-lg text-foreground text-shadow-md">
+          {t("modal.newBookshelfCreated")}
+        </DialogTitle>
+        <DialogDescription className="text-center text-muted-foreground">
+          {t("modal.saveTokenTitle")} <br /> {t("modal.saveTokenPurpose")}{" "}
+          <br /> {t("modal.saveTokenInstruction")}
+        </DialogDescription>
+      </DialogHeader>
+      <Card className="flex flex-row justify-between bg-gray-100 p-4 rounded mb-4 break-all">
+        <span className="font-mono cursor-text select-all text-sm text-foreground">
+          {token}
+        </span>
+        <Button
+          type="button"
+          size="icon"
+          variant="ghost"
           onClick={handleCopyToken}
           className="ml-2 p-1 rounded hover:bg-gray-200 hover:cursor-pointer active:bg-gray-300"
           title={t("button.copyTokenToClipboard")}
         >
           <CopyIcon className="w-5 h-5" />
-        </button>
-      </div>
-      <div className="flex items-center justify-center mb-4 space-x-2">
-        <input
+        </Button>
+      </Card>
+      <div className="flex items-center justify-center mb-4">
+        <Checkbox
           id="rememberToken"
-          type="checkbox"
           checked={rememberToken}
-          onChange={() => setRememberToken(!rememberToken)}
+          onCheckedChange={(checked) => setRememberToken(!!checked)}
           className="cursor-pointer"
         />
-        <label
+        <Label
           htmlFor="rememberToken"
-          className="text-sm text-gray-800 text-shadow-sm select-none cursor-pointer"
+          className="pl-2 text-sm text-foreground text-shadow-sm select-none cursor-pointer"
         >
           {t("modal.rememberToken")}
-        </label>
+        </Label>
       </div>
-      <Button label={t("button.gotIt")} onClick={handleGotIt} />
+      <Button
+        type="button"
+        variant="default"
+        className="hover:cursor-pointer"
+        onClick={handleGotIt}
+      >
+        {t("button.gotIt")}
+      </Button>
     </ModalBase>
   );
 };

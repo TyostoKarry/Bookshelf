@@ -55,7 +55,7 @@ export const StarRating: FC<StarRatingProps> = ({
     return (
       <div className="flex items-center">
         {elements}
-        <span className="ml-2 text-sm text-gray-600">
+        <span className="ml-2 text-sm text-muted-foreground">
           {(clamped / 2).toFixed(1)} / {maxRating / 2}
         </span>
       </div>
@@ -65,7 +65,7 @@ export const StarRating: FC<StarRatingProps> = ({
   if (mode === "view") {
     return (
       <div className="flex items-center justify-between border-b border-gray-100 pb-1">
-        <label className="flex-1 items-center text-gray-600 text-sm">
+        <label className="flex-1 items-center text-muted-foreground text-sm">
           {label}
         </label>
         <div className="flex items-center justify-between border-b border-gray-100 pb-1">
@@ -78,7 +78,7 @@ export const StarRating: FC<StarRatingProps> = ({
   return (
     <div className="flex flex-col">
       <div className="flex items-center justify-between border-b border-gray-100 pb-1">
-        <label className="flex-1 items-center text-gray-600 text-sm">
+        <label className="flex-1 items-center text-muted-foreground text-sm">
           {label}
         </label>
         <Controller<BookForm, "rating">
@@ -152,7 +152,7 @@ export const StarRating: FC<StarRatingProps> = ({
                     renderStar(index),
                   )}
 
-                  <span className="ml-2 text-sm text-gray-600">
+                  <span className="ml-2 text-sm text-muted-foreground">
                     {(activeRating / 2).toFixed(1)} / {maxRating / 2}
                   </span>
                 </div>

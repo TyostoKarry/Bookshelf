@@ -1,7 +1,13 @@
 import { useEffect, useRef, type FC } from "react";
 import { useLanguage } from "../../../hooks/useLanguage";
 import type { OpenLibrarySearchBook } from "../../../types/openlibrary";
-import { Button } from "../../commons/Button";
+import { Button } from "@/components/ui/button";
+import {
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 
 interface OpenLibrarySearchListProps {
   query: string;
@@ -34,8 +40,8 @@ export const OpenLibrarySearchList: FC<OpenLibrarySearchListProps> = ({
   if (selectedBookLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-10 gap-3">
-        <div className="h-10 w-10 border-4 border-gray-400 border-t-transparent rounded-full animate-spin" />
-        <p className="text-gray-600">
+        <div className="h-10 w-10 border-4 border-muted-foreground border-t-transparent rounded-full animate-spin" />
+        <p className="text-foreground">
           {t("searchOpenLibrary.loadingBookDetails")}
         </p>
       </div>
@@ -44,9 +50,14 @@ export const OpenLibrarySearchList: FC<OpenLibrarySearchListProps> = ({
 
   return (
     <div>
-      <h2 className="text-xl font-semibold text-text mb-3">
-        {t("searchOpenLibrary.title")}
-      </h2>
+      <DialogHeader>
+        <DialogTitle className="text-center text-lg text-foreground text-shadow-md">
+          {t("searchOpenLibrary.title")}
+        </DialogTitle>
+        <DialogDescription className="text-center text-muted-foreground mb-3">
+          {t("searchOpenLibrary.description")}
+        </DialogDescription>
+      </DialogHeader>
       <form
         className="flex gap-2 mb-4"
         onSubmit={(event) => {
@@ -54,25 +65,32 @@ export const OpenLibrarySearchList: FC<OpenLibrarySearchListProps> = ({
           onSearch();
         }}
       >
-        <input
+        <Input
           ref={inputRef}
           type="text"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder={t("searchOpenLibrary.searchPlaceholder")}
-          className="flex-1 border border-gray-300 rounded p-2 text-sm"
+          className="w-full"
         />
         <Button
           type="submit"
-          label={t("button.search")}
+          variant="default"
+          className="hover:cursor-pointer"
           disabled={searchLoading || !query.trim()}
-        />
+        >
+          {t("button.search")}
+        </Button>
       </form>
 
       {searchLoading && (
-        <div className="flex flex-col items-center justify-center py-10 gap-3">
-          <div className="h-10 w-10 border-4 border-gray-400 border-t-transparent rounded-full animate-spin" />
-          <p className="text-gray-600">{t("common.loading")}</p>
+        <div
+          role="status"
+          aria-live="polite"
+          className="flex flex-col items-center justify-center py-10 gap-3"
+        >
+          <div className="h-10 w-10 border-4 border-muted-foreground border-t-transparent rounded-full animate-spin" />
+          <p className="text-muted-foreground">{t("common.loading")}</p>
         </div>
       )}
 
@@ -81,8 +99,15 @@ export const OpenLibrarySearchList: FC<OpenLibrarySearchListProps> = ({
           {results.map((bookFromList) => (
             <li
               key={bookFromList.key}
-              className="flex gap-3 p-2 border border-gray-200 rounded-md hover:bg-gray-50 cursor-pointer"
+              tabIndex={0}
+              className="flex gap-3 p-2 border border-muted-foreground rounded-md hover:bg-accent/30 cursor-pointer"
               onClick={() => onSelectBook(bookFromList)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  onSelectBook(bookFromList);
+                }
+              }}
             >
               {bookFromList.coverUrl ? (
                 <img
@@ -92,23 +117,23 @@ export const OpenLibrarySearchList: FC<OpenLibrarySearchListProps> = ({
                 />
               ) : (
                 <div className="w-20 h-28 flex items-center justify-center bg-gray-200 rounded">
-                  <p className="text-2xl text-gray-400">
+                  <p className="text-2xl text-muted-foreground">
                     {t("common.placeholderQuestionMark")}
                   </p>
                 </div>
               )}
               <div className="flex-1 flex flex-col justify-center text-center">
-                <span className="font-semibold text-gray-800">
+                <span className="font-semibold text-foreground line-clamp-2">
                   {bookFromList.title}
                 </span>
                 {bookFromList.authors && (
-                  <span className="text-sm text-gray-600">
+                  <span className="text-sm text-muted-foreground line-clamp-1">
                     {bookFromList.authors.join(", ") ||
                       t("searchOpenLibrary.unknownAuthor")}
                   </span>
                 )}
                 {bookFromList.publishYear && (
-                  <span className="text-sm text-gray-500">
+                  <span className="text-sm text-muted-foreground">
                     {`${t("searchOpenLibrary.firstPublished")}: ${bookFromList.publishYear}`}
                   </span>
                 )}
@@ -122,7 +147,7 @@ export const OpenLibrarySearchList: FC<OpenLibrarySearchListProps> = ({
         results.length === 0 &&
         query.trim() &&
         hasSearched && (
-          <p className="text-gray-500 italic mt-6 text-center">
+          <p className="text-muted-foreground italic mt-6 text-center">
             {t("searchOpenLibrary.noResults")}
           </p>
         )}

@@ -12,8 +12,22 @@ import {
   bookshelfFormSchema,
   type BookshelfForm,
 } from "../../validation/bookshelfFormSchema";
-import { Button } from "../commons/Button";
 import { FieldErrorMessage } from "../commons/FieldErrorMessage";
+import { Button } from "@/components/ui/button";
+import {
+  DialogTitle,
+  DialogDescription,
+  DialogHeader,
+} from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 export const CreateBookshelfModal: FC = () => {
   const { t } = useLanguage();
@@ -21,17 +35,18 @@ export const CreateBookshelfModal: FC = () => {
   const { setEditToken } = useMyBookshelf();
   const navigate = useNavigate();
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors, isSubmitting },
-    reset,
-  } = useForm<BookshelfForm>({
+  const form = useForm<BookshelfForm>({
     resolver: zodResolver(bookshelfFormSchema),
     defaultValues: {},
   });
 
+  const {
+    reset,
+    handleSubmit,
+    control,
+    watch,
+    formState: { errors, isSubmitting },
+  } = form;
   const nameValue = watch("name") ?? "";
   const descriptionValue = watch("description") ?? "";
 
@@ -58,61 +73,88 @@ export const CreateBookshelfModal: FC = () => {
 
   return (
     <ModalBase>
-      <h2 className="text-center text-lg text-text text-shadow-md mb-4">
-        {t("modal.createBookshelf")}
-      </h2>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div>
-          <label className="block text-sm text-gray-800 text-shadow-sm mb-1">
-            {t("modal.nameOfBookshelf")}
-          </label>
-          <input
-            type="text"
-            {...register("name")}
-            className={`w-full rounded-md  border ${errors.name ? "border-red-500" : "border-gray-300"} shadow-sm px-3 py-2 text-sm mb-1`}
-            placeholder={t("modal.namePlaceholder")}
-          />
-          <div className="flex flex-row justify-between">
-            <FieldErrorMessage message={errors.name?.message} />
-            <p
-              className={`text-xs ${nameValue.length <= 100 ? "text-gray-400" : "text-red-400"} text-right`}
-            >
-              {nameValue.length}/100
-            </p>
+      <DialogHeader>
+        <DialogTitle className="text-center text-lg text-foreground text-shadow-md">
+          {t("modal.createBookshelf")}
+        </DialogTitle>
+        <DialogDescription className="text-center text-muted-foreground">
+          {t("modal.createBookshelfDescription")}
+        </DialogDescription>
+      </DialogHeader>
+      <Form {...form}>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <div className="space-y-1">
+            <FormField
+              name="name"
+              control={control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("modal.nameOfBookshelf")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder={t("modal.namePlaceholder")}
+                      {...field}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <div className="flex flex-row justify-between">
+              <FieldErrorMessage message={errors.name?.message} />
+              <p
+                className={`text-xs ${nameValue.length <= 100 ? "text-muted-foreground" : "text-red-400"} text-right`}
+              >
+                {nameValue.length}/100
+              </p>
+            </div>
           </div>
-        </div>
-        <div>
-          <label className="block text-sm text-gray-800 text-shadow-sm mb-1">
-            {t("modal.descriptionOfBookshelf")}
-          </label>
-          <textarea
-            {...register("description")}
-            className={`w-full rounded-md  border ${errors.description ? "border-red-500" : "border-gray-300"} shadow-sm px-3 py-2 text-sm resize-none`}
-            placeholder={t("modal.descriptionPlaceholder")}
-            rows={3}
-          />
-          <div className="flex flex-row justify-between">
-            <FieldErrorMessage message={errors.description?.message} />
-            <p
-              className={`text-xs ${(descriptionValue?.length ?? 0) <= 1000 ? "text-gray-400" : "text-red-400"} text-right`}
-            >
-              {descriptionValue ? descriptionValue.length : 0}/1000
-            </p>
+          <div className="space-y-1">
+            <FormField
+              name="description"
+              control={control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("modal.descriptionOfBookshelf")}</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder={t("modal.descriptionPlaceholder")}
+                      rows={3}
+                      {...field}
+                      value={field.value ?? ""}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <div className="flex flex-row justify-between">
+              <FieldErrorMessage message={errors.description?.message} />
+              <p
+                className={`text-xs ${(descriptionValue?.length ?? 0) <= 1000 ? "text-muted-foreground" : "text-red-400"} text-right`}
+              >
+                {descriptionValue ? descriptionValue.length : 0}/1000
+              </p>
+            </div>
           </div>
-        </div>
-        <div className="flex justify-end space-x-3">
-          <Button
-            label={t("button.cancel")}
-            onClick={() => closeModal()}
-            color="danger"
-          />
-          <Button
-            label={t("button.create")}
-            type="submit"
-            disabled={isSubmitting}
-          />
-        </div>
-      </form>
+          <div className="flex justify-end space-x-3">
+            <Button
+              type="button"
+              variant="outline"
+              className="hover:cursor-pointer"
+              onClick={() => closeModal()}
+            >
+              {t("button.cancel")}
+            </Button>
+            <Button
+              type="submit"
+              variant="default"
+              className="hover:cursor-pointer"
+              disabled={isSubmitting}
+            >
+              {t("button.create")}
+            </Button>
+          </div>
+        </form>
+      </Form>
     </ModalBase>
   );
 };

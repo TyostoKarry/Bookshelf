@@ -1,5 +1,5 @@
 import { type FC } from "react";
-import { type UseFormRegister, type FieldErrors } from "react-hook-form";
+import type { UseFormReturn } from "react-hook-form";
 import { Detail } from "./Detail";
 import { SectionTitle } from "./SectionTitle";
 import { useLanguage } from "../../../hooks/useLanguage";
@@ -14,17 +14,15 @@ import type { BookForm } from "../../../validation/bookFormSchema";
 interface BookMetadataProps {
   book: Partial<Book>;
   mode: BookPageMode;
-  register: UseFormRegister<BookForm>;
-  errors: FieldErrors<BookForm>;
+  form: UseFormReturn<BookForm>;
 }
 
-export const BookMetadata: FC<BookMetadataProps> = ({
-  book,
-  mode,
-  register,
-  errors,
-}) => {
+export const BookMetadata: FC<BookMetadataProps> = ({ book, mode, form }) => {
   const { t } = useLanguage();
+  const {
+    control,
+    formState: { errors },
+  } = form;
 
   return (
     <section>
@@ -40,7 +38,8 @@ export const BookMetadata: FC<BookMetadataProps> = ({
           type="select"
           options={GENRE_OPTIONS}
           error={errors.genre?.message}
-          register={register("genre")}
+          control={control}
+          controlName="genre"
         />
         <Detail
           label={t("bookPage.pages")}
@@ -49,7 +48,8 @@ export const BookMetadata: FC<BookMetadataProps> = ({
           type="number"
           placeholder={t("placeholders.enterPages")}
           error={errors.pages?.message}
-          register={register("pages", { valueAsNumber: true })}
+          control={control}
+          controlName="pages"
         />
         <Detail
           label={t("bookPage.publisher")}
@@ -58,7 +58,8 @@ export const BookMetadata: FC<BookMetadataProps> = ({
           type="text"
           placeholder={t("placeholders.enterPublisherName")}
           error={errors.publisher?.message}
-          register={register("publisher")}
+          control={control}
+          controlName="publisher"
         />
         <Detail
           label={t("bookPage.published")}
@@ -66,7 +67,8 @@ export const BookMetadata: FC<BookMetadataProps> = ({
           mode={mode}
           type="date"
           error={errors.publishedDate?.message}
-          register={register("publishedDate")}
+          control={control}
+          controlName="publishedDate"
         />
         <Detail
           label={t("bookPage.language")}
@@ -75,16 +77,18 @@ export const BookMetadata: FC<BookMetadataProps> = ({
           type="select"
           options={LANGUAGE_OPTIONS}
           error={errors.language?.message}
-          register={register("language")}
+          control={control}
+          controlName="language"
         />
         <Detail
           label={t("bookPage.isbn13")}
           value={book.isbn13}
           mode={mode}
-          type="number"
+          type="numeric"
           placeholder={t("placeholders.enterIsbn13")}
           error={errors.isbn13?.message}
-          register={register("isbn13")}
+          control={control}
+          controlName="isbn13"
           clampNumberToInt32={false}
         />
       </div>

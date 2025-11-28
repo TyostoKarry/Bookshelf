@@ -1,13 +1,20 @@
 import { useState, type FC } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { CoverImage } from "./book";
-import { updateBookInBookshelf } from "../../api/bookshelves";
-import NotFavoriteIcon from "../../assets/icons/star-empty.svg?react";
-import FavoriteIcon from "../../assets/icons/star-full.svg?react";
-import { useLanguage } from "../../hooks/useLanguage";
-import { useMyBookshelf } from "../../hooks/useMyBookshelf";
-import type { Book } from "../../types/book";
+import { updateBookInBookshelf } from "../../../api/bookshelves";
+import NotFavoriteIcon from "../../../assets/icons/star-empty.svg?react";
+import FavoriteIcon from "../../../assets/icons/star-full.svg?react";
+import { useLanguage } from "../../../hooks/useLanguage";
+import { useMyBookshelf } from "../../../hooks/useMyBookshelf";
+import type { Book } from "../../../types/book";
+import { CoverImage } from "../book";
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 
 interface BookCardProps {
   book: Book;
@@ -64,16 +71,16 @@ export const BookCard: FC<BookCardProps> = ({ book, canEdit }) => {
   };
 
   return (
-    <div
+    <Card
       onClick={handleCardClick}
-      className="flex flex-col justify-between relative bg-white rounded-xl shadow-sm hover:shadow-lg hover:-translate-y-0.5 transform transition-all p-4 cursor-pointer"
+      className="relative flex flex-col justify-between max-w-[20rem] gap-2 cursor-pointer shadow-sm hover:shadow-lg hover:scale-101 transition-all duration-200 group"
     >
-      <div className="flex justify-between pb-2">
-        <div
+      <CardHeader className="flex justify-between">
+        <Badge
           className={`px-2 py-1 text-xs font-semibold text-white rounded ${statusColors[status]}`}
         >
           {status}
-        </div>
+        </Badge>
         {canEdit ? (
           <button
             onClick={(e) => {
@@ -98,19 +105,24 @@ export const BookCard: FC<BookCardProps> = ({ book, canEdit }) => {
         ) : (
           <NotFavoriteIcon className="w-5 h-5" />
         )}
-      </div>
-      <CoverImage coverUrl={coverUrl} title={title} />
-      <div>
+      </CardHeader>
+      <CardContent>
+        <CoverImage coverUrl={coverUrl} title={title} />
+      </CardContent>
+      <CardFooter className="flex flex-col items-start">
         <h3
-          className="text-lg font-semibold text-gray-900 mb-1 truncate"
+          className="text-base font-semibold text-foreground truncate w-full"
           title={title}
         >
           {title}
         </h3>
-        <p className="text-sm text-gray-700 truncate" title={author}>
+        <p
+          className="text-sm text-muted-foreground truncate w-full"
+          title={author}
+        >
           {author}
         </p>
-      </div>
-    </div>
+      </CardFooter>
+    </Card>
   );
 };

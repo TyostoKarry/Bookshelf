@@ -26,14 +26,14 @@ export const FavoriteToggle: FC<FavoriteToggleProps> = ({
   if (mode === "view") {
     return (
       <div className="flex items-baseline justify-between border-b border-gray-100 pb-1">
-        <label className="flex-1 text-gray-600 text-sm">{label}</label>
+        <label className="flex-1 text-muted-foreground text-sm">{label}</label>
         <div className="flex items-center gap-1">
           {value ? (
             <FavoriteIcon className="w-5 h-5 text-yellow-400" />
           ) : (
             <NotFavoriteIcon className="w-5 h-5 text-gray-400" />
           )}
-          <span className="text-gray-900 text-sm">
+          <span className="text-foreground text-sm">
             {value ? t("common.yes") : t("common.no")}
           </span>
         </div>
@@ -49,7 +49,7 @@ export const FavoriteToggle: FC<FavoriteToggleProps> = ({
         render={({ field }) => (
           <div className="flex items-baseline justify-between border-b border-gray-100 pb-1">
             <label
-              className="flex-1 text-gray-600 text-sm"
+              className="flex-1 text-muted-foreground text-sm"
               htmlFor="favorite-toggle"
             >
               {label}
@@ -68,14 +68,14 @@ export const FavoriteToggle: FC<FavoriteToggleProps> = ({
               {field.value ? (
                 <>
                   <FavoriteIcon className="w-5 h-5 text-yellow-400" />
-                  <span className="text-gray-900 text-sm">
+                  <span className="text-foreground text-sm">
                     {t("common.yes")}
                   </span>
                 </>
               ) : (
                 <>
                   <NotFavoriteIcon className="w-5 h-5 text-gray-400" />
-                  <span className="text-gray-900 text-sm">
+                  <span className="text-foreground text-sm">
                     {t("common.no")}
                   </span>
                 </>

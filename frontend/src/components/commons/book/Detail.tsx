@@ -1,18 +1,30 @@
 import { type FC } from "react";
-import type { UseFormRegisterReturn } from "react-hook-form";
+import { Controller, type Control } from "react-hook-form";
 import type { BookPageMode } from "../../../types/book-page-mode";
+import type { BookForm } from "../../../validation/bookFormSchema";
+import { DatePicker } from "../DatePicker";
 import { FieldErrorMessage } from "../FieldErrorMessage";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface DetailProps {
   label: string;
   value?: string | number | null | undefined;
   mode: BookPageMode;
-  type?: "text" | "number" | "date" | "select";
+  type?: "text" | "number" | "numeric" | "date" | "select";
   options?: readonly string[];
   placeholder?: string;
   error?: string;
-  register?: UseFormRegisterReturn;
+  control?: Control<BookForm>;
+  controlName: keyof BookForm;
   clampNumberToInt32?: boolean;
+  defaultValue?: number;
 }
 
 export const Detail: FC<DetailProps> = ({
@@ -23,16 +35,18 @@ export const Detail: FC<DetailProps> = ({
   options,
   placeholder,
   error,
-  register,
+  control,
+  controlName,
   clampNumberToInt32 = true,
+  defaultValue,
 }) => {
   const MAX_INT_32 = 2_147_483_647;
 
   if (mode === "view") {
     return (
       <div className="flex items-baseline justify-between border-b border-gray-100 pb-1">
-        <label className="flex-1 text-gray-600 text-sm">{label}</label>
-        <span className="text-gray-900 text-sm font-medium">
+        <label className="flex-1 text-muted-foreground text-sm">{label}</label>
+        <span className="text-foreground text-sm font-medium">
           {value ?? "—"}
         </span>
       </div>
@@ -41,56 +55,105 @@ export const Detail: FC<DetailProps> = ({
 
   return (
     <div className="flex flex-col">
-      <div className="flex items-baseline justify-between border-b border-gray-100 pb-1">
-        <label className="flex-1 text-gray-600 text-sm">{label}</label>
-        {type === "select" && (
-          <select
-            {...register}
-            className={`flex-2 text-end border ${error ? "border-red-500" : "border-gray-300"} rounded-md p-2 text-sm text-gray-900`}
-          >
-            {(options as readonly string[]).map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
+      <Controller
+        control={control}
+        name={controlName}
+        render={({ field }) => (
+          <div className="flex items-baseline justify-between border-b border-gray-100 pb-1">
+            <label className="flex text-muted-foreground text-sm w-[6rem] md:w-[8rem]">
+              {label}
+            </label>
+            {type === "select" && (
+              <Select
+                key={String(field.value) || controlName}
+                onValueChange={field.onChange}
+                value={
+                  typeof field.value === "string" && field.value.trim() !== ""
+                    ? field.value.toString()
+                    : (options?.[0] ?? "")
+                }
+              >
+                <SelectTrigger className="flex-1 w-full hover:bg-accent/40">
+                  <SelectValue placeholder={placeholder} />
+                </SelectTrigger>
+                <SelectContent>
+                  {(options || []).map((option) => (
+                    <SelectItem key={option} value={option}>
+                      {option}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+            {type === "number" && (
+              <Input
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                className="flex-1 w-full hover:bg-accent/40"
+                placeholder={placeholder}
+                value={
+                  typeof field.value === "number" && !Number.isNaN(field.value)
+                    ? field.value
+                    : ""
+                }
+                onChange={(event) => {
+                  const raw = event.target.value.trim();
+                  if (raw === "") {
+                    field.onChange(defaultValue ?? null);
+                    return;
+                  }
+                  let num = Number(raw);
+                  if (clampNumberToInt32 && !Number.isNaN(num)) {
+                    if (num > MAX_INT_32) num = MAX_INT_32;
+                    if (num < 0) num = 0;
+                  }
+                  field.onChange(Number.isNaN(num) ? null : num);
+                }}
+              />
+            )}
+            {type === "numeric" && (
+              <Input
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                className="flex-1 w-full hover:bg-accent/40"
+                placeholder={placeholder}
+                value={typeof field.value === "string" ? field.value : ""}
+                onChange={(event) => {
+                  const raw = event.target.value.trim();
+                  if (raw === "") {
+                    field.onChange(null);
+                    return;
+                  }
+                  const digitsOnly = raw.replace(/\D+/g, "");
+                  const clamped = digitsOnly.slice(0, 13);
+                  field.onChange(clamped || null);
+                }}
+              />
+            )}
+            {type === "date" && (
+              <DatePicker
+                value={
+                  typeof field.value === "string" && field.value.trim() !== ""
+                    ? field.value
+                    : null
+                }
+                onChange={field.onChange}
+              />
+            )}
+            {type === "text" && (
+              <Input
+                type="text"
+                className="flex-1 w-full hover:bg-accent/40"
+                placeholder={placeholder}
+                {...field}
+                value={typeof field.value === "string" ? field.value : ""}
+              />
+            )}
+          </div>
         )}
-        {type === "number" && (
-          <input
-            type="text"
-            inputMode="numeric"
-            pattern="[0-9]*"
-            className={`flex-2 text-end border ${error ? "border-red-500" : "border-gray-300"} rounded-md p-2 text-sm text-gray-900`}
-            placeholder={placeholder}
-            {...register}
-            onInput={(event) => {
-              const target = event.target as HTMLInputElement;
-              let newValue = target.value.replace(/\D+/g, "");
-              if (clampNumberToInt32 && newValue) {
-                const numericValue = Number(newValue);
-                if (numericValue > MAX_INT_32) newValue = MAX_INT_32.toString();
-              }
-              target.value = newValue;
-            }}
-          />
-        )}
-        {type === "date" && (
-          <input
-            type="date"
-            className={`flex-2 justify-items-end border ${error ? "border-red-500" : "border-gray-300"} rounded-md p-2 text-sm text-gray-900`}
-            placeholder={placeholder}
-            {...register}
-          />
-        )}
-        {type === "text" && (
-          <input
-            type="text"
-            className={`flex-2 text-end border ${error ? "border-red-500" : "border-gray-300"} rounded-md p-2 text-sm text-gray-900`}
-            placeholder={placeholder}
-            {...register}
-          />
-        )}
-      </div>
+      />
       <FieldErrorMessage message={error} align="right" />
     </div>
   );

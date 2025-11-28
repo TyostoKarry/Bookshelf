@@ -1,5 +1,5 @@
 import { type FC } from "react";
-import type { FieldErrors, UseFormRegister } from "react-hook-form";
+import type { UseFormReturn } from "react-hook-form";
 import { Detail } from "./Detail";
 import { SectionTitle } from "./SectionTitle";
 import { useLanguage } from "../../../hooks/useLanguage";
@@ -10,17 +10,19 @@ import type { BookForm } from "../../../validation/bookFormSchema";
 interface BookReadingDetailsProps {
   book: Partial<Book>;
   mode: BookPageMode;
-  register: UseFormRegister<BookForm>;
-  errors: FieldErrors<BookForm>;
+  form: UseFormReturn<BookForm>;
 }
 
 export const BookReadingDetails: FC<BookReadingDetailsProps> = ({
   book,
   mode,
-  register,
-  errors,
+  form,
 }) => {
   const { t } = useLanguage();
+  const {
+    control,
+    formState: { errors },
+  } = form;
 
   return (
     <section className="space-y-3">
@@ -32,7 +34,8 @@ export const BookReadingDetails: FC<BookReadingDetailsProps> = ({
         type="select"
         options={BOOK_STATUS_OPTIONS}
         error={errors.status?.message}
-        register={register("status")}
+        control={control}
+        controlName="status"
       />
       <Detail
         label={t("bookPage.progress")}
@@ -41,7 +44,8 @@ export const BookReadingDetails: FC<BookReadingDetailsProps> = ({
         type="number"
         placeholder={t("placeholders.enterProgress")}
         error={errors.progress?.message}
-        register={register("progress", { valueAsNumber: true })}
+        control={control}
+        controlName="progress"
       />
       <Detail
         label={t("bookPage.startedAt")}
@@ -49,7 +53,8 @@ export const BookReadingDetails: FC<BookReadingDetailsProps> = ({
         mode={mode}
         type="date"
         error={errors.startedAt?.message}
-        register={register("startedAt")}
+        control={control}
+        controlName="startedAt"
       />
       <Detail
         label={t("bookPage.finishedAt")}
@@ -57,7 +62,8 @@ export const BookReadingDetails: FC<BookReadingDetailsProps> = ({
         mode={mode}
         type="date"
         error={errors.finishedAt?.message}
-        register={register("finishedAt")}
+        control={control}
+        controlName="finishedAt"
       />
     </section>
   );

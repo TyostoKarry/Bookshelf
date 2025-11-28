@@ -21,6 +21,7 @@ import { useMyBookshelf } from "../hooks/useMyBookshelf";
 import type { Book } from "../types/book";
 import type { BookPageMode } from "../types/book-page-mode";
 import { bookFormSchema, type BookForm } from "../validation/bookFormSchema";
+import { Form } from "@/components/ui/form";
 
 interface BookPageProps {
   mode: BookPageMode;
@@ -45,19 +46,19 @@ export const BookPage: FC<BookPageProps> = ({ mode }) => {
   const [canEdit, setCanEdit] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const {
-    register,
-    handleSubmit,
-    control,
-    formState: { errors, isSubmitting },
-    reset,
-  } = useForm<BookForm>({
+  const form = useForm<BookForm>({
     resolver: zodResolver(bookFormSchema),
     defaultValues: {
       readCount: 0,
       favorite: false,
     },
   });
+
+  const {
+    handleSubmit,
+    formState: { isSubmitting },
+    reset,
+  } = form;
 
   useEffect(() => {
     if (!isInitialized) return;
@@ -169,54 +170,30 @@ export const BookPage: FC<BookPageProps> = ({ mode }) => {
 
   return (
     <main className="max-w-5xl mx-auto pt-10 pb-6 px-6">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="bg-white rounded-2xl shadow-lg p-8"
-      >
-        <BookPageHeader
-          book={book}
-          mode={mode}
-          register={register}
-          errors={errors}
-        />
-        <BookMetadata
-          book={book}
-          mode={mode}
-          register={register}
-          errors={errors}
-        />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-10">
-          <BookReadingDetails
+      <Form {...form}>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="bg-card rounded-2xl shadow-xl p-8"
+        >
+          <BookPageHeader book={book} mode={mode} form={form} />
+          <BookMetadata book={book} mode={mode} form={form} />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-10">
+            <BookReadingDetails book={book} mode={mode} form={form} />
+            <BookPersonalStats book={book} mode={mode} form={form} />
+          </div>
+          <BookPersonalNotes book={book} mode={mode} form={form} />
+          <BookPageActions
             book={book}
             mode={mode}
-            register={register}
-            errors={errors}
+            canEdit={canEdit}
+            bookId={bookId}
+            editToken={editToken}
+            refreshBookshelf={refreshBookshelf}
+            reset={reset}
+            isSubmitting={isSubmitting}
           />
-          <BookPersonalStats
-            book={book}
-            mode={mode}
-            register={register}
-            control={control}
-            errors={errors}
-          />
-        </div>
-        <BookPersonalNotes
-          book={book}
-          mode={mode}
-          register={register}
-          errors={errors}
-        />
-        <BookPageActions
-          book={book}
-          mode={mode}
-          canEdit={canEdit}
-          bookId={bookId}
-          editToken={editToken}
-          refreshBookshelf={refreshBookshelf}
-          reset={reset}
-          isSubmitting={isSubmitting}
-        />
-      </form>
+        </form>
+      </Form>
     </main>
   );
 };
