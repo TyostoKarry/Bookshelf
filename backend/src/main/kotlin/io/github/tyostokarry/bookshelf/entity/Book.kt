@@ -46,12 +46,10 @@ data class Book(
     var pages: Int? = null,
     /**
      * URL to the book cover image (optional).
-     * Pulled from Google Books API if available, otherwise display a placeholder.
      */
     var coverUrl: String? = null,
     /**
      * A summary or description of the book (optional).
-     * Pulled from Google Books API if available, or entered manually.
      */
     @Column(columnDefinition = "TEXT")
     var description: String? = null,
@@ -61,7 +59,6 @@ data class Book(
     var publisher: String? = null,
     /**
      * The published date of the book (optional).
-     * Pulled from Google Books API if available, or entered manually.
      */
     var publishedDate: LocalDate? = null,
     /**
@@ -69,11 +66,6 @@ data class Book(
      * Useful for reliable book lookups and import/exports.
      */
     var isbn13: String? = null,
-    /**
-     * External source identifier (optional).
-     * Pulled from Google Books API if available.
-     */
-    var googleId: String? = null,
     /**
      * Main genre classification for the book.
      */

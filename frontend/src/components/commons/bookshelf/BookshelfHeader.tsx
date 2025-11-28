@@ -64,35 +64,51 @@ export const BookshelfHeader: FC<BookshelfHeaderProps> = ({
             </button>
           </div>
         </div>
-        {canEdit && (
-          <div className="flex flex-wrap gap-3">
-            <Button
-              variant="default"
-              className="bg-primary text-primary-foreground hover:bg-primary/90 hover:cursor-pointer"
-              onClick={() => {
-                navigate("/books/new");
-              }}
-            >
-              {t("button.addBook")}
-            </Button>
-            <Button
-              variant="outline"
-              className="text-muted-foreground hover:cursor-pointer"
-              onClick={() =>
-                openModal("SEARCH_OPEN_LIBRARY", {
-                  onBookSelect: (openLibBook) => {
-                    const newBook = mergeOpenLibraryBook({}, openLibBook);
-                    navigate(`/books/new`, {
-                      state: { book: newBook },
-                    });
-                  },
-                })
-              }
-            >
-              {t("button.addFromOpenLibrary")}
-            </Button>
-          </div>
-        )}
+        <div className="flex flex-wrap justify-between gap-2">
+          {canEdit && (
+            <div className="flex gap-3">
+              <Button
+                type="button"
+                variant="default"
+                className="bg-primary text-primary-foreground hover:bg-primary/90 hover:cursor-pointer"
+                onClick={() => {
+                  navigate("/books/new");
+                }}
+              >
+                {t("button.addBook")}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                className="text-muted-foreground hover:cursor-pointer"
+                onClick={() =>
+                  openModal("SEARCH_OPEN_LIBRARY", {
+                    onBookSelect: (openLibBook) => {
+                      const newBook = mergeOpenLibraryBook({}, openLibBook);
+                      navigate(`/books/new`, {
+                        state: { book: newBook },
+                      });
+                    },
+                  })
+                }
+              >
+                {t("button.addFromOpenLibrary")}
+              </Button>
+            </div>
+          )}
+          <Button
+            type="button"
+            variant="outline"
+            className="text-muted-foreground hover:cursor-pointer"
+            onClick={() =>
+              openModal("EXPORT_BOOKS", {
+                bookshelfPublicId: bookshelf.publicId,
+              })
+            }
+          >
+            {t("button.exportBooks")}
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );

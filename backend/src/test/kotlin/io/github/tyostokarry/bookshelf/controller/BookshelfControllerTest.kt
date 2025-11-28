@@ -7,6 +7,7 @@ import io.github.tyostokarry.bookshelf.controller.advice.ApiResponse
 import io.github.tyostokarry.bookshelf.controller.advice.ErrorCodes
 import io.github.tyostokarry.bookshelf.controller.advice.ErrorResponse
 import io.github.tyostokarry.bookshelf.controller.dto.BookDto
+import io.github.tyostokarry.bookshelf.controller.dto.BookPortableDto
 import io.github.tyostokarry.bookshelf.controller.dto.BookshelfDto
 import io.github.tyostokarry.bookshelf.controller.dto.BookshelfWithTokenDto
 import io.github.tyostokarry.bookshelf.controller.dto.CreateBookDto
@@ -17,8 +18,13 @@ import io.github.tyostokarry.bookshelf.controller.dto.UpdateBookshelfDto
 import io.github.tyostokarry.bookshelf.controller.dto.toBookshelfDto
 import io.github.tyostokarry.bookshelf.controller.dto.toBookshelfWithTokenDto
 import io.github.tyostokarry.bookshelf.controller.dto.toDto
+import io.github.tyostokarry.bookshelf.controller.dto.toEntity
+import io.github.tyostokarry.bookshelf.controller.dto.toPortableDto
 import io.github.tyostokarry.bookshelf.entity.Book
+import io.github.tyostokarry.bookshelf.entity.BookStatus
 import io.github.tyostokarry.bookshelf.entity.Bookshelf
+import io.github.tyostokarry.bookshelf.entity.Genre
+import io.github.tyostokarry.bookshelf.entity.Language
 import io.github.tyostokarry.bookshelf.error.BookError
 import io.github.tyostokarry.bookshelf.error.BookshelfError
 import io.github.tyostokarry.bookshelf.service.BookService
@@ -351,6 +357,76 @@ class BookshelfControllerTest(
     }
 
     @Nested
+    inner class ExportBooks {
+        @Test
+        fun `exportBooks returns list of BookPortableDto when bookshelf found`() {
+            val bookshelf =
+                Bookshelf(id = 10, name = "Test Bookshelf", description = "desc", publicId = "publicID", editTokenHash = "editTokenHash")
+            val books =
+                listOf(
+                    Book(bookshelfId = 10, title = "Book A", author = "Author 1"),
+                    Book(bookshelfId = 10, title = "Book B", author = "Author 2"),
+                )
+
+            given(bookshelfService.getBookshelfByPublicId(bookshelf.publicId)).willReturn(Either.Right(bookshelf))
+            given(bookService.getBooksByBookshelf(bookshelf.id)).willReturn(books)
+
+            val responseBody =
+                mockMvc
+                    .get("/api/v1/bookshelves/${bookshelf.publicId}/books/export")
+                    .andExpect { status { isOk() } }
+                    .andReturn()
+                    .response
+                    .contentAsString
+
+            val type = object : TypeReference<ApiResponse<List<BookPortableDto>>>() {}
+            val response: ApiResponse<List<BookPortableDto>> = objectMapper.readValue(responseBody, type)
+
+            assertEquals(2, response.data?.size, "Expected two books exported")
+            assertEquals(books.map { it.toPortableDto() }, response.data)
+            assertNull(response.error)
+
+            assertNotNull(response.data, "Response data should not be null")
+            val responseData = response.data!!
+            assertEquals(2, responseData.size, "Response should return two books")
+            assertEquals(
+                books.map { it.toPortableDto() },
+                responseData,
+                "Response books should match expected DTO representations",
+            )
+            assertNull(response.error, "Response error should be null for successful response")
+        }
+
+        @Test
+        fun `exportBooks returns 404 when bookshelf not found`() {
+            given(
+                bookshelfService.getBookshelfByPublicId("invalidId"),
+            ).willReturn(Either.Left(BookshelfError.NotFoundByPublicId("invalidId")))
+
+            val responseBody =
+                mockMvc
+                    .get("/api/v1/bookshelves/invalidId/books/export")
+                    .andExpect { status { isNotFound() } }
+                    .andReturn()
+                    .response
+                    .contentAsString
+
+            val typeRef = object : TypeReference<ApiResponse<ErrorResponse>>() {}
+            val response: ApiResponse<ErrorResponse> = objectMapper.readValue(responseBody, typeRef)
+
+            assertNotNull(response.error, "Response error should not be null")
+            val responseError = response.error!!
+            assertEquals(
+                "Bookshelf with id invalidId not found",
+                responseError.message,
+                "Response error message should indicate unfound bookshelf",
+            )
+            assertEquals(ErrorCodes.BOOKSHELF_NOT_FOUND, responseError.code, "Response error code should indicate book not found")
+            assertNull(response.data, "Response data should be null for unsuccessful response")
+        }
+    }
+
+    @Nested
     inner class CreateBookshelf {
         @Test
         fun `Post bookshelf returns BookshelfWithTokenDto when successful`() {
@@ -535,6 +611,137 @@ class BookshelfControllerTest(
 
             val typeRef = object : TypeReference<ApiResponse<BookshelfError>>() {}
             val response: ApiResponse<BookshelfError> = objectMapper.readValue(responseBody, typeRef)
+
+            assertNotNull(response.error, "Response error should not be null")
+            val responseError = response.error!!
+            assertEquals(
+                "Not allowed to edit this bookshelf",
+                responseError.message,
+                "Response error message should indicate unfound bookshelf",
+            )
+            assertEquals(ErrorCodes.FORBIDDEN, responseError.code, "Response error code should indicate forbidden action")
+            assertNull(response.data, "Response data should be null for unsuccessful response")
+        }
+    }
+
+    @Nested
+    inner class ImportBooks {
+        @Test
+        fun `importBooks saves all books and returns count when token valid`() {
+            val bookshelf =
+                Bookshelf(id = 10, name = "Test Bookshelf", description = "desc", publicId = "publicID", editTokenHash = "editTokenHash")
+            val imports =
+                listOf(
+                    BookPortableDto(
+                        title = "Book 1",
+                        author = "Author 1",
+                        pages = null,
+                        coverUrl = null,
+                        description = null,
+                        publisher = null,
+                        publishedDate = null,
+                        isbn13 = null,
+                        genre = Genre.UNKNOWN,
+                        language = Language.UNKNOWN,
+                        status = BookStatus.WISHLIST,
+                        progress = null,
+                        startedAt = null,
+                        finishedAt = null,
+                        readCount = 0,
+                        rating = null,
+                        notes = null,
+                        favorite = false,
+                    ),
+                    BookPortableDto(
+                        title = "Book 2",
+                        author = "Author 2",
+                        pages = 122,
+                        coverUrl = null,
+                        description = "Description of the book",
+                        publisher = null,
+                        publishedDate = null,
+                        isbn13 = null,
+                        genre = Genre.UNKNOWN,
+                        language = Language.UNKNOWN,
+                        status = BookStatus.WISHLIST,
+                        progress = null,
+                        startedAt = null,
+                        finishedAt = null,
+                        readCount = 0,
+                        rating = 6,
+                        notes = null,
+                        favorite = true,
+                    ),
+                )
+            val savedEntities = imports.map { it.toEntity(bookshelf.id) }
+            given(bookshelfService.getBookshelfByPublicId(bookshelf.publicId)).willReturn(Either.Right(bookshelf))
+            given(bookshelfService.verifyToken(bookshelf, "editToken")).willReturn(true)
+            given(bookService.saveAllBooks(any())).willReturn(savedEntities)
+
+            val responseBody =
+                mockMvc
+                    .post("/api/v1/bookshelves/${bookshelf.publicId}/books/import") {
+                        contentType = MediaType.APPLICATION_JSON
+                        header(X_BOOKSHELF_TOKEN, "editToken")
+                        content = objectMapper.writeValueAsString(imports)
+                    }.andExpect { status { isOk() } }
+                    .andReturn()
+                    .response
+                    .contentAsString
+
+            val typeRef = object : TypeReference<ApiResponse<Int>>() {}
+            val response: ApiResponse<Int> = objectMapper.readValue(responseBody, typeRef)
+
+            assertNotNull(response.data, "Response data should not be null")
+            val responseData = response.data!!
+            assertEquals(2, responseData, "Response data should state 2 books has been created")
+            assertNull(response.error, "Response error should be null for successful response")
+        }
+
+        @Test
+        fun `importBooks returns FORBIDDEN when token invalid`() {
+            val bookshelf =
+                Bookshelf(id = 10, name = "Test Bookshelf", description = "desc", publicId = "publicID", editTokenHash = "editTokenHash")
+            given(bookshelfService.getBookshelfByPublicId(bookshelf.publicId)).willReturn(Either.Right(bookshelf))
+            given(bookshelfService.verifyToken(bookshelf, "notValidToken")).willReturn(false)
+
+            val payload =
+                listOf(
+                    BookPortableDto(
+                        title = "Title",
+                        author = "Author",
+                        pages = null,
+                        coverUrl = null,
+                        description = null,
+                        publisher = null,
+                        publishedDate = null,
+                        isbn13 = null,
+                        genre = Genre.UNKNOWN,
+                        language = Language.UNKNOWN,
+                        status = BookStatus.WISHLIST,
+                        progress = null,
+                        startedAt = null,
+                        finishedAt = null,
+                        readCount = 0,
+                        rating = null,
+                        notes = null,
+                        favorite = false,
+                    ),
+                )
+
+            val responseBody =
+                mockMvc
+                    .post("/api/v1/bookshelves/${bookshelf.publicId}/books/import") {
+                        contentType = MediaType.APPLICATION_JSON
+                        header(X_BOOKSHELF_TOKEN, "notValidToken")
+                        content = objectMapper.writeValueAsString(payload)
+                    }.andExpect { status { isForbidden() } }
+                    .andReturn()
+                    .response
+                    .contentAsString
+
+            val typeRef = object : TypeReference<ApiResponse<ErrorResponse>>() {}
+            val response: ApiResponse<ErrorResponse> = objectMapper.readValue(responseBody, typeRef)
 
             assertNotNull(response.error, "Response error should not be null")
             val responseError = response.error!!

@@ -5,6 +5,7 @@ import io.github.tyostokarry.bookshelf.controller.advice.ApiResponse
 import io.github.tyostokarry.bookshelf.controller.advice.ErrorCodes
 import io.github.tyostokarry.bookshelf.controller.advice.ErrorResponse
 import io.github.tyostokarry.bookshelf.controller.dto.BookDto
+import io.github.tyostokarry.bookshelf.controller.dto.BookPortableDto
 import io.github.tyostokarry.bookshelf.controller.dto.BookshelfDto
 import io.github.tyostokarry.bookshelf.controller.dto.BookshelfWithTokenDto
 import io.github.tyostokarry.bookshelf.controller.dto.CreateBookDto
@@ -17,6 +18,7 @@ import io.github.tyostokarry.bookshelf.controller.dto.toBookshelfDto
 import io.github.tyostokarry.bookshelf.controller.dto.toBookshelfWithTokenDto
 import io.github.tyostokarry.bookshelf.controller.dto.toDto
 import io.github.tyostokarry.bookshelf.controller.dto.toEntity
+import io.github.tyostokarry.bookshelf.controller.dto.toPortableDto
 import io.github.tyostokarry.bookshelf.service.BookService
 import io.github.tyostokarry.bookshelf.service.BookshelfService
 import jakarta.validation.Valid
@@ -114,6 +116,22 @@ class BookshelfController(
                     )
         }
 
+    @GetMapping("/{publicId}/books/export")
+    fun exportBooks(
+        @PathVariable publicId: String,
+    ): ResponseEntity<ApiResponse<List<BookPortableDto>>> =
+        when (val bookshelfExists = bookshelfService.getBookshelfByPublicId(publicId)) {
+            is Either.Right -> {
+                val books = bookService.getBooksByBookshelf(bookshelfExists.value.id)
+                ResponseEntity.ok(ApiResponse(data = books.map { it.toPortableDto() }))
+            }
+            is Either.Left ->
+                ResponseEntity
+                    .status(
+                        404,
+                    ).body(ApiResponse(error = ErrorResponse("Bookshelf with id $publicId not found", ErrorCodes.BOOKSHELF_NOT_FOUND)))
+        }
+
     @PostMapping
     fun createBookshelf(
         @Valid @RequestBody dto: CreateBookshelfDto,
@@ -147,6 +165,46 @@ class BookshelfController(
 
                 val newBook = bookService.saveBook(dto.toEntity(bookshelf.value.id))
                 ResponseEntity.ok(ApiResponse(data = newBook.toDto(bookshelf.value.publicId)))
+            }
+            is Either.Left ->
+                ResponseEntity
+                    .status(404)
+                    .body(
+                        ApiResponse(
+                            error =
+                                ErrorResponse(
+                                    "Bookshelf with id $publicId not found",
+                                    ErrorCodes.BOOKSHELF_NOT_FOUND,
+                                ),
+                        ),
+                    )
+        }
+    }
+
+    @PostMapping("/{publicId}/books/import")
+    fun importBooks(
+        @PathVariable publicId: String,
+        @RequestHeader(X_BOOKSHELF_TOKEN, required = false) token: String?,
+        @RequestBody books: List<BookPortableDto>,
+    ): ResponseEntity<ApiResponse<Int>> {
+        return when (val bookshelfExists = bookshelfService.getBookshelfByPublicId(publicId)) {
+            is Either.Right -> {
+                if (token == null || !bookshelfService.verifyToken(bookshelfExists.value, token)) {
+                    return ResponseEntity
+                        .status(403)
+                        .body(
+                            ApiResponse(
+                                error =
+                                    ErrorResponse(
+                                        "Not allowed to edit this bookshelf",
+                                        ErrorCodes.FORBIDDEN,
+                                    ),
+                            ),
+                        )
+                }
+                val newBooks = books.map { it.toEntity(bookshelfExists.value.id) }
+                bookService.saveAllBooks(newBooks)
+                ResponseEntity.ok(ApiResponse(data = newBooks.size))
             }
             is Either.Left ->
                 ResponseEntity

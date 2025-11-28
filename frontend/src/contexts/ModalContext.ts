@@ -28,6 +28,8 @@ export type ModalState =
       modalType: "SEARCH_OPEN_LIBRARY";
       props: { onBookSelect: (book: OpenLibraryImportBookDetails) => void };
     }
+  | { modalType: "IMPORT_BOOKS"; props: EmptyObject }
+  | { modalType: "EXPORT_BOOKS"; props: { bookshelfPublicId: string } }
   | { modalType: null; props: EmptyObject };
 
 export interface ModalContextValue {

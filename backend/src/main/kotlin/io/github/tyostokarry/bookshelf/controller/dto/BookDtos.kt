@@ -24,7 +24,6 @@ data class BookDto(
     val publisher: String?,
     val publishedDate: LocalDate?,
     val isbn13: String?,
-    val googleId: String?,
     val genre: Genre,
     val language: Language,
     val status: BookStatus,
@@ -57,7 +56,6 @@ data class CreateBookDto(
     val publishedDate: LocalDate? = null,
     @field:Pattern(regexp = "\\d{13}", message = "ISBN must consist of exactly 13 numeric digits (0–9)")
     val isbn13: String? = null,
-    val googleId: String? = null,
     val genre: Genre = Genre.UNKNOWN,
     val language: Language = Language.UNKNOWN,
     val status: BookStatus = BookStatus.WISHLIST,
@@ -92,7 +90,6 @@ data class UpdateBookDto(
     val publishedDate: LocalDate? = null,
     @field:Pattern(regexp = "\\d{13}", message = "ISBN must consist of exactly 13 numeric digits (0–9)")
     val isbn13: String? = null,
-    val googleId: String? = null,
     val genre: Genre? = null,
     val language: Language? = null,
     val status: BookStatus? = null,
@@ -107,4 +104,25 @@ data class UpdateBookDto(
     @field:Size(max = 2000, message = "Notes must be at most 2000 characters")
     val notes: String? = null,
     val favorite: Boolean? = null,
+)
+
+data class BookPortableDto(
+    val title: String,
+    val author: String,
+    val pages: Int?,
+    val coverUrl: String?,
+    val description: String?,
+    val publisher: String?,
+    val publishedDate: LocalDate?,
+    val isbn13: String?,
+    val genre: Genre,
+    val language: Language,
+    val status: BookStatus,
+    val progress: Int?,
+    val startedAt: LocalDate?,
+    val finishedAt: LocalDate?,
+    val readCount: Int,
+    val rating: Int?,
+    val notes: String?,
+    val favorite: Boolean,
 )

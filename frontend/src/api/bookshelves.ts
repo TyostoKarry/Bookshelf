@@ -1,6 +1,6 @@
 import { API_KEY, API_URL } from "./apiClient";
 import { type ApiResponse } from "../types/api-response";
-import type { Book } from "../types/book";
+import type { Book, PortableBook } from "../types/book";
 import type {
   Bookshelf,
   CreateBookshelfDto,
@@ -248,4 +248,60 @@ export async function deleteBookFromBookshelf(
   }
 
   return true;
+}
+
+export async function exportBooksFromBookshelf(
+  bookshelfPublicId: string,
+): Promise<PortableBook[] | null> {
+  const response = await fetch(
+    `${API_URL}/bookshelves/${bookshelfPublicId}/books/export`,
+    {
+      headers: {
+        "X-API-KEY": API_KEY,
+      },
+    },
+  );
+
+  const json: ApiResponse<PortableBook[]> = await response.json();
+
+  if (json.error) {
+    throw new Error(json.error.message);
+  }
+
+  if (!response.ok) {
+    throw new Error("Failed to export books from bookshelf");
+  }
+
+  return json.data;
+}
+
+export async function importBooksToBookshelf(
+  bookshelfPublicId: string,
+  bookshelfEditToken: string,
+  books: PortableBook[],
+): Promise<number | null> {
+  const response = await fetch(
+    `${API_URL}/bookshelves/${bookshelfPublicId}/books/import`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-API-KEY": API_KEY,
+        "X-BOOKSHELF-TOKEN": bookshelfEditToken,
+      },
+      body: JSON.stringify(books),
+    },
+  );
+
+  const json: ApiResponse<number> = await response.json();
+
+  if (json.error) {
+    throw new Error(json.error.message);
+  }
+
+  if (!response.ok) {
+    throw new Error("Failed to import books to bookshelf");
+  }
+
+  return json.data;
 }
