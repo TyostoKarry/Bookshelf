@@ -87,6 +87,12 @@ export const Topbar: FC = () => {
               {t("button.openMyBookshelf")}
             </DropdownMenuItem>
             <DropdownMenuItem
+              onClick={() => openModal("IMPORT_BOOKS", {})}
+              className="justify-end text-end"
+            >
+              {t("button.importBooks")}
+            </DropdownMenuItem>
+            <DropdownMenuItem
               onClick={() => clearBookshelf()}
               className="justify-end text-end"
             >

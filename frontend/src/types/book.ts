@@ -72,3 +72,24 @@ export interface Book {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface PortableBook {
+  title: string;
+  author: string;
+  pages?: number | null;
+  coverUrl?: string | null;
+  description?: string | null;
+  publisher?: string | null;
+  publishedDate?: string | null;
+  isbn13?: string | null;
+  genre: Genre;
+  language: Language;
+  status: BookStatus;
+  progress?: number | null;
+  startedAt?: string | null;
+  finishedAt?: string | null;
+  readCount: number;
+  rating?: number | null;
+  notes?: string | null;
+  favorite: boolean;
+}

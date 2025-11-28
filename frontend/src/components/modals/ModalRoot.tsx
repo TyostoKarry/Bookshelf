@@ -3,6 +3,8 @@ import { ConfirmationModal } from "./Confirmation";
 import { CreateBookshelfModal } from "./CreateBookshelfModal";
 import { EnterPublicIdModal } from "./EnterPublicIdModal";
 import { EnterTokenModal } from "./EnterTokenModal";
+import { ExportBooksModal } from "./ExportBooksModal";
+import { ImportBooksModal } from "./ImportBooksModal";
 import { SearchOpenLibraryModal } from "./openlibrary/SearchOpenLibraryModal";
 import { ShowTokenModal } from "./ShowTokenModal";
 import { type ModalState } from "../../contexts/ModalContext";
@@ -34,6 +36,14 @@ export const ModalRoot: FC<ModalRootProps> = ({ modalState }) => {
     case "SEARCH_OPEN_LIBRARY":
       return (
         <SearchOpenLibraryModal onBookSelect={modalState.props.onBookSelect} />
+      );
+    case "IMPORT_BOOKS":
+      return <ImportBooksModal />;
+    case "EXPORT_BOOKS":
+      return (
+        <ExportBooksModal
+          bookshelfPublicId={modalState.props.bookshelfPublicId}
+        />
       );
     case null:
       return null;
