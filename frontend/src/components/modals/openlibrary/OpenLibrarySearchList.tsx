@@ -123,11 +123,17 @@ export const OpenLibrarySearchList: FC<OpenLibrarySearchListProps> = ({
                 </div>
               )}
               <div className="flex-1 flex flex-col justify-center text-center">
-                <span className="font-semibold text-foreground line-clamp-2">
+                <span
+                  className="font-semibold text-foreground line-clamp-2"
+                  title={bookFromList.title ?? ""}
+                >
                   {bookFromList.title}
                 </span>
                 {bookFromList.authors && (
-                  <span className="text-sm text-muted-foreground line-clamp-1">
+                  <span
+                    className="text-sm text-muted-foreground line-clamp-1"
+                    title={bookFromList.authors.join(", ") ?? ""}
+                  >
                     {bookFromList.authors.join(", ") ||
                       t("searchOpenLibrary.unknownAuthor")}
                   </span>

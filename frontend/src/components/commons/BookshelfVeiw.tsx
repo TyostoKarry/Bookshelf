@@ -68,24 +68,39 @@ export const BookshelfView: FC<BookshelfViewProps> = ({
         result.sort((a, b) => Number(b.favorite) - Number(a.favorite));
         break;
       case "ratingAsc":
-        result.sort((a, b) => (a.rating ?? 0) - (b.rating ?? 0));
+        result.sort((a, b) => {
+          if (a.rating != null && b.rating != null) return a.rating - b.rating;
+          if (a.rating == null && b.rating != null) return 1;
+          if (a.rating != null && b.rating == null) return -1;
+          return 0;
+        });
         break;
       case "ratingDesc":
-        result.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
+        result.sort((a, b) => {
+          if (a.rating != null && b.rating != null) return b.rating - a.rating;
+          if (a.rating == null && b.rating != null) return 1;
+          if (a.rating != null && b.rating == null) return -1;
+          return 0;
+        });
         break;
       case "finishedAtAsc":
         result.sort((a, b) => {
-          const aTime = a.finishedAt ? new Date(a.finishedAt).getTime() : 0;
-          const bTime = b.finishedAt ? new Date(b.finishedAt).getTime() : 0;
-          return aTime - bTime;
+          const aTime = a.finishedAt ? new Date(a.finishedAt).getTime() : null;
+          const bTime = b.finishedAt ? new Date(b.finishedAt).getTime() : null;
+          if (aTime != null && bTime != null) return aTime - bTime;
+          if (aTime == null && bTime != null) return 1;
+          if (aTime != null && bTime == null) return -1;
+          return 0;
         });
         break;
-
       case "finishedAtDesc":
         result.sort((a, b) => {
-          const aTime = a.finishedAt ? new Date(a.finishedAt).getTime() : 0;
-          const bTime = b.finishedAt ? new Date(b.finishedAt).getTime() : 0;
-          return bTime - aTime;
+          const aTime = a.finishedAt ? new Date(a.finishedAt).getTime() : null;
+          const bTime = b.finishedAt ? new Date(b.finishedAt).getTime() : null;
+          if (aTime != null && bTime != null) return bTime - aTime;
+          if (aTime == null && bTime != null) return 1;
+          if (aTime != null && bTime == null) return -1;
+          return 0;
         });
         break;
       default:
