@@ -11,7 +11,7 @@ export const FieldErrorMessage: FC<FieldErrorMessageProps> = ({
 }) => (
   <p
     className={`min-h-[1rem] ${align === "left" ? "text-left" : "text-right"} pl-2 text-xs transition-opacity duration-200 ${
-      message ? "text-red-400 opacity-100" : "opacity-0"
+      message ? "text-destructive opacity-100" : "opacity-0"
     }`}
   >
     {message ?? ""}

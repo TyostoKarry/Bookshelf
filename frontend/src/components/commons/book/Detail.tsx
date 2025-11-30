@@ -60,7 +60,9 @@ export const Detail: FC<DetailProps> = ({
         name={controlName}
         render={({ field }) => (
           <div className="flex items-baseline justify-between border-b border-gray-100 pb-1">
-            <label className="flex text-muted-foreground text-sm w-[6rem] md:w-[8rem]">
+            <label
+              className={`flex ${error ? "text-destructive" : "text-muted-foreground"} text-sm w-[6rem] md:w-[8rem]`}
+            >
               {label}
             </label>
             {type === "select" && (
@@ -73,7 +75,9 @@ export const Detail: FC<DetailProps> = ({
                     : (options?.[0] ?? "")
                 }
               >
-                <SelectTrigger className="flex-1 w-full hover:bg-accent/40">
+                <SelectTrigger
+                  className={`flex-1 w-full justify-end text-right hover:bg-accent/40 ${error && "border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20"}`}
+                >
                   <SelectValue placeholder={placeholder} />
                 </SelectTrigger>
                 <SelectContent>
@@ -90,7 +94,7 @@ export const Detail: FC<DetailProps> = ({
                 type="text"
                 inputMode="numeric"
                 pattern="[0-9]*"
-                className="flex-1 w-full hover:bg-accent/40"
+                className={`flex-1 w-full text-right hover:bg-accent/40 ${error && "border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20"}`}
                 placeholder={placeholder}
                 value={
                   typeof field.value === "number" && !Number.isNaN(field.value)
@@ -117,7 +121,7 @@ export const Detail: FC<DetailProps> = ({
                 type="text"
                 inputMode="numeric"
                 pattern="[0-9]*"
-                className="flex-1 w-full hover:bg-accent/40"
+                className={`flex-1 w-full text-right hover:bg-accent/40 ${error && "border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20"}`}
                 placeholder={placeholder}
                 value={typeof field.value === "string" ? field.value : ""}
                 onChange={(event) => {
@@ -140,12 +144,13 @@ export const Detail: FC<DetailProps> = ({
                     : null
                 }
                 onChange={field.onChange}
+                error={!!error}
               />
             )}
             {type === "text" && (
               <Input
                 type="text"
-                className="flex-1 w-full hover:bg-accent/40"
+                className={`flex-1 w-full text-right hover:bg-accent/40 ${error && "border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20"}`}
                 placeholder={placeholder}
                 {...field}
                 value={typeof field.value === "string" ? field.value : ""}

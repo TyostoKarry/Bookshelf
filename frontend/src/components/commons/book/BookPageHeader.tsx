@@ -23,14 +23,21 @@ export const BookPageHeader: FC<BookPageHeaderProps> = ({
 }) => {
   const { t } = useLanguage();
   const {
+    watch,
     control,
     formState: { errors },
   } = form;
 
+  const rawCoverValue = mode === "view" ? book.coverUrl : watch("coverUrl");
+  const previewUrl =
+    typeof rawCoverValue === "string" && rawCoverValue.trim() !== ""
+      ? rawCoverValue
+      : null;
+
   return (
     <header className="flex flex-row items-stretch gap-8 mb-10">
       <div className="flex flex-col">
-        <CoverImage coverUrl={book.coverUrl} title={book.title} width="small" />
+        <CoverImage coverUrl={previewUrl} title={book.title} width="small" />
         {mode !== "view" && (
           <>
             <FormField

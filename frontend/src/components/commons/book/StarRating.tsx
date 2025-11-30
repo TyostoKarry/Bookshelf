@@ -160,7 +160,7 @@ export const StarRating: FC<StarRatingProps> = ({
                     className="mr-3 hover:cursor-pointer hover:scale-105 active:scale-95 duration-150 ease-out transition-transform"
                     title="Clear rating"
                   >
-                    <CrossIcon className="w-4 h-4 text-red-600" />
+                    <CrossIcon className="w-4 h-4 text-destructive" />
                   </button>
 
                   {Array.from({ length: totalStars }, (_, index) =>

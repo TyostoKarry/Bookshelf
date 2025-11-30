@@ -102,7 +102,7 @@ export const CreateBookshelfModal: FC = () => {
             <div className="flex flex-row justify-between">
               <FieldErrorMessage message={errors.name?.message} />
               <p
-                className={`text-xs ${nameValue.length <= 100 ? "text-muted-foreground" : "text-red-400"} text-right`}
+                className={`text-xs ${nameValue.length <= 100 ? "text-muted-foreground" : "text-destructive"} text-right`}
               >
                 {nameValue.length}/100
               </p>
@@ -129,7 +129,7 @@ export const CreateBookshelfModal: FC = () => {
             <div className="flex flex-row justify-between">
               <FieldErrorMessage message={errors.description?.message} />
               <p
-                className={`text-xs ${(descriptionValue?.length ?? 0) <= 1000 ? "text-muted-foreground" : "text-red-400"} text-right`}
+                className={`text-xs ${(descriptionValue?.length ?? 0) <= 1000 ? "text-muted-foreground" : "text-destructive"} text-right`}
               >
                 {descriptionValue ? descriptionValue.length : 0}/1000
               </p>

@@ -10,6 +10,7 @@ import {
   PopoverContent,
 } from "@/components/ui/popover";
 import { useLanguage } from "@/hooks/useLanguage";
+import { cn } from "@/lib/utils";
 
 function formatAsLocalIso(date: Date) {
   const offset = date.getTimezoneOffset();
@@ -20,9 +21,14 @@ function formatAsLocalIso(date: Date) {
 interface CalendarInputProps {
   value?: string | null;
   onChange?: (value: string | null) => void;
+  error?: boolean;
 }
 
-export const DatePicker: FC<CalendarInputProps> = ({ value, onChange }) => {
+export const DatePicker: FC<CalendarInputProps> = ({
+  value,
+  onChange,
+  error,
+}) => {
   const { t } = useLanguage();
   const [open, setOpen] = useState(false);
   const date = value ? new Date(value) : undefined;
@@ -33,10 +39,13 @@ export const DatePicker: FC<CalendarInputProps> = ({ value, onChange }) => {
         <Button
           variant="outline"
           onClick={() => setOpen(true)}
-          className={`flex flex-1 w-full items-center justify-between rounded-md border border-input
-            bg-card px-3 py-2 text-sm text-foreground shadow-sm
-            hover:bg-accent/40 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring
-            disabled:cursor-not-allowed disabled:opacity-50`}
+          className={cn(
+            "flex flex-1 w-full items-center justify-end rounded-md border border-input bg-card px-3 py-2 text-sm text-right text-foreground shadow-sm transition-colors",
+            "hover:bg-accent/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
+            error
+              ? "border-destructive focus-visible:ring-destructive/20"
+              : "focus-visible:ring-ring",
+          )}
         >
           <div className="flex items-center gap-2 text-left">
             <span>
@@ -57,7 +66,7 @@ export const DatePicker: FC<CalendarInputProps> = ({ value, onChange }) => {
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+      <PopoverContent className="w-auto overflow-hidden p-0" align="end">
         <Calendar
           mode="single"
           selected={date}
