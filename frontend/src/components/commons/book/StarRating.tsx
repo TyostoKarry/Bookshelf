@@ -1,6 +1,6 @@
+import { X } from "lucide-react";
 import { useState, type FC, type MouseEvent as ReactMouseEvent } from "react";
 import { Controller, type Control } from "react-hook-form";
-import CrossIcon from "../../../assets/icons/cross.svg?react";
 import EmptyStarIcon from "../../../assets/icons/star-empty.svg?react";
 import FullStarIcon from "../../../assets/icons/star-full.svg?react";
 import HalfStarIcon from "../../../assets/icons/star-half.svg?react";
@@ -157,10 +157,10 @@ export const StarRating: FC<StarRatingProps> = ({
                   <button
                     type="button"
                     onClick={() => field.onChange(0)}
-                    className="mr-3 hover:cursor-pointer hover:scale-105 active:scale-95 duration-150 ease-out transition-transform"
+                    className="mr-1 hover:cursor-pointer hover:scale-110 active:scale-95 duration-150 ease-out transition-transform"
                     title="Clear rating"
                   >
-                    <CrossIcon className="w-4 h-4 text-destructive" />
+                    <X className="text-destructive" />
                   </button>
 
                   {Array.from({ length: totalStars }, (_, index) =>

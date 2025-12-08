@@ -1,7 +1,7 @@
+import { CopyIcon } from "lucide-react";
 import { type FC } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import CopyIcon from "../../../assets/icons/copy.svg?react";
 import { useLanguage } from "../../../hooks/useLanguage";
 import { useModal } from "../../../hooks/useModal";
 import type { Bookshelf } from "../../../types/bookshelf";
@@ -48,24 +48,27 @@ export const BookshelfHeader: FC<BookshelfHeaderProps> = ({
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex gap-2 items-center text-sm text-muted-foreground">
+          <div className="flex gap-1 items-center text-sm text-muted-foreground">
             <p>
               Public ID:{" "}
               <span className="font-mono bg-muted px-2 py-1 rounded select-all">
                 {bookshelf.publicId}
               </span>
             </p>
-            <button
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
               onClick={handleCopyPublicId}
-              className="rounded hover:bg-muted/60 hover:cursor-pointer active:bg-muted"
+              className="hover:cursor-pointer rounded hover:bg-foreground/20 active:bg-foreground/10"
               title={t("button.copyPublicIdToClipboard")}
             >
-              <CopyIcon className="w-5 h-5" />
-            </button>
+              <CopyIcon className="w-4 h-4 text-muted-foreground" />
+            </Button>
           </div>
         </div>
         <div className="flex flex-wrap justify-between gap-2">
-          {canEdit && (
+          {canEdit ? (
             <div className="flex gap-3">
               <Button
                 type="button"
@@ -95,6 +98,8 @@ export const BookshelfHeader: FC<BookshelfHeaderProps> = ({
                 {t("button.addFromOpenLibrary")}
               </Button>
             </div>
+          ) : (
+            <span />
           )}
           <Button
             type="button"
