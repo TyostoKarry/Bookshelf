@@ -82,8 +82,8 @@ export const BookshelfHeader: FC<BookshelfHeaderProps> = ({
               </Button>
               <Button
                 type="button"
-                variant="outline"
-                className="text-muted-foreground hover:cursor-pointer"
+                variant="secondary"
+                className="hover:cursor-pointer"
                 onClick={() =>
                   openModal("SEARCH_OPEN_LIBRARY", {
                     onBookSelect: (openLibBook) => {
@@ -104,7 +104,7 @@ export const BookshelfHeader: FC<BookshelfHeaderProps> = ({
           <Button
             type="button"
             variant="outline"
-            className="text-muted-foreground hover:cursor-pointer"
+            className="hover:cursor-pointer"
             onClick={() =>
               openModal("EXPORT_BOOKS", {
                 bookshelfPublicId: bookshelf.publicId,
