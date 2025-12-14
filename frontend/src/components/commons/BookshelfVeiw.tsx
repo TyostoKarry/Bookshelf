@@ -22,6 +22,14 @@ export const BookshelfView: FC<BookshelfViewProps> = ({
   clearBookshelf,
 }) => {
   const { t } = useLanguage();
+  const displayBooks = useMemo(() => {
+    const toTime = (book: Book) => {
+      if (book.updatedAt) return new Date(book.updatedAt).getTime();
+      if (book.createdAt) return new Date(book.createdAt).getTime();
+      return 0;
+    };
+    return [...books].sort((a, b) => toTime(b) - toTime(a));
+  }, [books]);
   const [filters, setFilters] = useState({
     genre: "",
     language: "",
@@ -48,7 +56,7 @@ export const BookshelfView: FC<BookshelfViewProps> = ({
   };
 
   const filteredBooks = useMemo(() => {
-    let result = [...books];
+    let result = [...displayBooks];
     if (filters.genre)
       result = result.filter((book) => book.genre === filters.genre);
     if (filters.language)
@@ -108,7 +116,7 @@ export const BookshelfView: FC<BookshelfViewProps> = ({
     }
 
     return result;
-  }, [books, filters]);
+  }, [displayBooks, filters]);
 
   return (
     <div className="max-w-8xl mx-auto py-6 px-16 space-y-10 min-h-screen">
@@ -128,7 +136,7 @@ export const BookshelfView: FC<BookshelfViewProps> = ({
       <h2 className="text-2xl font-semibold text-foreground mb-2">
         {t("bookshelfView.books")}
       </h2>
-      {books.length === 0 ? (
+      {displayBooks.length === 0 ? (
         <p>{t("bookshelfView.noBooks")}</p>
       ) : filteredBooks.length === 0 ? (
         <p>{t("bookshelfView.noBooksMatchFilters")}</p>

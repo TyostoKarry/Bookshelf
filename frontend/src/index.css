@@ -136,3 +136,37 @@
 ::-webkit-scrollbar-track {
   background: oklch(96% 0.02 88);
 }
+
+@media (prefers-reduced-motion: no-preference) {
+  .animate-bounce-smooth {
+    animation: bounce-smooth 1.8s ease-in-out infinite;
+  }
+}
+@keyframes bounce-smooth {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(6px);
+  }
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation-name: marquee;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.marquee-will-change {
+  will-change: transform;
+}

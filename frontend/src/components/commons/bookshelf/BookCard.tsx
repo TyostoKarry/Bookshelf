@@ -22,9 +22,14 @@ import { Progress } from "@/components/ui/progress";
 interface BookCardProps {
   book: Book;
   canEdit: boolean;
+  interactive?: boolean;
 }
 
-export const BookCard: FC<BookCardProps> = ({ book, canEdit }) => {
+export const BookCard: FC<BookCardProps> = ({
+  book,
+  canEdit,
+  interactive = true,
+}) => {
   const { t } = useLanguage();
   const navigate = useNavigate();
   const { editToken, bookshelf, refreshBookshelf } = useMyBookshelf();
@@ -72,10 +77,37 @@ export const BookCard: FC<BookCardProps> = ({ book, canEdit }) => {
     }
   };
 
+  const getProgressPercent = () => {
+    if (book.status === "COMPLETED") return 100;
+    if (
+      typeof book.pages === "number" &&
+      book.pages &&
+      typeof book.progress === "number" &&
+      book.progress
+    ) {
+      const percentage = (book.progress / book.pages) * 100;
+      return Math.max(0, Math.min(100, percentage));
+    }
+    return 0;
+  };
+  const progressPercent = getProgressPercent();
+
   return (
     <Card
-      onClick={handleCardClick}
-      className="relative flex flex-col justify-between max-w-[14rem] gap-2 cursor-pointer shadow-sm hover:shadow-lg hover:scale-101 transition-all duration-200 group"
+      onClick={interactive ? handleCardClick : undefined}
+      role={interactive ? "button" : undefined}
+      tabIndex={interactive ? 0 : undefined}
+      onKeyDown={
+        interactive
+          ? (event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                handleCardClick();
+              }
+            }
+          : undefined
+      }
+      className={`relative flex flex-col justify-between max-w-[14rem] gap-2 shadow-sm ${interactive ? "cursor-pointer hover:shadow-lg hover:scale-101" : ""} transition-all duration-200 group`}
     >
       <CardHeader className="flex justify-between">
         <Badge
@@ -83,11 +115,18 @@ export const BookCard: FC<BookCardProps> = ({ book, canEdit }) => {
         >
           {book.status}
         </Badge>
-        {canEdit ? (
+        {canEdit && interactive ? (
           <button
-            onClick={(e) => {
-              e.stopPropagation();
+            onClick={(event) => {
+              event.stopPropagation();
               handleToggleFavorite();
+            }}
+            onKeyDown={(event) => {
+              event.stopPropagation();
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                handleToggleFavorite();
+              }
             }}
             className={updating ? `cursor-progress` : `cursor-pointer`}
             title={
@@ -124,12 +163,9 @@ export const BookCard: FC<BookCardProps> = ({ book, canEdit }) => {
         >
           {book.author}
         </p>
-        {book.pages && book.progress && (
-          <Progress
-            value={(book.progress / book.pages) * 100}
-            className="mt-2"
-          />
-        )}
+
+        <Progress value={progressPercent} className="mt-2" />
+
         <div className="flex w-full justify-between items-center mt-2">
           {book.pages ? (
             <div className="flex flex-row">
