@@ -22,6 +22,14 @@ export const BookshelfView: FC<BookshelfViewProps> = ({
   clearBookshelf,
 }) => {
   const { t } = useLanguage();
+  const displayBooks = useMemo(() => {
+    const toTime = (book: Book) => {
+      if (book.updatedAt) return new Date(book.updatedAt).getTime();
+      if (book.createdAt) return new Date(book.createdAt).getTime();
+      return 0;
+    };
+    return [...books].sort((a, b) => toTime(b) - toTime(a));
+  }, [books]);
   const [filters, setFilters] = useState({
     genre: "",
     language: "",
@@ -48,7 +56,7 @@ export const BookshelfView: FC<BookshelfViewProps> = ({
   };
 
   const filteredBooks = useMemo(() => {
-    let result = [...books];
+    let result = [...displayBooks];
     if (filters.genre)
       result = result.filter((book) => book.genre === filters.genre);
     if (filters.language)
@@ -68,24 +76,39 @@ export const BookshelfView: FC<BookshelfViewProps> = ({
         result.sort((a, b) => Number(b.favorite) - Number(a.favorite));
         break;
       case "ratingAsc":
-        result.sort((a, b) => (a.rating ?? 0) - (b.rating ?? 0));
+        result.sort((a, b) => {
+          if (a.rating != null && b.rating != null) return a.rating - b.rating;
+          if (a.rating == null && b.rating != null) return 1;
+          if (a.rating != null && b.rating == null) return -1;
+          return 0;
+        });
         break;
       case "ratingDesc":
-        result.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
+        result.sort((a, b) => {
+          if (a.rating != null && b.rating != null) return b.rating - a.rating;
+          if (a.rating == null && b.rating != null) return 1;
+          if (a.rating != null && b.rating == null) return -1;
+          return 0;
+        });
         break;
       case "finishedAtAsc":
         result.sort((a, b) => {
-          const aTime = a.finishedAt ? new Date(a.finishedAt).getTime() : 0;
-          const bTime = b.finishedAt ? new Date(b.finishedAt).getTime() : 0;
-          return aTime - bTime;
+          const aTime = a.finishedAt ? new Date(a.finishedAt).getTime() : null;
+          const bTime = b.finishedAt ? new Date(b.finishedAt).getTime() : null;
+          if (aTime != null && bTime != null) return aTime - bTime;
+          if (aTime == null && bTime != null) return 1;
+          if (aTime != null && bTime == null) return -1;
+          return 0;
         });
         break;
-
       case "finishedAtDesc":
         result.sort((a, b) => {
-          const aTime = a.finishedAt ? new Date(a.finishedAt).getTime() : 0;
-          const bTime = b.finishedAt ? new Date(b.finishedAt).getTime() : 0;
-          return bTime - aTime;
+          const aTime = a.finishedAt ? new Date(a.finishedAt).getTime() : null;
+          const bTime = b.finishedAt ? new Date(b.finishedAt).getTime() : null;
+          if (aTime != null && bTime != null) return bTime - aTime;
+          if (aTime == null && bTime != null) return 1;
+          if (aTime != null && bTime == null) return -1;
+          return 0;
         });
         break;
       default:
@@ -93,7 +116,7 @@ export const BookshelfView: FC<BookshelfViewProps> = ({
     }
 
     return result;
-  }, [books, filters]);
+  }, [displayBooks, filters]);
 
   return (
     <div className="max-w-8xl mx-auto py-6 px-16 space-y-10 min-h-screen">
@@ -113,7 +136,7 @@ export const BookshelfView: FC<BookshelfViewProps> = ({
       <h2 className="text-2xl font-semibold text-foreground mb-2">
         {t("bookshelfView.books")}
       </h2>
-      {books.length === 0 ? (
+      {displayBooks.length === 0 ? (
         <p>{t("bookshelfView.noBooks")}</p>
       ) : filteredBooks.length === 0 ? (
         <p>{t("bookshelfView.noBooksMatchFilters")}</p>

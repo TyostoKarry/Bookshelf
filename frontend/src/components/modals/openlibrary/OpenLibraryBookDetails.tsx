@@ -79,12 +79,18 @@ export const OpenLibraryBookDetails: FC<OpenLibraryBookDetailsProps> = ({
             </div>
           )}
 
-          <div className="flex-1 flex flex-col justify-center align-center text-center">
-            <p className="font-semibold text-foreground text-lg">
+          <div className="flex-1 flex flex-col justify-center items-center text-center">
+            <p
+              className="font-semibold text-foreground text-lg line-clamp-2"
+              title={selectedBook.title ?? ""}
+            >
               {selectedBook.title}
             </p>
             {selectedBook.authors && (
-              <p className="text-foreground">
+              <p
+                className="text-foreground line-clamp-1"
+                title={selectedBook.authors.join(", ")}
+              >
                 {selectedBook.authors.join(", ")}
               </p>
             )}
@@ -100,9 +106,15 @@ export const OpenLibraryBookDetails: FC<OpenLibraryBookDetailsProps> = ({
           className={`${selectedBook.description ? "border border-muted-foreground" : ""} rounded-md px-2`}
         >
           {selectedBook.description ? (
-            <p className="max-h-100 overflow-y-auto text-foreground text-sm leading-relaxed break-words whitespace-pre-wrap">
+            <div
+              className="max-h-100 overflow-y-auto text-foreground text-sm leading-relaxed break-words whitespace-pre-wrap"
+              style={{
+                wordBreak: "break-word",
+                overflowWrap: "anywhere",
+              }}
+            >
               {selectedBook.description}
-            </p>
+            </div>
           ) : (
             <p className="italic text-center text-muted-foreground mb-4">
               {t("bookPage.noDescription")}

@@ -176,6 +176,32 @@ class BookshelfServiceTest {
     }
 
     @Nested
+    inner class CreateBookshelfWithPublicId {
+        @Test
+        fun `createBookshelfWithPublicId creates new entity with all required fields`() {
+            val publicId = "publicID"
+            val dtoName = "Test bookshelf"
+            val dtoDescription = " Test desc"
+            val editTokenHash = "editTokenHash"
+            val savedBookshelf =
+                Bookshelf(name = dtoName, description = dtoDescription, publicId = publicId, editTokenHash = editTokenHash)
+
+            given(tokenHasher.hash(any<String>())).willReturn(editTokenHash)
+            given(bookshelfRepository.save(any<Bookshelf>())).willReturn(savedBookshelf)
+
+            val (resultRawEditToken, resultBookshelf) = bookshelfService.createBookshelfWithPublicId(publicId, dtoName, dtoDescription)
+
+            assertEquals(savedBookshelf, resultBookshelf, "Expected saved bookshelf to be returned")
+            val parts = resultRawEditToken.split(".")
+            assertEquals(2, parts.size, "Raw edit token should have 2 parts separated by ';'")
+            assertEquals(publicId, parts[0], "publicId part should match the provided publicId")
+            assertDoesNotThrow("Second part should be a valid UUID") {
+                UUID.fromString(parts[1])
+            }
+        }
+    }
+
+    @Nested
     inner class VerifyToken {
         @Test
         fun `verifyToken returns true when tokens match`() {

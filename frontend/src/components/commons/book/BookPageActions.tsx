@@ -84,7 +84,7 @@ export const BookPageActions: FC<BookPageActionsProps> = ({
       {mode === "view" ? (
         <Button
           type="button"
-          variant="secondary"
+          variant="outline"
           className="hover:cursor-pointer"
           onClick={handleNavigateBackToBookshelf}
         >
@@ -109,7 +109,7 @@ export const BookPageActions: FC<BookPageActionsProps> = ({
           <Button
             type="button"
             variant="destructive"
-            className="hover:cursor-pointer"
+            className="hover:cursor-pointer hover:bg-destructive/80"
             onClick={handleDelete}
           >
             {t("button.delete")}
@@ -117,7 +117,7 @@ export const BookPageActions: FC<BookPageActionsProps> = ({
           {mode === "view" && (
             <Button
               type="button"
-              variant="outline"
+              variant="default"
               className="hover:cursor-pointer"
               onClick={() =>
                 navigate(`/books/${bookId}/edit`, {

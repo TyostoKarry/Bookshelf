@@ -6,4 +6,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 data class AppProperties(
     val apiKey: String,
     val frontendUrl: String,
+    val demoShelfPublicId: String? = null,
+    val seedDemoShelf: Boolean = false,
 )

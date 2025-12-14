@@ -25,7 +25,7 @@ export const CoverImage: FC<CoverImageProps> = ({
         <img
           src={coverUrl}
           alt={title}
-          className={`object-contain ${WIDTH_MAP[width]} h-full rounded-lg shadow-md border border-gray-100`}
+          className={`object-contain ${WIDTH_MAP[width]} h-full min-h-[16rem] rounded-lg shadow-md border border-gray-100`}
         />
       ) : (
         <div

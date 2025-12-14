@@ -1,7 +1,7 @@
+import { CopyIcon } from "lucide-react";
 import { type FC, useState } from "react";
 import { toast } from "sonner";
 import { ModalBase } from "./ModalBase";
-import CopyIcon from "../../assets/icons/copy.svg?react";
 import { useLanguage } from "../../hooks/useLanguage";
 import { useModal } from "../../hooks/useModal";
 import { Button } from "@/components/ui/button";
@@ -61,10 +61,10 @@ export const ShowTokenModal: FC<ShowTokenModalProps> = ({ token }) => {
           size="icon"
           variant="ghost"
           onClick={handleCopyToken}
-          className="ml-2 p-1 rounded hover:bg-gray-200 hover:cursor-pointer active:bg-gray-300"
+          className="hover:cursor-pointer rounded hover:bg-foreground/20 active:bg-foreground/10"
           title={t("button.copyTokenToClipboard")}
         >
-          <CopyIcon className="w-5 h-5" />
+          <CopyIcon className="w-4 h-4 text-muted-foreground" />
         </Button>
       </Card>
       <div className="flex items-center justify-center mb-4">

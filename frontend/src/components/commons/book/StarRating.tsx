@@ -1,6 +1,6 @@
+import { X } from "lucide-react";
 import { useState, type FC, type MouseEvent as ReactMouseEvent } from "react";
 import { Controller, type Control } from "react-hook-form";
-import CrossIcon from "../../../assets/icons/cross.svg?react";
 import EmptyStarIcon from "../../../assets/icons/star-empty.svg?react";
 import FullStarIcon from "../../../assets/icons/star-full.svg?react";
 import HalfStarIcon from "../../../assets/icons/star-half.svg?react";
@@ -9,11 +9,12 @@ import type { BookForm } from "../../../validation/bookFormSchema";
 import { FieldErrorMessage } from "../FieldErrorMessage";
 
 interface StarRatingProps {
-  control: Control<BookForm>;
-  mode: BookPageMode;
+  control?: Control<BookForm>;
+  mode?: BookPageMode;
   value?: number | null;
-  label: string;
+  label?: string;
   error?: string;
+  readOnly?: boolean;
 }
 
 export const StarRating: FC<StarRatingProps> = ({
@@ -22,6 +23,7 @@ export const StarRating: FC<StarRatingProps> = ({
   value,
   label,
   error,
+  readOnly = false,
 }) => {
   const maxRating = 10;
   const totalStars = 5;
@@ -50,17 +52,30 @@ export const StarRating: FC<StarRatingProps> = ({
       let Icon = EmptyStarIcon;
       if (clamped >= full) Icon = FullStarIcon;
       else if (clamped >= half) Icon = HalfStarIcon;
-      elements.push(<Icon key={i} className="w-8 h-8 p-1 text-yellow-400" />);
+      elements.push(
+        <Icon
+          key={i}
+          className={`${readOnly ? "w-4 h-4 ml-1" : "w-8 h-8 p-1"} text-yellow-400`}
+        />,
+      );
     }
     return (
       <div className="flex items-center">
         {elements}
-        <span className="ml-2 text-sm text-muted-foreground">
-          {(clamped / 2).toFixed(1)} / {maxRating / 2}
-        </span>
+        {!readOnly && (
+          <span className="ml-2 text-sm text-muted-foreground">
+            {(clamped / 2).toFixed(1)} / {maxRating / 2}
+          </span>
+        )}
       </div>
     );
   };
+
+  if (readOnly) {
+    return (
+      <div className="flex items-center">{renderStaticStars(value ?? 0)}</div>
+    );
+  }
 
   if (mode === "view") {
     return (
@@ -142,10 +157,10 @@ export const StarRating: FC<StarRatingProps> = ({
                   <button
                     type="button"
                     onClick={() => field.onChange(0)}
-                    className="mr-3 hover:cursor-pointer hover:scale-105 active:scale-95 duration-150 ease-out transition-transform"
+                    className="mr-1 hover:cursor-pointer hover:scale-110 active:scale-95 duration-150 ease-out transition-transform"
                     title="Clear rating"
                   >
-                    <CrossIcon className="w-4 h-4 text-red-600" />
+                    <X className="text-destructive" />
                   </button>
 
                   {Array.from({ length: totalStars }, (_, index) =>

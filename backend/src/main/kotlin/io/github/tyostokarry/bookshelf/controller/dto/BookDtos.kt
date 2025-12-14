@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 /**
  * Basic book info for public or regular responses.
@@ -34,6 +35,8 @@ data class BookDto(
     val rating: Int?,
     val notes: String?,
     val favorite: Boolean,
+    val createdAt: LocalDateTime,
+    val updatedAt: LocalDateTime,
 )
 
 /**

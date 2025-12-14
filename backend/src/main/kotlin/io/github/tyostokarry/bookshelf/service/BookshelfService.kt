@@ -61,6 +61,20 @@ class BookshelfService(
         return rawEditToken to savedBookshelf
     }
 
+    fun createBookshelfWithPublicId(
+        publicId: String,
+        dtoName: String,
+        dtoDescription: String?,
+    ): Pair<String, Bookshelf> {
+        val rawEditToken = "$publicId.${java.util.UUID.randomUUID()}"
+        val hashedEditToken = tokenHasher.hash(rawEditToken)
+        val savedBookshelf =
+            bookshelfRepository.save(
+                Bookshelf(name = dtoName, description = dtoDescription, publicId = publicId, editTokenHash = hashedEditToken),
+            )
+        return rawEditToken to savedBookshelf
+    }
+
     fun verifyToken(
         bookshelf: Bookshelf,
         providedToken: String,

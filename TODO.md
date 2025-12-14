@@ -87,7 +87,7 @@
 - [ ] Responsive design for mobile
 - [ ] Bundle frontend build with backend (Spring serving React)
 - [x] Search / filter / sort bookshelf (by title, author, status, rating, finished date)
-- [ ] Export / import data (export JSON of bookshelf for backup or migration)
+- [x] Export / import data (export JSON of bookshelf for backup or migration)
 - [ ] Global Stats page (graphs for books/pages per month, ratings breakdown, totals)
 
 ---

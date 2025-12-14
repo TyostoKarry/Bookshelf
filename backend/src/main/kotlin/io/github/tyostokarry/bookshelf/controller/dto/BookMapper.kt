@@ -24,6 +24,8 @@ fun Book.toDto(bookshelfPublicId: String) =
         rating = rating,
         notes = notes,
         favorite = favorite,
+        createdAt = createdAt,
+        updatedAt = updatedAt,
     )
 
 fun CreateBookDto.toEntity(bookshelfId: Long) =
