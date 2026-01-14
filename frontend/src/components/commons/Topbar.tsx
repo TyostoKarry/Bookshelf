@@ -55,14 +55,14 @@ export const Topbar: FC = () => {
     <nav className="flex items-center justify-between h-16 px-4 bg-primary">
       <Link
         to="/"
-        className="flex flex-row items-center text-foreground text-2xl text-shadow-sm font-bold"
+        className="flex flex-row items-center text-foreground text-2xl text-shadow-sm font-bold gap-1"
       >
         <img
           src="/images/logo.png"
           alt="Bookshelf Logo"
           loading="eager"
           decoding="async"
-          className="h-10 w-10 rounded-full"
+          className="h-8 w-8 rounded-full"
         />
         {t("common.appName")}
       </Link>
