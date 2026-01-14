@@ -14,7 +14,7 @@ export const Hero: FC = () => {
   return (
     <section className="relative flex min-h-[calc(100vh-64px)] items-center justify-center text-center px-6">
       <div className="max-w-3xl">
-        <div className="mx-auto flex items-center justify-center text-center px-6">
+        <div className="mx-auto flex items-center justify-center text-center px-6 pb-6">
           <img
             src="/images/logo.png"
             alt="Bookshelf Logo"
