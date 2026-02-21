@@ -26,8 +26,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.xerial:sqlite-jdbc:3.50.3.0")
-    implementation("org.hibernate.orm:hibernate-community-dialects:6.6.26.Final")
+    implementation("org.postgresql:postgresql:42.7.9")
+    implementation("org.flywaydb:flyway-core")
+    implementation("org.flywaydb:flyway-database-postgresql")
     implementation("io.arrow-kt:arrow-core:2.1.2")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-validation")
@@ -55,9 +56,4 @@ allOpen {
 
 tasks.withType<Test> {
     useJUnitPlatform()
-    finalizedBy("cleanTestDb")
-}
-
-tasks.register<Delete>("cleanTestDb") {
-    delete("bookshelf-test.db")
 }

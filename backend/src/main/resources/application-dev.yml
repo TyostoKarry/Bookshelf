@@ -1,13 +1,14 @@
 spring:
   datasource:
-    url: jdbc:sqlite:bookshelf.db
-    driver-class-name: org.sqlite.JDBC
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        dialect: org.hibernate.community.dialect.SQLiteDialect
+      ddl-auto: validate
+  flyway:
+    enabled: true
   config:
     import: optional:file:.env[.properties]
 

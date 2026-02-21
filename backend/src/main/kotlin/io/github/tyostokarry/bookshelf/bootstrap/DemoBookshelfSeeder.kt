@@ -300,7 +300,7 @@ class DemoBookshelfSeeder(
                     finishedAt = LocalDate.of(2020, 8, 2),
                     readCount = 2,
                     rating = 10,
-                    notes = "null",
+                    notes = null,
                     favorite = true,
                 ),
             )
