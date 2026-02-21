@@ -97,3 +97,44 @@ docker compose -f docker-compose.dev.yml down
 ```
 
 _(Tip: If you ever want to completely wipe your local database and start fresh, run `docker compose -f docker-compose.dev.yml down -v` to destroy the Docker volume)._
+
+## Production Environment
+
+All three services (database, backend, frontend) run in Docker. The frontend is built at image build time with the provided environment variables baked in.
+
+### Prerequisites
+
+You will need the following installed on your server:
+
+- **Docker Desktop / Engine** – used to run all services
+
+### 1. Configure Environment Variables
+
+Copy the example environment file and fill in your values:
+
+```bash
+cp .env.example .env
+```
+
+Open `.env` and fill in all empty fields — each field has a comment explaining its purpose and any requirements.
+
+### 2. Start the Production Environment
+
+From the root of the project:
+
+```bash
+docker compose up --build -d
+```
+
+- The frontend will be available at your server's IP or domain (as set in `FRONTEND_URL` in `.env`)
+- The backend API will be available on port 8080 of your server's IP or domain (as set in `VITE_SERVER_URL` in `.env`)
+
+_Note: Database schema migrations are handled automatically by Flyway when the backend starts._
+
+### Stop the Production Environment
+
+```bash
+docker compose down
+```
+
+_(Tip: If you ever want to completely wipe the production database and start fresh, run `docker compose down -v` to destroy the Docker volume. **This will permanently delete all data.**)_
