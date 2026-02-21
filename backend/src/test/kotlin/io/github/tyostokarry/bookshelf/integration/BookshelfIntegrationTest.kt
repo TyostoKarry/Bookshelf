@@ -2,6 +2,7 @@ package io.github.tyostokarry.bookshelf.integration
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.github.tyostokarry.bookshelf.config.FlywayTestConfig
 import io.github.tyostokarry.bookshelf.controller.advice.ApiResponse
 import io.github.tyostokarry.bookshelf.controller.dto.BookDto
 import io.github.tyostokarry.bookshelf.controller.dto.BookshelfDto
@@ -12,6 +13,7 @@ import io.github.tyostokarry.bookshelf.controller.dto.DeleteBookshelfResult
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
@@ -27,6 +29,7 @@ import kotlin.test.assertNull
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
+@Import(FlywayTestConfig::class)
 class BookshelfIntegrationTest(
     @Autowired val mockMvc: MockMvc,
     @Autowired val objectMapper: ObjectMapper,

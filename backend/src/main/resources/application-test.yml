@@ -1,13 +1,15 @@
 spring:
   datasource:
-    url: jdbc:sqlite:bookshelf-test.db
-    driver-class-name: org.sqlite.JDBC
+    url: jdbc:postgresql://localhost:5433/bookshelf_test
+    username: test
+    password: test
+    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: create-drop
-    properties:
-      hibernate:
-        dialect: org.hibernate.community.dialect.SQLiteDialect
+      ddl-auto: none
+  flyway:
+    enabled: true
+    clean-disabled: false
   main:
     allow-bean-definition-overriding: true
 
