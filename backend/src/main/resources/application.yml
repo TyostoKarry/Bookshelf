@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/bookshelf
-    username: postgres
-    password: password
+    url: jdbc:postgresql://db:5432/bookshelf
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -14,6 +14,6 @@ spring:
 
 app:
   api-key: ${API_KEY}
-  frontend-url: ${FRONTEND_URL}:5173
+  frontend-url: ${FRONTEND_URL}
   demo-shelf-public-id: ${DEMO_BOOKSHELF_PUBLIC_ID}
   seed-demo-shelf: true

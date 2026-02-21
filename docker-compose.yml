@@ -1,0 +1,44 @@
+services:
+  db:
+    image: postgres:18
+    container_name: bookshelf-postgres-prod
+    restart: always
+    environment:
+      POSTGRES_DB: bookshelf
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - bookshelf_pgdata_prod:/var/lib/postgresql
+
+  backend:
+    build: ./backend
+    container_name: bookshelf-backend-prod
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/bookshelf
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      API_KEY: ${API_KEY}
+      FRONTEND_URL: ${FRONTEND_URL}
+      SPRING_PROFILES_ACTIVE: prod
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_KEY: ${VITE_API_KEY}
+        VITE_SERVER_URL: ${VITE_SERVER_URL}
+        VITE_API_PREFIX: ${VITE_API_PREFIX}
+        VITE_DEMO_BOOKSHELF_PUBLIC_ID: ${VITE_DEMO_BOOKSHELF_PUBLIC_ID}
+        VITE_GITHUB_REPOSITORY_URL: ${VITE_GITHUB_REPOSITORY_URL}
+    container_name: bookshelf-frontend-prod
+    restart: always
+    ports:
+      - "80:80"
+
+volumes:
+  bookshelf_pgdata_prod:
