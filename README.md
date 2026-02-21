@@ -3,7 +3,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/frontend-React%20%2B%20TypeScript-blue" />
   <img src="https://img.shields.io/badge/backend-Kotlin%20%2B%20Spring--Boot-purple" />
-  <img src="https://img.shields.io/badge/db-SQLite-lightgrey" />
+  <img src="https://img.shields.io/badge/db-PostgreSQL-336791" />
   <img src="https://img.shields.io/badge/CI-GitHub%20Actions-success" />
 </p>
 
@@ -20,98 +20,80 @@ Visitors can browse public bookshelves, while owners can create, edit, and manag
 ## Tech Stack
 
 **Frontend:** React + TypeScript + TailwindCSS + Vite  
-**Backend:** Kotlin + Spring Boot + SQLite + Gradle  
+**Backend:** Kotlin + Spring Boot + PostgreSQL + Flyway + Gradle  
 **Infrastructure:** Docker + GitHub Actions
 
 ## Development Environment
 
-The following tools and versions are used during local development of the Bookshelf project.
+For the best developer experience, performance, and instant hot-reloading, the database runs in Docker while the backend and frontend run natively on your local machine.
 
-### Backend
+### Prerequisites
+
+You will need the following installed on your machine:
 
 - **Java 21 (LTS)** – developed with Eclipse Temurin 21.0.8
-- **Gradle** – use included Gradle Wrapper (`./gradlew`), no need to install globally
-- **SQLite** – database used by backend, file-based (`bookshelf.db`)
+- **Node.js 22+** – developed with Node.js 22.13.0
+- **Docker Desktop / Engine** – used to run the PostgreSQL database
 
-### Frontend
+## Run the Development Environment
 
-- **Node.js 18+** – developed with Node.js v22.13.0
+You will need three terminal instances (or run the database in the background).
 
-## Dockerized Development Environment
+### 1. Start the Database
 
-This project includes a full Docker‑based setup for local development with hot reload on both the frontend and backend.
+The project uses a local PostgreSQL database managed via Docker Compose. Local credentials (`postgres`/`password`) are hardcoded in the Spring Boot `dev` profile, so no database `.env` configuration is required!
 
-### Local SQLite Database
+From the root of the project:
 
-The backend stores data in a local SQLite database file named `bookshelf.db`.
+```bash
+docker compose -f docker-compose.dev.yml up -d
+```
 
-Before running the application (especially inside Docker for the first time),
-make sure that the file exists in the `backend` directory:
+_Note: Database schema migrations are handled automatically by Flyway when the backend starts._
+
+### 2. Start the Backend
+
+Run the Spring Boot application using the included Gradle wrapper. It will automatically connect to the local Docker database.
 
 ```bash
 cd backend
-touch bookshelf.db
+./gradlew bootRun --args='--spring.profiles.active=dev'
 ```
 
-This prevents Docker from accidentally creating a folder with the same name during volume mounts.
-The file is local and ignored by Git, so your development data remains on your machine.
+The backend will be available at [http://localhost:8080](http://localhost:8080)
 
-### Frontend Hot Reload
+#### Backend Hot Reload with IntelliJ IDEA
 
-The frontend runs a Vite development server inside its Docker container.
+When running the backend natively via `./gradlew`, Spring Boot DevTools will automatically restart the server whenever compiled `.class` files change.
 
-When you edit files under `frontend/src/`, the changes are detected automatically and the browser reloads almost instantly.  
-No manual rebuild or container restart is required.
-
-This behavior works the same across all platforms (Windows, macOS, WSL, Linux).
-
-### Backend Hot Reload (Spring Boot + Gradle)
-
-Bookshelf’s backend supports live rebuild and auto‑restart using:
-
-- `./gradlew classes --continuous` (watches for Kotlin source changes)
-- **Spring Boot DevTools** (watches compiled `.class` file updates)
-
-Depending on your operating system, hot reload behaves slightly differently:
-
-#### On Linux / WSL2
-
-You can get full backend hot reload **without** any IDE configuration — just run Docker Compose in the [Run the Development Environment](#run-the-development-environment) section.
-
-File changes under `backend/src/` trigger Gradle’s continuous build inside the container, and the running Spring Boot app restarts automatically.
-
-#### On Windows with IntelliJ IDEA
-
-On Windows, file‑watch events aren’t always detected instantly inside Docker due to filesystem translation between Windows → WSL → Docker.
-
-To ensure backend hot reload works reliably, configure the following settings in IntelliJ IDEA:
+If you are using IntelliJ IDEA, it does not compile files automatically on save by default. To enable seamless hot-reloading:
 
 1. Open **File** → **Settings** → **Build, Execution, Deployment** → **Compiler**
 2. Enable **Build project automatically**
 
-This approach ensures consistent development experience across platforms by offloading compilation to IntelliJ when Docker’s Linux file watcher cannot fully detect edits made on Windows file systems.
+With this enabled, IntelliJ will compile your code in the background the moment you save a file, instantly triggering a Spring Boot DevTools restart.
 
-**Tip:** Even if you edit code in VS Code or another editor, IntelliJ’s compiler can still handle background compilation — just keep IntelliJ open.
+**Tip:** Even if you prefer to write code in VS Code or another editor, you can keep IntelliJ open in the background to handle the automatic compilation!
 
-### Run the Development Environment
+### 3. Start the Frontend
 
-Use the development‑specific Compose file located in the project’s root directory:
+Run the Vite development server. It proxies API requests to the local backend.
 
 ```bash
-docker compose -f docker-compose.dev.yml up --build
+cd frontend
+npm install
+npm run dev
 ```
 
-This command starts a complete development environment with both the frontend and backend running in Docker:
-
-- **Frontend** – available at [http://localhost:5173](http://localhost:5173)
-- **Backend** – available at [http://localhost:8080](http://localhost:8080)
-
-Both services share your local source code through Docker volumes, so changes are reflected instantly without rebuilding or restarting containers.
+The Frontend will be available at [http://localhost:5173](http://localhost:5173)
 
 ### Stop the Development Environment
 
-To stop all running services, use:
+1. Stop the frontend and backend terminal processes using `Ctrl + C`.
+2. Stop the PostgreSQL database:
 
 ```bash
 docker compose -f docker-compose.dev.yml down
 ```
+
+_(Tip: If you ever want to completely wipe your local database and start fresh, run `docker compose -f docker-compose.dev.yml down -v` to destroy the Docker volume)._
