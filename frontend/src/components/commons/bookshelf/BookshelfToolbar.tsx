@@ -11,6 +11,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+const ALL_VALUES = "ALL";
+
 interface BookshelfToolbarProps {
   filters: {
     year?: string;
@@ -53,12 +55,17 @@ export const BookshelfToolbar: FC<BookshelfToolbarProps> = ({
         <div className="flex flex-wrap gap-2">
           <Select
             value={filters.year || ""}
-            onValueChange={(value) => onFilterChange("year", value)}
+            onValueChange={(value) =>
+              onFilterChange("year", value === ALL_VALUES ? "" : value)
+            }
           >
             <SelectTrigger className="w-[160px]">
               <SelectValue placeholder={t("bookshelfToolbar.yearFinished")} />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem value={ALL_VALUES}>
+                {t("bookshelfToolbar.allYears")}
+              </SelectItem>
               {availableYears.map((year) => (
                 <SelectItem key={year} value={year}>
                   {year}
@@ -68,12 +75,17 @@ export const BookshelfToolbar: FC<BookshelfToolbarProps> = ({
           </Select>
           <Select
             value={filters.genre || ""}
-            onValueChange={(value) => onFilterChange("genre", value)}
+            onValueChange={(value) =>
+              onFilterChange("genre", value === ALL_VALUES ? "" : value)
+            }
           >
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder={t("bookshelfToolbar.allGenres")} />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem value={ALL_VALUES}>
+                {t("bookshelfToolbar.allGenres")}
+              </SelectItem>
               <SelectItem value="UNKNOWN">
                 {t("bookshelfToolbar.genreUnknown")}
               </SelectItem>
@@ -117,12 +129,17 @@ export const BookshelfToolbar: FC<BookshelfToolbarProps> = ({
           </Select>
           <Select
             value={filters.language || ""}
-            onValueChange={(value) => onFilterChange("language", value)}
+            onValueChange={(value) =>
+              onFilterChange("language", value === ALL_VALUES ? "" : value)
+            }
           >
             <SelectTrigger className="w-[200px]">
               <SelectValue placeholder={t("bookshelfToolbar.allLanguages")} />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem value={ALL_VALUES}>
+                {t("bookshelfToolbar.allLanguages")}
+              </SelectItem>
               <SelectItem value="UNKNOWN">
                 {t("bookshelfToolbar.languageUnknown")}
               </SelectItem>
@@ -172,12 +189,17 @@ export const BookshelfToolbar: FC<BookshelfToolbarProps> = ({
           </Select>
           <Select
             value={filters.status || ""}
-            onValueChange={(value) => onFilterChange("status", value)}
+            onValueChange={(value) =>
+              onFilterChange("status", value === ALL_VALUES ? "" : value)
+            }
           >
             <SelectTrigger className="w-[160px]">
               <SelectValue placeholder={t("bookshelfToolbar.allStatuses")} />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem value={ALL_VALUES}>
+                {t("bookshelfToolbar.allStatuses")}
+              </SelectItem>
               <SelectItem value="WISHLIST">
                 {t("bookshelfToolbar.statusWishlist")}
               </SelectItem>
@@ -191,12 +213,17 @@ export const BookshelfToolbar: FC<BookshelfToolbarProps> = ({
           </Select>
           <Select
             value={filters.sort || ""}
-            onValueChange={(value) => onSortChange(value)}
+            onValueChange={(value) =>
+              onSortChange(value === ALL_VALUES ? "" : value)
+            }
           >
             <SelectTrigger className="w-[220px]">
               <SelectValue placeholder={t("bookshelfToolbar.sortBy")} />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem value={ALL_VALUES}>
+                {t("bookshelfToolbar.noSorting")}
+              </SelectItem>
               <SelectItem value="favoritesFirst">
                 {t("bookshelfToolbar.sortFavoritesFirst")}
               </SelectItem>
