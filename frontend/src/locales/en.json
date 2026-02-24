@@ -40,6 +40,8 @@
     "startedAt": "Started At"
   },
   "bookshelfToolbar": {
+    "yearFinished": "Year Finished",
+    "allYears": "All Years",
     "allGenres": "All Genres",
     "allLanguages": "All Languages",
     "allStatuses": "All Statuses",
@@ -77,6 +79,7 @@
     "languageUnknown": "Unknown Language",
     "searchPlaceholder": "Search by title, author, or ISBN...",
     "sortBy": "Sort by:",
+    "noSorting": "No Sorting",
     "sortByRatingAsc": "Rating (Low to High)",
     "sortByRatingDesc": "Rating (High to Low)",
     "sortFavoritesFirst": "Favorites First",
