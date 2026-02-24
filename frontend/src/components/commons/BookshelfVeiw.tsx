@@ -31,12 +31,22 @@ export const BookshelfView: FC<BookshelfViewProps> = ({
     return [...books].sort((a, b) => toTime(b) - toTime(a));
   }, [books]);
   const [filters, setFilters] = useState({
+    year: "",
     genre: "",
     language: "",
     status: "",
     searchQuery: "",
     sort: "",
   });
+
+  const availableYears = useMemo(() => {
+    const years = new Set(
+      books
+        .map((b) => b.finishedAt && new Date(b.finishedAt).getFullYear())
+        .filter(Boolean) as number[],
+    );
+    return [...years].sort((a, b) => b - a).map(String);
+  }, [books]);
 
   const handleFilterChange = (field: string, value: string | boolean) => {
     setFilters((prev) => ({
@@ -47,6 +57,7 @@ export const BookshelfView: FC<BookshelfViewProps> = ({
 
   const handleClearFilters = () => {
     setFilters({
+      year: "",
       genre: "",
       language: "",
       status: "",
@@ -57,6 +68,13 @@ export const BookshelfView: FC<BookshelfViewProps> = ({
 
   const filteredBooks = useMemo(() => {
     let result = [...displayBooks];
+    if (filters.year)
+      result = result.filter((book) => {
+        const bookYear = book.finishedAt
+          ? new Date(book.finishedAt).getFullYear().toString()
+          : "";
+        return bookYear === filters.year;
+      });
     if (filters.genre)
       result = result.filter((book) => book.genre === filters.genre);
     if (filters.language)
@@ -128,6 +146,7 @@ export const BookshelfView: FC<BookshelfViewProps> = ({
       />
       <BookshelfToolbar
         filters={filters}
+        availableYears={availableYears}
         onFilterChange={handleFilterChange}
         onSearchChange={(query) => handleFilterChange("searchQuery", query)}
         onSortChange={(value) => handleFilterChange("sort", value)}

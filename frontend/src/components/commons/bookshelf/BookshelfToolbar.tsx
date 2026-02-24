@@ -13,12 +13,14 @@ import {
 
 interface BookshelfToolbarProps {
   filters: {
+    year?: string;
     genre?: string;
     language?: string;
     status?: string;
     searchQuery?: string;
     sort?: string;
   };
+  availableYears: string[];
   onFilterChange: (field: string, value: string | boolean) => void;
   onSearchChange: (query: string) => void;
   onSortChange: (field: string) => void;
@@ -27,6 +29,7 @@ interface BookshelfToolbarProps {
 
 export const BookshelfToolbar: FC<BookshelfToolbarProps> = ({
   filters,
+  availableYears,
   onFilterChange,
   onSearchChange,
   onSortChange,
@@ -48,6 +51,21 @@ export const BookshelfToolbar: FC<BookshelfToolbarProps> = ({
           className="flex-1 min-w-[260px]"
         />
         <div className="flex flex-wrap gap-2">
+          <Select
+            value={filters.year || ""}
+            onValueChange={(value) => onFilterChange("year", value)}
+          >
+            <SelectTrigger className="w-[160px]">
+              <SelectValue placeholder={t("bookshelfToolbar.yearFinished")} />
+            </SelectTrigger>
+            <SelectContent>
+              {availableYears.map((year) => (
+                <SelectItem key={year} value={year}>
+                  {year}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <Select
             value={filters.genre || ""}
             onValueChange={(value) => onFilterChange("genre", value)}
