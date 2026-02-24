@@ -13,6 +13,40 @@ import {
 
 const ALL_VALUES = "ALL";
 
+const GENRE_TRANSLATION_KEYS = {
+  BIOGRAPHY: "bookshelfToolbar.genreBiography",
+  FANTASY: "bookshelfToolbar.genreFantasy",
+  FICTION: "bookshelfToolbar.genreFiction",
+  HISTORY: "bookshelfToolbar.genreHistory",
+  MYSTERY: "bookshelfToolbar.genreMystery",
+  NONFICTION: "bookshelfToolbar.genreNonFiction",
+  OTHER: "bookshelfToolbar.genreOther",
+  ROMANCE: "bookshelfToolbar.genreRomance",
+  SCIENCE: "bookshelfToolbar.genreScience",
+  SCIFI: "bookshelfToolbar.genreSciFi",
+  TECHNOLOGY: "bookshelfToolbar.genreTechnology",
+  THRILLER: "bookshelfToolbar.genreThriller",
+  UNKNOWN: "bookshelfToolbar.genreUnknown",
+} as const;
+
+const LANGUAGE_TRANSLATION_KEYS = {
+  ARABIC: "bookshelfToolbar.languageArabic",
+  CHINESE: "bookshelfToolbar.languageChinese",
+  ENGLISH: "bookshelfToolbar.languageEnglish",
+  FINNISH: "bookshelfToolbar.languageFinnish",
+  FRENCH: "bookshelfToolbar.languageFrench",
+  GERMAN: "bookshelfToolbar.languageGerman",
+  HINDI: "bookshelfToolbar.languageHindi",
+  ITALIAN: "bookshelfToolbar.languageItalian",
+  JAPANESE: "bookshelfToolbar.languageJapanese",
+  OTHER: "bookshelfToolbar.languageOther",
+  PORTUGUESE: "bookshelfToolbar.languagePortuguese",
+  RUSSIAN: "bookshelfToolbar.languageRussian",
+  SPANISH: "bookshelfToolbar.languageSpanish",
+  SWEDISH: "bookshelfToolbar.languageSwedish",
+  UNKNOWN: "bookshelfToolbar.languageUnknown",
+} as const;
+
 interface BookshelfToolbarProps {
   filters: {
     year?: string;
@@ -23,6 +57,8 @@ interface BookshelfToolbarProps {
     sort?: string;
   };
   availableYears: string[];
+  availableGenres?: string[];
+  availableLanguages?: string[];
   onFilterChange: (field: string, value: string | boolean) => void;
   onSearchChange: (query: string) => void;
   onSortChange: (field: string) => void;
@@ -32,6 +68,8 @@ interface BookshelfToolbarProps {
 export const BookshelfToolbar: FC<BookshelfToolbarProps> = ({
   filters,
   availableYears,
+  availableGenres = [],
+  availableLanguages = [],
   onFilterChange,
   onSearchChange,
   onSortChange,
@@ -86,45 +124,15 @@ export const BookshelfToolbar: FC<BookshelfToolbarProps> = ({
               <SelectItem value={ALL_VALUES}>
                 {t("bookshelfToolbar.allGenres")}
               </SelectItem>
-              <SelectItem value="UNKNOWN">
-                {t("bookshelfToolbar.genreUnknown")}
-              </SelectItem>
-              <SelectItem value="FICTION">
-                {t("bookshelfToolbar.genreFiction")}
-              </SelectItem>
-              <SelectItem value="NON-FICTION">
-                {t("bookshelfToolbar.genreNonFiction")}
-              </SelectItem>
-              <SelectItem value="SCI-FI">
-                {t("bookshelfToolbar.genreSciFi")}
-              </SelectItem>
-              <SelectItem value="FANTASY">
-                {t("bookshelfToolbar.genreFantasy")}
-              </SelectItem>
-              <SelectItem value="BIOGRAPHY">
-                {t("bookshelfToolbar.genreBiography")}
-              </SelectItem>
-              <SelectItem value="HISTORY">
-                {t("bookshelfToolbar.genreHistory")}
-              </SelectItem>
-              <SelectItem value="MYSTERY">
-                {t("bookshelfToolbar.genreMystery")}
-              </SelectItem>
-              <SelectItem value="THRILLER">
-                {t("bookshelfToolbar.genreThriller")}
-              </SelectItem>
-              <SelectItem value="ROMANCE">
-                {t("bookshelfToolbar.genreRomance")}
-              </SelectItem>
-              <SelectItem value="SCIENCE">
-                {t("bookshelfToolbar.genreScience")}
-              </SelectItem>
-              <SelectItem value="TECHNOLOGY">
-                {t("bookshelfToolbar.genreTechnology")}
-              </SelectItem>
-              <SelectItem value="OTHER">
-                {t("bookshelfToolbar.genreOther")}
-              </SelectItem>
+              {availableGenres.map((genre) => (
+                <SelectItem key={genre} value={genre}>
+                  {t(
+                    GENRE_TRANSLATION_KEYS[
+                      genre as keyof typeof GENRE_TRANSLATION_KEYS
+                    ],
+                  )}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
           <Select
@@ -140,51 +148,15 @@ export const BookshelfToolbar: FC<BookshelfToolbarProps> = ({
               <SelectItem value={ALL_VALUES}>
                 {t("bookshelfToolbar.allLanguages")}
               </SelectItem>
-              <SelectItem value="UNKNOWN">
-                {t("bookshelfToolbar.languageUnknown")}
-              </SelectItem>
-              <SelectItem value="ENGLISH">
-                {t("bookshelfToolbar.languageEnglish")}
-              </SelectItem>
-              <SelectItem value="FINNISH">
-                {t("bookshelfToolbar.languageFinnish")}
-              </SelectItem>
-              <SelectItem value="GERMAN">
-                {t("bookshelfToolbar.languageGerman")}
-              </SelectItem>
-              <SelectItem value="FRENCH">
-                {t("bookshelfToolbar.languageFrench")}
-              </SelectItem>
-              <SelectItem value="SPANISH">
-                {t("bookshelfToolbar.languageSpanish")}
-              </SelectItem>
-              <SelectItem value="SWEDISH">
-                {t("bookshelfToolbar.languageSwedish")}
-              </SelectItem>
-              <SelectItem value="ITALIAN">
-                {t("bookshelfToolbar.languageItalian")}
-              </SelectItem>
-              <SelectItem value="JAPANESE">
-                {t("bookshelfToolbar.languageJapanese")}
-              </SelectItem>
-              <SelectItem value="PORTUGUESE">
-                {t("bookshelfToolbar.languagePortuguese")}
-              </SelectItem>
-              <SelectItem value="RUSSIAN">
-                {t("bookshelfToolbar.languageRussian")}
-              </SelectItem>
-              <SelectItem value="CHINESE">
-                {t("bookshelfToolbar.languageChinese")}
-              </SelectItem>
-              <SelectItem value="HINDI">
-                {t("bookshelfToolbar.languageHindi")}
-              </SelectItem>
-              <SelectItem value="ARABIC">
-                {t("bookshelfToolbar.languageArabic")}
-              </SelectItem>
-              <SelectItem value="OTHER">
-                {t("bookshelfToolbar.languageOther")}
-              </SelectItem>
+              {availableLanguages.map((language) => (
+                <SelectItem key={language} value={language}>
+                  {t(
+                    LANGUAGE_TRANSLATION_KEYS[
+                      language as keyof typeof LANGUAGE_TRANSLATION_KEYS
+                    ],
+                  )}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
           <Select

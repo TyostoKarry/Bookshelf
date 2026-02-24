@@ -48,6 +48,16 @@ export const BookshelfView: FC<BookshelfViewProps> = ({
     return [...years].sort((a, b) => b - a).map(String);
   }, [books]);
 
+  const availableGenres = useMemo(() => {
+    return [...new Set(books.map((b) => b.genre).filter(Boolean))] as string[];
+  }, [books]);
+
+  const availableLanguages = useMemo(() => {
+    return [
+      ...new Set(books.map((b) => b.language).filter(Boolean)),
+    ] as string[];
+  }, [books]);
+
   const handleFilterChange = (field: string, value: string | boolean) => {
     setFilters((prev) => ({
       ...prev,
@@ -147,6 +157,8 @@ export const BookshelfView: FC<BookshelfViewProps> = ({
       <BookshelfToolbar
         filters={filters}
         availableYears={availableYears}
+        availableGenres={availableGenres}
+        availableLanguages={availableLanguages}
         onFilterChange={handleFilterChange}
         onSearchChange={(query) => handleFilterChange("searchQuery", query)}
         onSortChange={(value) => handleFilterChange("sort", value)}
