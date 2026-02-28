@@ -10,16 +10,16 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    if: ${{ !contains(github.event.head_commit.message, '#notag') }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
+          token: ${{ secrets.MY_GITHUB_ACTIONS_BRIDGE_PAT }}
 
       - name: Bump version and push tag
         uses: anothrNick/github-tag-action@1.75.0
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.MY_GITHUB_ACTIONS_BRIDGE_PAT }}
           DEFAULT_BUMP: patch
           TAG_PREFIX: v
