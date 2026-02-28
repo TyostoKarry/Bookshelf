@@ -7,6 +7,7 @@ export interface MyBookshelfContextValue {
   books: Book[];
   editToken: string | null;
   isInitialized: boolean;
+  isLoading: boolean;
   setBookshelf: (bookshelf: Bookshelf | null) => void;
   setBooks: (books: Book[]) => void;
   setEditToken: (editToken: string | null) => void;

@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { useLanguage } from "../../hooks/useLanguage";
 import { useModal } from "../../hooks/useModal";
 import { useMyBookshelf } from "../../hooks/useMyBookshelf";
+import { Spinner } from "../ui/spinner";
 import { deleteBookshelf } from "@/api/bookshelves";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,7 +17,8 @@ import {
 
 export const Topbar: FC = () => {
   const { t } = useLanguage();
-  const { bookshelf, editToken, clearBookshelf } = useMyBookshelf();
+  const { bookshelf, editToken, isInitialized, isLoading, clearBookshelf } =
+    useMyBookshelf();
   const { openModal, closeModal } = useModal();
   const navigate = useNavigate();
 
@@ -79,7 +81,7 @@ export const Topbar: FC = () => {
           <DropdownMenuTrigger asChild>
             <Button
               variant="secondary"
-              className="flex items-center gap-2 bg-muted text-foreground hover:bg-muted/80 hover:cursor-pointer"
+              className="flex items-center gap-2 bg-muted text-foreground hover:bg-muted/80 hover:cursor-pointer min-w-[170px]"
             >
               <Library className="w-4 h-4 text-foreground" />
               {t("button.myBookshelf")}
@@ -117,8 +119,10 @@ export const Topbar: FC = () => {
         <Button
           variant="secondary"
           onClick={() => openModal("ENTER_TOKEN", {})}
-          className="bg-muted text-foreground hover:bg-muted/80 hover:cursor-pointer"
+          className="bg-muted text-foreground hover:bg-muted/80 hover:cursor-pointer min-w-[170px]"
+          disabled={!isInitialized || isLoading}
         >
+          {(!isInitialized || isLoading) && <Spinner className="size-4" />}
           {t("button.myBookshelf")}
         </Button>
       )}
