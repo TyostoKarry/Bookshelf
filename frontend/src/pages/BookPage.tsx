@@ -22,6 +22,7 @@ import type { Book } from "../types/book";
 import type { BookPageMode } from "../types/book-page-mode";
 import { bookFormSchema, type BookForm } from "../validation/bookFormSchema";
 import { Form } from "@/components/ui/form";
+import { Spinner } from "@/components/ui/spinner";
 
 interface BookPageProps {
   mode: BookPageMode;
@@ -166,8 +167,6 @@ export const BookPage: FC<BookPageProps> = ({ mode }) => {
     }
   };
 
-  if (loading) return <div>{t("common.loading")}</div>;
-
   return (
     <main className="max-w-5xl mx-auto pt-10 pb-6 px-6">
       <Form {...form}>
@@ -175,23 +174,34 @@ export const BookPage: FC<BookPageProps> = ({ mode }) => {
           onSubmit={handleSubmit(onSubmit)}
           className="bg-card rounded-2xl shadow-xl p-8"
         >
-          <BookPageHeader book={book} mode={mode} form={form} />
-          <BookMetadata book={book} mode={mode} form={form} />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-10">
-            <BookReadingDetails book={book} mode={mode} form={form} />
-            <BookPersonalStats book={book} mode={mode} form={form} />
-          </div>
-          <BookPersonalNotes book={book} mode={mode} form={form} />
-          <BookPageActions
-            book={book}
-            mode={mode}
-            canEdit={canEdit}
-            bookId={bookId}
-            editToken={editToken}
-            refreshBookshelf={refreshBookshelf}
-            reset={reset}
-            isSubmitting={isSubmitting}
-          />
+          {loading || !isInitialized ? (
+            <div className="flex flex-col items-center justify-center h-[calc(100vh-24rem)] ">
+              <Spinner className="size-24" />
+              <p className="text-2xl text-muted-foreground">
+                {t("common.loading")}
+              </p>
+            </div>
+          ) : (
+            <>
+              <BookPageHeader book={book} mode={mode} form={form} />
+              <BookMetadata book={book} mode={mode} form={form} />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-10">
+                <BookReadingDetails book={book} mode={mode} form={form} />
+                <BookPersonalStats book={book} mode={mode} form={form} />
+              </div>
+              <BookPersonalNotes book={book} mode={mode} form={form} />
+              <BookPageActions
+                book={book}
+                mode={mode}
+                canEdit={canEdit}
+                bookId={bookId}
+                editToken={editToken}
+                refreshBookshelf={refreshBookshelf}
+                reset={reset}
+                isSubmitting={isSubmitting}
+              />
+            </>
+          )}
         </form>
       </Form>
     </main>

@@ -16,12 +16,14 @@ export const MyBookshelfProvider = ({ children }: { children: ReactNode }) => {
   const [bookshelf, setBookshelf] = useState<Bookshelf | null>(null);
   const [books, setBooks] = useState<Book[]>([]);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { t } = useLanguage();
 
   const refreshBookshelf = async () => {
     if (!editToken) return;
 
+    setIsLoading(true);
     try {
       const fetchedBookshelf = await getBookshelfByToken(editToken);
       const fetchedBooks = await getBooksInBookshelfByToken(editToken);
@@ -30,6 +32,8 @@ export const MyBookshelfProvider = ({ children }: { children: ReactNode }) => {
     } catch (error) {
       console.error("Failed to refresh bookshelf:", error);
       toast.error(t("toast.failedToRefreshBookshelf"));
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -37,6 +41,7 @@ export const MyBookshelfProvider = ({ children }: { children: ReactNode }) => {
     setBookshelf(null);
     setBooks([]);
     setEditToken(null);
+    setIsLoading(false);
     localStorage.removeItem("editToken");
   };
 
@@ -56,6 +61,7 @@ export const MyBookshelfProvider = ({ children }: { children: ReactNode }) => {
     books,
     editToken,
     isInitialized,
+    isLoading,
     setBookshelf,
     setBooks,
     setEditToken,

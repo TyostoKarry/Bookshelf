@@ -252,6 +252,7 @@
     "noBookshelfToDelete": "No bookshelf to delete.",
     "noPermissionToEditBook": "You do not have permission to edit this book.",
     "noTokenFound": "No token found.",
+    "noBookshelfFound": "No bookshelf found.",
     "nothingToCopy": "Nothing to copy.",
     "nothingToDownload": "Nothing to download.",
     "nothingToImport": "Nothing to import.",

@@ -5,6 +5,7 @@ import { importBooksToBookshelf } from "../../api/bookshelves";
 import { useLanguage } from "../../hooks/useLanguage";
 import { useModal } from "../../hooks/useModal";
 import { useMyBookshelf } from "../../hooks/useMyBookshelf";
+import { Spinner } from "../ui/spinner";
 import { Button } from "@/components/ui/button";
 import {
   DialogTitle,
@@ -75,7 +76,9 @@ export const ImportBooksModal: FC = () => {
           aria-live="polite"
           className="flex flex-col items-center justify-center py-10 gap-3"
         >
-          <div className="h-10 w-10 border-4 border-muted-foreground border-t-transparent rounded-full animate-spin" />
+          <div className="flex items-center justify-center">
+            <Spinner className="size-12" />
+          </div>
           <p className="text-muted-foreground">{t("common.loading")}</p>
         </div>
       ) : (

@@ -3,6 +3,7 @@ import { useEffect, useState, type FC } from "react";
 import { toast } from "sonner";
 import { ModalBase } from "./ModalBase";
 import { useModal } from "../../hooks/useModal";
+import { Spinner } from "../ui/spinner";
 import { exportBooksFromBookshelf } from "@/api/bookshelves";
 import { Button } from "@/components/ui/button";
 import {
@@ -95,7 +96,9 @@ export const ExportBooksModal: FC<ExportBooksModalProps> = ({
           aria-live="polite"
           className="flex flex-col items-center justify-center py-10 gap-3"
         >
-          <div className="h-10 w-10 border-4 border-muted-foreground border-t-transparent rounded-full animate-spin" />
+          <div className="flex items-center justify-center">
+            <Spinner className="size-12" />
+          </div>
           <p className="text-muted-foreground">{t("common.loading")}</p>
         </div>
       ) : (

@@ -8,6 +8,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
 
 interface OpenLibrarySearchListProps {
   query: string;
@@ -89,7 +90,9 @@ export const OpenLibrarySearchList: FC<OpenLibrarySearchListProps> = ({
           aria-live="polite"
           className="flex flex-col items-center justify-center py-10 gap-3"
         >
-          <div className="h-10 w-10 border-4 border-muted-foreground border-t-transparent rounded-full animate-spin" />
+          <div className="flex items-center justify-center">
+            <Spinner className="size-12" />
+          </div>
           <p className="text-muted-foreground">{t("common.loading")}</p>
         </div>
       )}
