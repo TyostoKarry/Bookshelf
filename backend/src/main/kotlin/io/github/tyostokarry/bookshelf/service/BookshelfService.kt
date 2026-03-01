@@ -13,6 +13,7 @@ import io.github.tyostokarry.bookshelf.util.logContext
 import io.github.tyostokarry.bookshelf.util.masked
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class BookshelfService(
@@ -102,6 +103,7 @@ class BookshelfService(
         return savedBookshelf
     }
 
+    @Transactional
     fun deleteBookshelf(publicId: String): Either<BookshelfError, Long> {
         val bookshelf =
             bookshelfRepository.findByPublicId(publicId)

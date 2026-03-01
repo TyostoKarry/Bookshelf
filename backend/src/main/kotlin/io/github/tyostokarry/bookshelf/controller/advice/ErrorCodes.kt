@@ -6,4 +6,5 @@ enum class ErrorCodes {
     INVALID_API_KEY,
     FORBIDDEN,
     VALIDATION_ERROR,
+    INTERNAL_ERROR,
 }
