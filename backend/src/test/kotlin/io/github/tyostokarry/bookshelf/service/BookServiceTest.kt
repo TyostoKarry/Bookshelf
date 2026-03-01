@@ -160,16 +160,17 @@ class BookServiceTest {
     inner class DeleteBook {
         @Test
         fun `deleteBook deletes successfully when found`() {
-            given(bookRepository.existsById(1L)).willReturn(true)
+            given(bookRepository.deleteByIdIfExists(1L)).willReturn(1)
 
             val result = bookService.deleteBook(1L)
 
             assertTrue(result.isRight(), "Expected Right result after update")
+            assertEquals(1L, result.getOrNull(), "Expected deleted book id to be returned")
         }
 
         @Test
         fun `deleteBook returns Left when not found`() {
-            given(bookRepository.existsById(999L)).willReturn(false)
+            given(bookRepository.deleteByIdIfExists(999L)).willReturn(0)
 
             val result = bookService.deleteBook(999L)
 
