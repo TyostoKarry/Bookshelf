@@ -17,3 +17,7 @@ app:
   frontend-url: ${FRONTEND_URL}
   demo-shelf-public-id: ${DEMO_BOOKSHELF_PUBLIC_ID}
   seed-demo-shelf: true
+
+logging:
+  level:
+    io.github.tyostokarry.bookshelf: INFO

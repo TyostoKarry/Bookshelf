@@ -1,6 +1,7 @@
 package io.github.tyostokarry.bookshelf.controller
 
 import arrow.core.Either
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.github.tyostokarry.bookshelf.controller.advice.ApiResponse
 import io.github.tyostokarry.bookshelf.controller.advice.ErrorCodes
 import io.github.tyostokarry.bookshelf.controller.advice.ErrorResponse
@@ -8,6 +9,7 @@ import io.github.tyostokarry.bookshelf.controller.dto.BookDto
 import io.github.tyostokarry.bookshelf.controller.dto.toDto
 import io.github.tyostokarry.bookshelf.service.BookService
 import io.github.tyostokarry.bookshelf.service.BookshelfService
+import io.github.tyostokarry.bookshelf.util.logContext
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -20,6 +22,8 @@ class BookController(
     private val bookService: BookService,
     private val bookshelfService: BookshelfService,
 ) {
+    private val logger = KotlinLogging.logger {}
+
     @GetMapping
     fun getAllBooks(): ResponseEntity<ApiResponse<List<BookDto>>> {
         val dtoList =
@@ -44,7 +48,10 @@ class BookController(
                         ResponseEntity.ok(
                             ApiResponse(data = book.toDto(bookshelfEither.value.publicId)),
                         )
-                    is Either.Left ->
+                    is Either.Left -> {
+                        logger.warn {
+                            "${logContext("getBook")} Bookshelf for book not found: bookId=$id, bookshelfId=${book.bookshelfId}"
+                        }
                         ResponseEntity.status(404).body(
                             ApiResponse(
                                 error =
@@ -54,9 +61,13 @@ class BookController(
                                     ),
                             ),
                         )
+                    }
                 }
             }
-            is Either.Left ->
+            is Either.Left -> {
+                logger.warn {
+                    "${logContext("getBook")} Data integrity issue — Book with id $id not found bookId=$id"
+                }
                 ResponseEntity.status(404).body(
                     ApiResponse(
                         error =
@@ -66,5 +77,6 @@ class BookController(
                             ),
                     ),
                 )
+            }
         }
 }
