@@ -11,3 +11,7 @@ spring:
 app:
   api-key: test-key
   frontend-url: http://localhost:5173
+
+logging:
+  level:
+    io.github.tyostokarry.bookshelf: WARN

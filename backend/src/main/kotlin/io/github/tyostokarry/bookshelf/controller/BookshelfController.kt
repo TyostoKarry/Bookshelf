@@ -1,6 +1,7 @@
 package io.github.tyostokarry.bookshelf.controller
 
 import arrow.core.Either
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.github.tyostokarry.bookshelf.controller.advice.ApiResponse
 import io.github.tyostokarry.bookshelf.controller.advice.ErrorCodes
 import io.github.tyostokarry.bookshelf.controller.advice.ErrorResponse
@@ -21,6 +22,8 @@ import io.github.tyostokarry.bookshelf.controller.dto.toEntity
 import io.github.tyostokarry.bookshelf.controller.dto.toPortableDto
 import io.github.tyostokarry.bookshelf.service.BookService
 import io.github.tyostokarry.bookshelf.service.BookshelfService
+import io.github.tyostokarry.bookshelf.util.logContext
+import io.github.tyostokarry.bookshelf.util.warnForbidden
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -41,6 +44,8 @@ class BookshelfController(
     private val bookService: BookService,
     private val bookshelfService: BookshelfService,
 ) {
+    private val logger = KotlinLogging.logger {}
+
     @GetMapping
     fun getAllBookshelves(): ResponseEntity<ApiResponse<List<BookshelfDto>>> =
         ResponseEntity.ok(ApiResponse(data = bookshelfService.getAllBookshelves().map { it.toBookshelfDto() }))
@@ -150,6 +155,7 @@ class BookshelfController(
         return when (val bookshelf = bookshelfService.getBookshelfByPublicId(publicId)) {
             is Either.Right -> {
                 if (token == null || !bookshelfService.verifyToken(bookshelf.value, token)) {
+                    logger.warnForbidden("BookshelfController.createBook", publicId, token)
                     return ResponseEntity
                         .status(403)
                         .body(
@@ -190,6 +196,7 @@ class BookshelfController(
         return when (val bookshelfExists = bookshelfService.getBookshelfByPublicId(publicId)) {
             is Either.Right -> {
                 if (token == null || !bookshelfService.verifyToken(bookshelfExists.value, token)) {
+                    logger.warnForbidden("BookshelfController.importBooks", publicId, token)
                     return ResponseEntity
                         .status(403)
                         .body(
@@ -230,6 +237,7 @@ class BookshelfController(
         return when (val existingBookshelf = bookshelfService.getBookshelfByPublicId(publicId)) {
             is Either.Right -> {
                 if (token == null || !bookshelfService.verifyToken(existingBookshelf.value, token)) {
+                    logger.warnForbidden("BookshelfController.updateBookshelf", publicId, token)
                     return ResponseEntity
                         .status(403)
                         .body(
@@ -272,6 +280,7 @@ class BookshelfController(
         return when (val bookshelf = bookshelfService.getBookshelfByPublicId(publicId)) {
             is Either.Right -> {
                 if (token == null || !bookshelfService.verifyToken(bookshelf.value, token)) {
+                    logger.warnForbidden("BookshelfController.updateBook", publicId, token)
                     return ResponseEntity
                         .status(403)
                         .body(
@@ -304,6 +313,10 @@ class BookshelfController(
                             )
                     }
                 } else {
+                    logger.warn {
+                        "${logContext("updateBook")} Book not found in bookshelf: " +
+                            "bookId=$bookId, publicId=$publicId"
+                    }
                     ResponseEntity
                         .status(404)
                         .body(
@@ -340,6 +353,7 @@ class BookshelfController(
         return when (val bookshelf = bookshelfService.getBookshelfByPublicId(publicId)) {
             is Either.Right -> {
                 if (token == null || !bookshelfService.verifyToken(bookshelf.value, token)) {
+                    logger.warnForbidden("BookshelfController.deleteBookshelf", publicId, token)
                     return ResponseEntity
                         .status(403)
                         .body(
@@ -385,6 +399,7 @@ class BookshelfController(
         return when (val bookshelf = bookshelfService.getBookshelfByPublicId(publicId)) {
             is Either.Right -> {
                 if (token == null || !bookshelfService.verifyToken(bookshelf.value, token)) {
+                    logger.warnForbidden("BookshelfController.deleteBook", publicId, token)
                     return ResponseEntity
                         .status(
                             403,
