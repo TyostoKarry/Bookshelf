@@ -3,6 +3,8 @@ package io.github.tyostokarry.bookshelf.repository
 import io.github.tyostokarry.bookshelf.entity.Book
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 import org.springframework.transaction.annotation.Transactional
 
 /**
@@ -31,4 +33,11 @@ interface BookRepository : JpaRepository<Book, Long> {
     @Modifying
     @Transactional
     fun deleteByBookshelfId(bookshelfId: Long): Long
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM Book b WHERE b.id = :id")
+    fun deleteByIdIfExists(
+        @Param("id") id: Long,
+    ): Int
 }

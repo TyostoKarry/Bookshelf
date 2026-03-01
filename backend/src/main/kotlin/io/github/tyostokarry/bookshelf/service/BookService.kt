@@ -78,15 +78,16 @@ class BookService(
     }
 
     @Transactional
-    fun deleteBook(id: Long): Either<BookError, Long> =
-        if (bookRepository.existsById(id)) {
-            bookRepository.deleteById(id)
+    fun deleteBook(id: Long): Either<BookError, Long> {
+        val deleted = bookRepository.deleteByIdIfExists(id)
+        return if (deleted > 0) {
             logger.info { "${logContext("deleteBook")} Deleted book: id=$id" }
             id.right()
         } else {
             logger.warn { "${logContext("deleteBook")} Delete failed — book not found: id=$id" }
             BookError.NotFound(id).left()
         }
+    }
 
     @Transactional
     fun deleteBooksInBookshelf(bookshelfId: Long): Long {

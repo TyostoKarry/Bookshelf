@@ -367,13 +367,26 @@ class BookshelfController(
                         )
                 }
 
-                val deletedBookCount = bookshelfService.deleteBookshelf(bookshelf.value.publicId).getOrNull()!!
-                val payload =
-                    DeleteBookshelfResult(
-                        deletedBookshelfPublicId = bookshelf.value.publicId,
-                        deletedBooksCount = deletedBookCount,
-                    )
-                ResponseEntity.ok(ApiResponse(data = payload))
+                when (val result = bookshelfService.deleteBookshelf(bookshelf.value.publicId)) {
+                    is Either.Right -> {
+                        val payload =
+                            DeleteBookshelfResult(
+                                deletedBookshelfPublicId = bookshelf.value.publicId,
+                                deletedBooksCount = result.value,
+                            )
+                        ResponseEntity.ok(ApiResponse(data = payload))
+                    }
+                    is Either.Left ->
+                        ResponseEntity.status(500).body(
+                            ApiResponse(
+                                error =
+                                    ErrorResponse(
+                                        "Unexpected error deleting bookshelf $publicId",
+                                        ErrorCodes.INTERNAL_ERROR,
+                                    ),
+                            ),
+                        )
+                }
             }
             is Either.Left ->
                 ResponseEntity
@@ -394,7 +407,7 @@ class BookshelfController(
     fun deleteBook(
         @PathVariable publicId: String,
         @PathVariable bookId: Long,
-        @RequestHeader("X-BOOKSHELF-TOKEN", required = false) token: String?,
+        @RequestHeader(X_BOOKSHELF_TOKEN, required = false) token: String?,
     ): ResponseEntity<ApiResponse<Long>> {
         return when (val bookshelf = bookshelfService.getBookshelfByPublicId(publicId)) {
             is Either.Right -> {
@@ -412,6 +425,25 @@ class BookshelfController(
                                     ),
                             ),
                         )
+                }
+
+                val bookEither = bookService.getBookById(bookId)
+                if (bookEither !is Either.Right ||
+                    bookEither.value.bookshelfId != bookshelf.value.id
+                ) {
+                    logger.warn {
+                        "${logContext("deleteBook")} Book not found in bookshelf: " +
+                            "bookId=$bookId, publicId=$publicId"
+                    }
+                    return ResponseEntity.status(404).body(
+                        ApiResponse(
+                            error =
+                                ErrorResponse(
+                                    "Book with id $bookId not found in bookshelf $publicId",
+                                    ErrorCodes.BOOK_NOT_FOUND,
+                                ),
+                        ),
+                    )
                 }
 
                 when (val response = bookService.deleteBook(bookId)) {
